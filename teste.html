@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Claude Code</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      color: orange;
+      font-family: Arial, sans-serif;
+      font-size: 3rem;
+      text-transform: capitalize;
+      display: flex;
+    }
+    h1 span {
+      display: inline-block;
+      animation: bounce 1s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-25px); }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="titulo"></h1>
+  <script>
+    const texto = "nicoly wapenik";
+    const titulo = document.getElementById("titulo");
+    [...texto].forEach((letra, i) => {
+      const span = document.createElement("span");
+      span.textContent = letra === " " ? " " : letra;
+      span.style.animationDelay = `${i * 0.1}s`;
+      titulo.appendChild(span);
+    });
+  </script>
+</body>
+</html>
