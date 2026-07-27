@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Login | meu.painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#111111;
+    --azul:#2b6fff;
+    --laranja:#ff6a2b;
+    --limao:#c3f53a;
+    --magenta:#ff3da6;
+    --papel:#f7f2e6;
+    --branco:#ffffff;
+    --texto-suave:rgba(17,17,17,.6);
+    --sucesso:#2D7A4F;
+    --erro:#C4453C;
+    --sombra-dura:5px 5px 0 var(--preto);
+    --sombra-dura-lg:8px 8px 0 var(--preto);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background-color:var(--papel);
+    background-image:
+      linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size:38px 38px;
+    color:var(--preto);
+    font-family:'Poppins', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:1.5rem;
+  }
+  .cartao-login{
+    width:100%;
+    max-width:400px;
+    background:var(--branco);
+    border:4px solid var(--preto);
+    border-radius:16px;
+    padding:2.5rem 2rem;
+    box-shadow:var(--sombra-dura-lg);
+  }
+  .logo{
+    font-family:'Archivo Black', sans-serif;
+    font-size:1.2rem;
+    margin:0 0 1.5rem;
+  }
+  .logo span{color:var(--magenta);}
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    text-transform:uppercase;
+    font-size:1.5rem;
+    margin:0 0 .4rem;
+  }
+  .subtitulo{
+    color:var(--texto-suave);
+    font-size:.95rem;
+    margin:0 0 1.5rem;
+    line-height:1.5;
+  }
+  label{
+    display:block;
+    font-size:.85rem;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:.4rem;
+  }
+  input{
+    width:100%;
+    font-family:'Poppins', sans-serif;
+    font-size:1rem;
+    padding:.75rem .9rem;
+    border:2px solid var(--preto);
+    border-radius:8px;
+    margin-bottom:1.1rem;
+    background:var(--branco);
+    color:var(--preto);
+  }
+  input:focus{
+    outline:3px solid var(--azul);
+    outline-offset:1px;
+  }
+  .botao-entrar{
+    width:100%;
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    color:var(--preto);
+    background:var(--laranja);
+    border:3px solid var(--preto);
+    border-radius:8px;
+    padding:.85rem;
+    cursor:pointer;
+    box-shadow:var(--sombra-dura);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .botao-entrar:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--preto);}
+  .botao-entrar:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--preto);}
+  .botao-entrar:disabled{opacity:.7;cursor:default;transform:none;}
+  .link-esqueci{
+    display:block;
+    width:100%;
+    background:none;
+    border:none;
+    text-align:right;
+    color:var(--texto-suave);
+    font-family:'Poppins', sans-serif;
+    font-size:.85rem;
+    cursor:pointer;
+    padding:0 0 1.1rem;
+    text-decoration:underline;
+  }
+  .link-esqueci:hover{color:var(--magenta);}
+  .faixa-erro, .faixa-sucesso{
+    font-size:.9rem;
+    font-weight:600;
+    border:2px solid currentColor;
+    border-radius:8px;
+    padding:.7rem .9rem;
+    margin-bottom:1.1rem;
+  }
+  .faixa-erro{background:rgba(196,69,60,.08);color:var(--erro);}
+  .faixa-sucesso{background:rgba(45,122,79,.08);color:var(--sucesso);}
+  #form-recuperar[hidden], #form-login[hidden]{display:none;}
+</style>
+</head>
+<body>
+
+<main class="cartao-login">
+  <p class="logo">meu<span>.</span>painel</p>
+  <h1>Acesso restrito</h1>
+  <p class="subtitulo">Faça login para ver os números do seu portfólio.</p>
+
+  <div class="faixa-erro" id="faixa-erro" hidden></div>
+  <div class="faixa-sucesso" id="faixa-sucesso" hidden></div>
+
+  <form id="form-login">
+    <label for="campo-email">E-mail</label>
+    <input type="email" id="campo-email" required autocomplete="email">
+
+    <label for="campo-senha">Senha</label>
+    <input type="password" id="campo-senha" required autocomplete="current-password">
+
+    <button type="button" class="link-esqueci" id="link-esqueci">Esqueci minha senha</button>
+    <button type="submit" class="botao-entrar" id="botao-entrar">Entrar</button>
+  </form>
+
+  <form id="form-recuperar" hidden>
+    <label for="campo-email-recuperar">E-mail</label>
+    <input type="email" id="campo-email-recuperar" required autocomplete="email">
+
+    <button type="submit" class="botao-entrar" id="botao-recuperar">Enviar link de recuperação</button>
+    <button type="button" class="link-esqueci" id="link-voltar">Voltar para o login</button>
+  </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  // Se já existir uma sessão ativa, pula direto para o painel.
+  (async () => {
+    const { data } = await Auth.sb.auth.getSession();
+    if (data.session) {
+      window.location.href = "painel.html";
+    }
+  })();
+
+  const formLogin = document.getElementById("form-login");
+  const formRecuperar = document.getElementById("form-recuperar");
+  const faixaErro = document.getElementById("faixa-erro");
+  const faixaSucesso = document.getElementById("faixa-sucesso");
+  const botaoEntrar = document.getElementById("botao-entrar");
+  const botaoRecuperar = document.getElementById("botao-recuperar");
+
+  function esconderMensagens(){
+    faixaErro.hidden = true;
+    faixaSucesso.hidden = true;
+  }
+
+  function mostrarErro(mensagem){
+    faixaSucesso.hidden = true;
+    faixaErro.textContent = mensagem;
+    faixaErro.hidden = false;
+  }
+
+  formLogin.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    esconderMensagens();
+
+    const email = document.getElementById("campo-email").value.trim();
+    const senha = document.getElementById("campo-senha").value;
+
+    botaoEntrar.disabled = true;
+    botaoEntrar.textContent = "Entrando...";
+
+    try {
+      await Auth.login(email, senha);
+      window.location.href = "painel.html";
+    } catch (erro) {
+      mostrarErro(erro.message || "Não foi possível entrar. Tente novamente.");
+      botaoEntrar.disabled = false;
+      botaoEntrar.textContent = "Entrar";
+    }
+  });
+
+  document.getElementById("link-esqueci").addEventListener("click", () => {
+    esconderMensagens();
+    formLogin.hidden = true;
+    formRecuperar.hidden = false;
+  });
+
+  document.getElementById("link-voltar").addEventListener("click", () => {
+    esconderMensagens();
+    formRecuperar.hidden = true;
+    formLogin.hidden = false;
+  });
+
+  formRecuperar.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    esconderMensagens();
+
+    const email = document.getElementById("campo-email-recuperar").value.trim();
+    botaoRecuperar.disabled = true;
+    botaoRecuperar.textContent = "Enviando...";
+
+    try {
+      await Auth.recuperarSenha(email);
+      faixaSucesso.textContent = "Enviamos um link de recuperação para o seu e-mail.";
+      faixaSucesso.hidden = false;
+    } catch (erro) {
+      mostrarErro("Não foi possível enviar o link. Verifique o e-mail digitado.");
+    }
+
+    botaoRecuperar.disabled = false;
+    botaoRecuperar.textContent = "Enviar link de recuperação";
+  });
+</script>
+
+</body>
+</html>
