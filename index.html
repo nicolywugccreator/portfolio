@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex">
-<title>Login | meu.painel</title>
+<title id="page-title">Nicoly Wapenik | UGC Content Creator</title>
+<meta name="description" id="page-description" content="Nicoly Wapenik, UGC content creator. Authentic videos and photos that help brands sell more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Permanent+Marker&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --preto:#111111;
@@ -17,16 +17,14 @@
     --magenta:#ff3da6;
     --papel:#f7f2e6;
     --branco:#ffffff;
-    --texto-suave:rgba(17,17,17,.6);
-    --sucesso:#2D7A4F;
-    --erro:#C4453C;
     --sombra-dura:5px 5px 0 var(--preto);
     --sombra-dura-lg:8px 8px 0 var(--preto);
   }
+
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
     margin:0;
-    min-height:100vh;
     background-color:var(--papel);
     background-image:
       linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px),
@@ -34,214 +32,1355 @@
     background-size:38px 38px;
     color:var(--preto);
     font-family:'Poppins', sans-serif;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:1.5rem;
+    line-height:1.55;
+    overflow-x:hidden;
   }
-  .cartao-login{
-    width:100%;
-    max-width:400px;
-    background:var(--branco);
-    border:4px solid var(--preto);
-    border-radius:16px;
-    padding:2.5rem 2rem;
-    box-shadow:var(--sombra-dura-lg);
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    line-height:1.1;
+    margin:0 0 .5em 0;
+    text-transform:uppercase;
+  }
+  p{margin:0 0 1em 0;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ul{list-style:none;margin:0;padding:0;}
+  section{padding:5rem 6vw;max-width:1280px;margin:0 auto;}
+
+  .skip-link{
+    position:absolute;left:-999px;top:0;background:var(--limao);color:var(--preto);
+    padding:.8rem 1.2rem;z-index:999;font-weight:600;
+  }
+  .skip-link:focus{left:1rem;top:1rem;}
+
+  :focus-visible{outline:3px solid var(--azul);outline-offset:3px;}
+
+  .tag-manuscrita{
+    font-family:'Poppins', sans-serif;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    font-size:.8rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    color:var(--preto);
+    background:var(--laranja);
+    border:2.5px solid var(--preto);
+    border-radius:999px;
+    padding:.5rem 1.1rem;
+    box-shadow:3px 3px 0 var(--preto);
+    margin-bottom:1.2rem;
+    transform:rotate(-2deg);
+  }
+  .tag-manuscrita::before{content:"●";font-size:.55rem;}
+
+  .btn{
+    display:inline-block;
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    padding:.9rem 1.8rem;
+    border:3px solid var(--preto);
+    border-radius:6px;
+    box-shadow:var(--sombra-dura);
+    transition:transform .15s ease, box-shadow .15s ease;
+    cursor:pointer;
+  }
+  .btn:hover, .btn:focus-visible{
+    transform:translate(-3px,-3px);
+    box-shadow:8px 8px 0 var(--preto);
+  }
+  .btn:active{
+    transform:translate(0,0);
+    box-shadow:2px 2px 0 var(--preto);
+  }
+  .btn-primario{background:var(--laranja);color:var(--preto);}
+  .btn-secundario{background:var(--branco);color:var(--preto);}
+  .btn-contato{background:var(--azul);color:var(--branco);margin:.4rem;}
+  .hero-botoes{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.6rem;}
+
+  /* ===================== HEADER ===================== */
+  .site-header{
+    position:fixed;top:0;left:0;right:0;z-index:500;
+    background-color:var(--papel);
+    background-image:
+      linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size:38px 38px;
+  }
+  .header-inner{
+    max-width:1280px;margin:0 auto;padding:.9rem 6vw;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;
   }
   .logo{
     font-family:'Archivo Black', sans-serif;
-    font-size:1.2rem;
-    margin:0 0 1.5rem;
+    font-size:1.4rem;
+    letter-spacing:.5px;
   }
+  .logo::before{content:"✱ ";color:var(--limao);}
   .logo span{color:var(--magenta);}
-  h1{
-    font-family:'Archivo Black', sans-serif;
-    text-transform:uppercase;
-    font-size:1.5rem;
-    margin:0 0 .4rem;
-  }
-  .subtitulo{
-    color:var(--texto-suave);
+  .nav-principal{margin-left:auto;}
+  .nav-principal ul{display:flex;gap:1.8rem;align-items:center;}
+  .nav-principal a{
+    font-weight:600;
     font-size:.95rem;
-    margin:0 0 1.5rem;
-    line-height:1.5;
-  }
-  label{
-    display:block;
-    font-size:.85rem;
-    font-weight:700;
     text-transform:uppercase;
-    margin-bottom:.4rem;
+    letter-spacing:.5px;
+    padding:.3rem .1rem;
+    border-bottom:3px solid transparent;
+    transition:border-color .15s ease, color .15s ease;
   }
-  input{
-    width:100%;
+  .nav-principal a:hover, .nav-principal a:focus-visible{
+    border-color:var(--laranja);
+  }
+  .nav-cta{
+    background:var(--limao);
+    border:2px solid var(--preto) !important;
+    border-radius:5px;
+    padding:.5rem 1rem !important;
+    box-shadow:3px 3px 0 var(--preto);
+  }
+  .controles-header{display:flex;align-items:center;gap:.7rem;}
+  .btn-idioma{
     font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    background:var(--magenta);
+    color:var(--branco);
+    border:2px solid var(--preto);
+    border-radius:20px;
+    padding:.45rem 1rem;
+    box-shadow:3px 3px 0 var(--preto);
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .btn-idioma:hover, .btn-idioma:focus-visible{transform:translate(-2px,-2px);}
+  .btn-hamburguer{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:44px;height:44px;
+    background:var(--branco);
+    border:2px solid var(--preto);
+    border-radius:6px;
+    box-shadow:3px 3px 0 var(--preto);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .btn-hamburguer span{
+    display:block;width:22px;height:3px;background:var(--preto);
+    margin:0 auto;transition:transform .25s ease, opacity .25s ease;
+  }
+  .btn-hamburguer.aberto span:nth-child(1){transform:translateY(8px) rotate(45deg);}
+  .btn-hamburguer.aberto span:nth-child(2){opacity:0;}
+  .btn-hamburguer.aberto span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
+
+  @media (max-width:900px){
+    .nav-principal{
+      position:fixed;top:64px;left:0;right:0;
+      background:var(--papel);
+      border-bottom:3px solid var(--preto);
+      max-height:0;
+      overflow:hidden;
+      transition:max-height .3s ease;
+    }
+    .nav-principal.aberto{max-height:420px;}
+    .nav-principal ul{flex-direction:column;align-items:flex-start;gap:0;padding:1rem 6vw 1.5rem;}
+    .nav-principal li{width:100%;padding:.6rem 0;border-bottom:1px solid rgba(17,17,17,.1);}
+    .btn-hamburguer{display:flex;}
+  }
+
+  /* ===================== HERO ===================== */
+  .hero{padding-top:9rem;position:relative;overflow:visible;}
+  .hero-inner{
+    display:flex;align-items:center;gap:3rem;flex-wrap:wrap;
+  }
+  .hero-texto{flex:1 1 380px;}
+  .hero-texto h1{
+    font-size:clamp(2.6rem, 7vw, 4.6rem);
+    display:inline-block;
+    color:var(--preto);
+    -webkit-text-stroke:2px var(--preto);
+    text-stroke:2px var(--preto);
+    text-shadow:5px 5px 0 var(--magenta);
+  }
+  .hero-subtitulo{font-size:1.2rem;max-width:36ch;}
+
+  .hero-foto{
+    flex:1 1 320px;
+    max-width:390px;
+    margin:0 auto;
+    background:var(--branco);
+    border:4px solid var(--preto);
+    border-radius:10px;
+    padding:14px 14px 46px;
+    box-shadow:var(--sombra-dura-lg);
+    position:relative;
+    transform:rotate(-4deg);
+    transition:transform .2s ease;
+  }
+  .hero-foto:hover{transform:rotate(-1deg) translateY(-4px);}
+  .hero-foto-moldura{
+    aspect-ratio:4/5;
+    border-radius:4px;
+    overflow:hidden;
+    border:2px solid var(--preto);
+  }
+  .hero-foto img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-foto-legenda{
+    position:absolute;left:0;right:0;bottom:10px;text-align:center;
+    font-family:'Permanent Marker', cursive;
     font-size:1rem;
-    padding:.75rem .9rem;
+    color:var(--preto);
+    margin:0;
+  }
+  /* TO SWAP THE PHOTO: replace foto-hero.jpg (in the same folder as this file) with your own image */
+
+
+  /* ===================== BRAND STRIP ===================== */
+  .marcas-faixa{
+    background:transparent;
+    padding:.5rem 0 1.5rem;
+    overflow:hidden;
+  }
+  .marcas-track{
+    display:flex;gap:1rem;align-items:center;white-space:nowrap;
+    animation:rolar 22s linear infinite;
+    width:max-content;
+  }
+  .marcas-track span{
+    display:inline-block;
+    background:var(--branco);
+    color:var(--preto);
+    font-family:'Archivo Black', sans-serif;
+    font-size:.9rem;
+    text-transform:uppercase;
+    border:2.5px solid var(--preto);
+    border-radius:999px;
+    padding:.4rem 1.1rem;
+    box-shadow:2px 2px 0 var(--preto);
+  }
+  .marcas-track span:nth-child(4n+1){background:var(--limao);}
+  .marcas-track span:nth-child(4n+2){background:var(--azul);color:var(--branco);}
+  .marcas-track span:nth-child(4n+4){background:var(--laranja);}
+  @keyframes rolar{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ===================== ABOUT ===================== */
+  .sobre{display:flex;align-items:center;gap:3rem;flex-wrap:wrap;}
+  .sobre-foto{
+    flex:1 1 300px;max-width:380px;aspect-ratio:1/1;
+    border-radius:50% 50% 50% 8%;
+    border:4px solid var(--preto);
+    background:linear-gradient(135deg, var(--limao), var(--azul));
+    box-shadow:var(--sombra-dura-lg);
+    overflow:hidden;
+  }
+  .sobre-foto img{width:100%;height:100%;object-fit:cover;display:block;}
+  /* TO SWAP THE PHOTO: replace foto-sobre.jpg (in the same folder as this file) with your own image */
+  .sobre-texto{flex:1 1 380px;}
+  .sobre-texto p{font-size:1.08rem;}
+
+  /* ===================== PORTFOLIO ===================== */
+  .portfolio h2, .servicos h2, .resultados h2, .depoimentos h2, .contato h2{text-align:center;}
+  .filtros{
+    display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin:1.5rem 0 2.5rem;
+  }
+  .filtro-btn{
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    background:var(--branco);
+    border:2px solid var(--preto);
+    border-radius:30px;
+    padding:.5rem 1.2rem;
+    box-shadow:3px 3px 0 var(--preto);
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .filtro-btn:hover, .filtro-btn:focus-visible{transform:translate(-2px,-2px);}
+  .filtro-btn.ativo{background:var(--magenta);color:var(--branco);}
+
+  .galeria{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:1.6rem;
+  }
+  .item-portfolio{
+    font:inherit;
+    text-align:left;
+    background:var(--branco);
+    border:4px solid var(--preto);
+    border-radius:16px;
+    box-shadow:var(--sombra-dura);
+    display:flex;
+    flex-direction:column;
+    padding:0;
+    cursor:pointer;
+    transition:transform .2s ease;
+    overflow:hidden;
+  }
+  .item-portfolio:hover{transform:translateY(-4px);}
+  .item-portfolio.escondido{display:none;}
+
+  .portfolio-midia{
+    position:relative;
+    aspect-ratio:9/16;
+    overflow:hidden;
+    display:block;
+  }
+  .portfolio-midia img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;
+  }
+  .play-icon{
+    position:absolute;top:50%;left:50%;transform:translate(-46%,-50%);
+    width:48px;height:48px;border-radius:50%;
+    background:rgba(17,17,17,.55);
+    border:2px solid rgba(255,255,255,.85);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--branco);font-size:1rem;z-index:2;
+  }
+
+  .portfolio-info{padding:.9rem 1rem 1.1rem;}
+  .portfolio-titulo{
+    display:block;
+    font-family:'Archivo Black', sans-serif;
+    text-transform:none;
+    font-size:1rem;
+    line-height:1.25;
+    margin-bottom:.25rem;
+  }
+  .portfolio-subtitulo{
+    display:block;
+    font-size:.8rem;
+    font-weight:600;
+    color:rgba(17,17,17,.55);
+  }
+
+  /* ===================== PORTFOLIO VIDEO MODAL ===================== */
+  .portfolio-modal{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(17,17,17,.82);
+    display:flex;align-items:center;justify-content:center;
+    padding:2.5rem 1.5rem;
+  }
+  .portfolio-modal[hidden]{display:none;}
+  .portfolio-modal-conteudo{
+    position:relative;
+    width:100%;
+    max-width:400px;
+    background:var(--preto);
+    border:4px solid var(--preto);
+    border-radius:18px;
+    box-shadow:var(--sombra-dura-lg);
+  }
+  .portfolio-modal-midia{
+    position:relative;
+    aspect-ratio:9/16;
+    max-height:82vh;
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .portfolio-modal-midia iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .portfolio-modal-fechar{
+    position:absolute;top:-18px;right:-18px;z-index:2;
+    width:42px;height:42px;border-radius:50%;
+    background:var(--laranja);
+    border:3px solid var(--preto);
+    box-shadow:3px 3px 0 var(--preto);
+    font-size:1.5rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--preto);font-weight:700;
+    transition:transform .15s ease;
+  }
+  .portfolio-modal-fechar:hover, .portfolio-modal-fechar:focus-visible{transform:translate(-2px,-2px);}
+
+  /* ===================== PROPOSAL POPUP ===================== */
+  .proposta-modal{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(17,17,17,.82);
+    display:flex;align-items:center;justify-content:center;
+    padding:1.5rem;
+  }
+  .proposta-modal[hidden]{display:none;}
+  .proposta-modal-wrapper{
+    position:relative;
+    width:100%;max-width:380px;
+  }
+  .proposta-modal-conteudo{
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    background:var(--branco);
+    border:4px solid var(--preto);
+    border-radius:16px;
+    box-shadow:var(--sombra-dura-lg);
+  }
+  .proposta-modal-fechar{
+    position:absolute;top:-18px;right:-18px;z-index:3;
+    width:42px;height:42px;border-radius:50%;
+    background:var(--laranja);border:3px solid var(--preto);
+    box-shadow:3px 3px 0 var(--preto);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;line-height:1;color:var(--preto);font-weight:700;
+    cursor:pointer;transition:transform .15s ease;
+  }
+  .proposta-modal-fechar:hover, .proposta-modal-fechar:focus-visible{transform:translate(-2px,-2px);}
+  .proposta-modal-corpo{padding:1.3rem 1.3rem 1.5rem;}
+  .proposta-tag{
+    display:inline-block;
+    font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--laranja);margin-bottom:.3rem;
+  }
+  .proposta-modal-corpo h3{
+    font-size:1.15rem;text-transform:none;margin-bottom:.25rem;
+  }
+  .proposta-destaque{color:var(--azul);font-style:italic;}
+  .proposta-subtitulo{font-size:.8rem;color:rgba(17,17,17,.65);margin-bottom:.9rem;}
+  .proposta-modal-corpo .form-contato label{font-size:.72rem;}
+  .proposta-modal-corpo .form-contato input,
+  .proposta-modal-corpo .form-contato select{
+    padding:.55rem .7rem;
+    margin-bottom:.45rem;
+    font-size:.88rem;
+  }
+  .proposta-modal-corpo .form-contato textarea{
+    padding:.55rem .7rem;
+    margin-bottom:.45rem;
+    font-size:.88rem;
+    min-height:60px;
+  }
+  .proposta-modal-corpo .btn{padding:.65rem 1.3rem;font-size:.92rem;}
+  .form-contato select{
+    font-family:'Poppins', sans-serif;
+    padding:.8rem;
     border:2px solid var(--preto);
     border-radius:8px;
-    margin-bottom:1.1rem;
+    font-size:1rem;
+    margin-bottom:.8rem;
     background:var(--branco);
     color:var(--preto);
   }
-  input:focus{
-    outline:3px solid var(--azul);
-    outline-offset:1px;
+
+  /* ===================== SERVICES ===================== */
+  .grid-servicos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+    gap:1.8rem;
   }
-  .botao-entrar{
-    width:100%;
-    font-family:'Poppins', sans-serif;
-    font-weight:700;
-    font-size:1rem;
-    color:var(--preto);
-    background:var(--laranja);
+  .card-servico{
+    background:var(--branco);
     border:3px solid var(--preto);
-    border-radius:8px;
-    padding:.85rem;
-    cursor:pointer;
+    border-radius:12px;
+    padding:1.8rem;
     box-shadow:var(--sombra-dura);
-    transition:transform .15s ease, box-shadow .15s ease;
   }
-  .botao-entrar:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--preto);}
-  .botao-entrar:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--preto);}
-  .botao-entrar:disabled{opacity:.7;cursor:default;transform:none;}
-  .link-esqueci{
-    display:block;
-    width:100%;
-    background:none;
-    border:none;
-    text-align:right;
-    color:var(--texto-suave);
+  .card-servico .emoji{font-size:2.2rem;}
+  .card-servico h3{font-size:1.1rem;text-transform:none;font-family:'Archivo Black', sans-serif;}
+
+  /* ===================== RESULTS ===================== */
+  .grid-resultados{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:1.6rem;
+    text-align:center;
+  }
+  .card-resultado{
+    background:var(--preto);
+    color:var(--papel);
+    border-radius:12px;
+    padding:2rem 1rem;
+    box-shadow:6px 6px 0 var(--laranja);
+  }
+  .card-resultado .numero{
+    font-family:'Archivo Black', sans-serif;
+    font-size:2.6rem;
+    color:var(--limao);
+  }
+  .card-resultado .label{font-size:.95rem;opacity:.9;}
+
+  /* ===================== TESTIMONIALS ===================== */
+  .grid-depoimentos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:1.8rem;
+  }
+  .card-depoimento{
+    background:var(--branco);
+    border:3px solid var(--preto);
+    border-radius:12px;
+    padding:1.8rem;
+    box-shadow:var(--sombra-dura);
+    position:relative;
+  }
+  .card-depoimento p.fala{font-family:'Caveat', cursive;font-size:1.4rem;color:var(--preto);}
+  .card-depoimento .autor{font-weight:700;font-size:.95rem;}
+  .card-depoimento .empresa{font-size:.85rem;color:var(--azul);font-weight:600;}
+
+  /* ===================== CONTACT ===================== */
+  .contato-grid{
+    display:flex;gap:3rem;flex-wrap:wrap;
+    background:var(--branco);
+    border:4px solid var(--preto);
+    border-radius:16px;
+    box-shadow:var(--sombra-dura-lg);
+    padding:2.5rem;
+  }
+  .form-contato{flex:1 1 320px;display:flex;flex-direction:column;gap:.4rem;}
+  .form-contato label{font-weight:700;font-size:.9rem;text-transform:uppercase;}
+  .form-contato input, .form-contato textarea{
     font-family:'Poppins', sans-serif;
-    font-size:.85rem;
-    cursor:pointer;
-    padding:0 0 1.1rem;
-    text-decoration:underline;
-  }
-  .link-esqueci:hover{color:var(--magenta);}
-  .faixa-erro, .faixa-sucesso{
-    font-size:.9rem;
-    font-weight:600;
-    border:2px solid currentColor;
+    padding:.8rem;
+    border:2px solid var(--preto);
     border-radius:8px;
-    padding:.7rem .9rem;
-    margin-bottom:1.1rem;
+    font-size:1rem;
+    margin-bottom:.8rem;
+    resize:vertical;
   }
-  .faixa-erro{background:rgba(196,69,60,.08);color:var(--erro);}
-  .faixa-sucesso{background:rgba(45,122,79,.08);color:var(--sucesso);}
-  #form-recuperar[hidden], #form-login[hidden]{display:none;}
+  .form-contato input:focus, .form-contato textarea:focus{outline:3px solid var(--azul);}
+  .msg-confirmacao{font-weight:700;color:var(--azul);min-height:1.2em;}
+  .contato-direto{
+    flex:1 1 260px;
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  }
+  .contato-direto .btn-contato{width:100%;text-align:center;}
+
+  /* ===================== FOOTER ===================== */
+  .rodape{
+    background:var(--preto);
+    color:var(--papel);
+    text-align:center;
+    padding:3rem 6vw 2rem;
+    border-top:4px solid var(--laranja);
+  }
+  .rodape-redes{display:flex;gap:1.2rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+  .rodape-redes a{
+    border:2px solid var(--papel);
+    border-radius:20px;
+    padding:.4rem 1rem;
+    font-weight:600;
+    transition:background .15s ease, color .15s ease;
+  }
+  .rodape-redes a:hover, .rodape-redes a:focus-visible{background:var(--papel);color:var(--preto);}
+
+  /* ===================== SCROLL REVEAL ANIMATIONS ===================== */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visivel{opacity:1;transform:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .marcas-track{animation:none;}
+  }
+
+  @media (max-width:600px){
+    section{padding:3.5rem 6vw;}
+    .hero{padding-top:7rem;}
+    .hero-texto h1{text-shadow:3px 3px 0 var(--magenta);}
+    .contato-grid{padding:1.5rem;}
+  }
 </style>
 </head>
 <body>
 
-<main class="cartao-login">
-  <p class="logo">meu<span>.</span>painel</p>
-  <h1>Acesso restrito</h1>
-  <p class="subtitulo">Faça login para ver os números do seu portfólio.</p>
+<a href="#main" class="skip-link" id="skip-link">Skip to content</a>
 
-  <div class="faixa-erro" id="faixa-erro" hidden></div>
-  <div class="faixa-sucesso" id="faixa-sucesso" hidden></div>
+<header class="site-header" id="topo">
+  <div class="header-inner">
+    <a href="#topo" class="logo">Nicoly Wapenik<span>.</span></a>
+    <nav class="nav-principal" id="nav-principal">
+      <ul>
+        <li><a href="#sobre" id="nav-sobre">About</a></li>
+        <li><a href="#portfolio" id="nav-portfolio">Portfolio</a></li>
+        <li><a href="#servicos" id="nav-servicos">Services</a></li>
+        <li><a href="#contato" class="nav-cta" id="nav-contato">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="controles-header">
+      <button class="btn-idioma" id="btn-idioma" aria-label="Switch language to Portuguese">PT</button>
+      <button class="btn-hamburguer" id="btn-menu" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-principal">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
-  <form id="form-login">
-    <label for="campo-email">E-mail</label>
-    <input type="email" id="campo-email" required autocomplete="email">
+<main id="main">
 
-    <label for="campo-senha">Senha</label>
-    <input type="password" id="campo-senha" required autocomplete="current-password">
+  <section class="hero" id="hero" aria-label="Introduction">
+    <div class="hero-inner">
+      <div class="hero-texto">
+        <p class="tag-manuscrita" id="hero-tag"></p>
+        <h1 id="hero-titulo"></h1>
+        <p class="hero-subtitulo" id="hero-subtitulo"></p>
+        <div class="hero-botoes">
+          <a href="#contato" class="btn btn-primario" id="hero-cta"></a>
+          <a href="#portfolio" class="btn btn-secundario" id="hero-cta-secundario"></a>
+        </div>
+      </div>
+      <div class="hero-foto" id="hero-foto">
+        <div class="hero-foto-moldura">
+          <img src="foto-hero.jpg" alt="Nicoly Wapenik, UGC content creator, smiling at the camera">
+        </div>
+        <p class="hero-foto-legenda" id="hero-foto-legenda"></p>
+      </div>
+    </div>
+  </section>
 
-    <button type="button" class="link-esqueci" id="link-esqueci">Esqueci minha senha</button>
-    <button type="submit" class="botao-entrar" id="botao-entrar">Entrar</button>
-  </form>
+  <section class="marcas-faixa" id="marcas-faixa" aria-label="Brands that have trusted Nicoly's work">
+    <div class="marcas-track" id="marcas-track"></div>
+  </section>
 
-  <form id="form-recuperar" hidden>
-    <label for="campo-email-recuperar">E-mail</label>
-    <input type="email" id="campo-email-recuperar" required autocomplete="email">
+  <section class="sobre reveal" id="sobre" aria-label="About Nicoly">
+    <div class="sobre-foto" id="sobre-foto">
+      <img src="foto-sobre.jpg" alt="Nicoly Wapenik at home, smiling at the camera">
+    </div>
+    <div class="sobre-texto">
+      <h2 id="titulo-sobre">About me</h2>
+      <p id="sobre-paragrafo"></p>
+    </div>
+  </section>
 
-    <button type="submit" class="botao-entrar" id="botao-recuperar">Enviar link de recuperação</button>
-    <button type="button" class="link-esqueci" id="link-voltar">Voltar para o login</button>
-  </form>
+  <section class="portfolio" id="portfolio" aria-label="Portfolio of work">
+    <h2 class="reveal" id="titulo-portfolio">Portfolio</h2>
+    <div class="filtros" id="filtros"></div>
+    <div class="galeria" id="galeria"></div>
+  </section>
+
+  <section class="servicos" id="servicos" aria-label="Services offered">
+    <h2 class="reveal" id="titulo-servicos">Services</h2>
+    <div class="grid-servicos" id="grid-servicos"></div>
+  </section>
+
+  <!-- Results and Testimonials sections removed for now. See TRADUCOES.en/pt.resultados and .depoimentos in the script to bring them back. -->
+
+  <section class="contato" id="contato" aria-label="Contact">
+    <h2 class="reveal" id="titulo-contato">Let's work together?</h2>
+    <div class="contato-grid">
+      <form class="form-contato reveal" id="form-contato" novalidate>
+        <label for="campo-nome" id="label-nome">Name</label>
+        <input type="text" id="campo-nome" name="nome" required autocomplete="name">
+        <label for="campo-email" id="label-email">Email</label>
+        <input type="email" id="campo-email" name="email" required autocomplete="email">
+        <label for="campo-mensagem" id="label-mensagem">Message</label>
+        <textarea id="campo-mensagem" name="mensagem" rows="5" required></textarea>
+        <button type="submit" class="btn btn-primario" id="botao-enviar">Send message</button>
+        <p class="msg-confirmacao" id="msg-confirmacao" role="status" aria-live="polite"></p>
+      </form>
+      <div class="contato-direto reveal">
+        <a href="#" class="btn btn-contato" id="link-whatsapp" target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <a href="#" class="btn btn-contato" id="link-email">Send email</a>
+        <a href="#" class="btn btn-contato" id="link-instagram" target="_blank" rel="noopener">View Instagram</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/painel/js/auth.js"></script>
+<div class="portfolio-modal" id="portfolio-modal" role="dialog" aria-modal="true" hidden>
+  <div class="portfolio-modal-conteudo">
+    <button type="button" class="portfolio-modal-fechar" id="portfolio-modal-fechar">&times;</button>
+    <div class="portfolio-modal-midia" id="portfolio-modal-midia"></div>
+  </div>
+</div>
+
+<div class="proposta-modal" id="proposta-modal" role="dialog" aria-modal="true" hidden>
+  <div class="proposta-modal-wrapper">
+    <button type="button" class="proposta-modal-fechar" id="proposta-modal-fechar">&times;</button>
+    <div class="proposta-modal-conteudo">
+    <div class="proposta-modal-corpo">
+      <p class="proposta-tag" id="proposta-tag">Request a proposal</p>
+      <h3 id="proposta-titulo">Let's create content that <span class="proposta-destaque">drives results</span>?</h3>
+      <p class="proposta-subtitulo" id="proposta-subtitulo">Tell me quickly what you need.</p>
+      <form class="form-contato" id="form-proposta" novalidate>
+        <label for="proposta-nome" id="proposta-label-nome">Name</label>
+        <input type="text" id="proposta-nome" name="nome" required autocomplete="name">
+        <label for="proposta-empresa" id="proposta-label-empresa">Company</label>
+        <input type="text" id="proposta-empresa" name="empresa" required autocomplete="organization">
+        <label for="proposta-email" id="proposta-label-email">Email</label>
+        <input type="email" id="proposta-email" name="email" required autocomplete="email">
+        <label for="proposta-orcamento" id="proposta-label-orcamento">Budget (optional)</label>
+        <select id="proposta-orcamento" name="orcamento"></select>
+        <label for="proposta-mensagem" id="proposta-label-mensagem">Message</label>
+        <textarea id="proposta-mensagem" name="mensagem" rows="3" required></textarea>
+        <button type="submit" class="btn btn-primario" id="proposta-botao-enviar">Request a proposal</button>
+        <p class="msg-confirmacao" id="proposta-msg-confirmacao" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    </div>
+  </div>
+</div>
+
+<footer class="rodape">
+  <p id="rodape-nome"></p>
+  <div class="rodape-redes" id="rodape-redes"></div>
+  <p id="rodape-copyright"></p>
+</footer>
+
 <script>
-  // Se já existir uma sessão ativa, pula direto para o painel.
-  (async () => {
-    const { data } = await Auth.sb.auth.getSession();
-    if (data.session) {
-      window.location.href = "/painel/painel.html";
+/* =====================================================================
+   SITE CONFIGURATION / CONFIGURACAO DO SITE
+   Shared data (does not change between languages): name, contact info,
+   brand names. Edit it below.
+   Dados compartilhados (nao mudam entre idiomas): nome, contato, marcas.
+   ===================================================================== */
+const DADOS = {
+  nome: "Nicoly Wapenik",
+  email: "nicolyw.ugccreator@gmail.com",
+  whatsappExibicao: "+353 83 308 6317",
+  whatsappNumero: "353833086317", // digits only, used in the WhatsApp link
+  instagramExibicao: "@nicoly.ugccreator",
+  instagramUsuario: "nicoly.ugccreator", // without the @, used in the Instagram link
+
+  // EDIT HERE: brands you have worked with (shown in the scrolling strip). Same in both languages.
+  marcas: [
+    "butternut box",
+    "Svibe",
+    "Raycon",
+    "Anavrin"
+  ]
+};
+
+/* =====================================================================
+   TRANSLATIONS / TRADUCOES
+   Edit every text of the site here, per language. "en" is the default
+   language because Nicoly lives in Ireland.
+   Edite todo o texto do site aqui, por idioma.
+   ===================================================================== */
+const TRADUCOES = {
+
+  en: {
+    htmlLang: "en",
+    pageTitle: "Nicoly Wapenik | UGC Content Creator",
+    pageDescription: "Nicoly Wapenik, UGC content creator. Authentic videos and photos that help brands sell more.",
+    skipLink: "Skip to content",
+    botaoIdioma: "PT",
+    botaoIdiomaAriaLabel: "Switch language to Portuguese",
+
+    nav: { sobre: "About", portfolio: "Portfolio", servicos: "Services", resultados: "Results", depoimentos: "Testimonials", contato: "Contact" },
+
+    profissao: "UGC Content Creator",
+
+    hero: {
+      tag: "Available for new projects",
+      subtitulo: "I have a curious eye for the small details that make content feel real instead of scripted. I use that to create videos and photos that feel like a friend's recommendation, and sell more because people genuinely trust them.",
+      textoBotao: "Get in touch",
+      textoBotaoSecundario: "View work →",
+      legendaFoto: "UGC creator ✦"
+    },
+
+    tituloSobre: "About me",
+    sobre: "I'm Nicoly, a Brazilian creator living in Dublin, and I've always been the type to notice the small things: the way light hits a room, the detail that makes a moment feel real instead of staged. That curiosity is at the heart of everything I create. I make content, for products and for services, that feels light, honest, and human. Not a script performed, but a moment shared. And because I create fluently in both Portuguese and English, I help brands build that same genuine connection with audiences on either side of the language.",
+
+    tituloPortfolio: "Portfolio",
+    categorias: { todos: "All", beleza: "Beauty & Skincare", pet: "Pet", bebida: "Food and Beverage", tech: "Tech", lifestyle: "Lifestyle & Wellness" },
+    // EDIT HERE: portfolio work. "categoria" must stay one of the keys above (beleza, pet, bebida, tech, lifestyle)
+    // Each card links out to the real YouTube Short. "videoId" is the part of the URL after /shorts/ (before any ?)
+    // COVER IMAGE: by default the card shows the automatic YouTube thumbnail. To use your own cover photo instead,
+    // add a file (e.g. capa-etude.jpg) next to this HTML file and set "capa: 'capa-etude.jpg'" on that item.
+    portfolio: [
+      { titulo: "ETUDE - Soon Jung 2x Barrier Intensive Cream", categoria: "beleza", videoId: "H14BJgQmNO0", url: "https://youtube.com/shorts/H14BJgQmNO0?feature=share", capa: "capa-etude.jpg" },
+      { titulo: "Peripera - Ink The Velvet", categoria: "beleza", videoId: "dfTINKqTjzs", url: "https://youtube.com/shorts/dfTINKqTjzs?feature=share", capa: "capa-peripera.jpg" },
+      { titulo: "L'Oreal Paris - Telescopic Mascara", categoria: "beleza", videoId: "MuwpFpaKqTs", url: "https://youtube.com/shorts/MuwpFpaKqTs?feature=share", capa: "capa-loreal.jpg" },
+      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
+      { titulo: "SVibe - Snail Curve", categoria: "lifestyle", videoId: "HbXCH_8PfUU", url: "https://youtube.com/shorts/HbXCH_8PfUU?feature=share", capa: null },
+      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "LHRu6c0oXUE", url: "https://youtube.com/shorts/LHRu6c0oXUE?feature=share", capa: "capa-snail-gizi-1.jpg" },
+      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "xtDeodjhyc4", url: "https://youtube.com/shorts/xtDeodjhyc4?feature=share", capa: "capa-snail-gizi-2.jpg" },
+      { titulo: "Audio-Technica - Lifestyle", categoria: "lifestyle", videoId: "b9QIpbp_aNE", url: "https://youtube.com/shorts/b9QIpbp_aNE?feature=share", capa: "capa-audio-technica.jpg" },
+      { titulo: "Sony - ZV-E10 II", categoria: "tech", videoId: "1Z3MBP3tatc", url: "https://youtube.com/shorts/1Z3MBP3tatc?feature=share", capa: "capa-sony.jpg" },
+      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" }
+    ],
+
+    tituloServicos: "Services",
+    // EDIT HERE: services offered
+    servicos: [
+      { emoji: "🎬", titulo: "UGC Video", descricao: "Authentic testimonial style videos, made to stop the scroll and build a real connection with your brand." },
+      { emoji: "📱", titulo: "Reels for social media", descricao: "Scripting, filming and editing dynamic Reels, ready to publish." },
+      { emoji: "📸", titulo: "Product photos", descricao: "Professional looking photos that showcase your product and boost conversion on ads and your website." },
+      { emoji: "📦", titulo: "Unboxing", descricao: "Genuine unboxing videos capturing the real first impression of the product to build purchase desire." },
+      { emoji: "💬", titulo: "Video testimonial", descricao: "Natural, persuasive testimonials, perfect for paid traffic campaigns and social proof." },
+      { emoji: "🎯", titulo: "Ad content", descricao: "Videos built for performance, with a strong hook in the first seconds and a clear call to action." }
+    ],
+
+    tituloResultados: "Results",
+    // EDIT HERE: highlighted numbers (counters). "valor" is the final number, "sufixo" appears right after it.
+    resultados: [
+      { valor: 500, sufixo: "K+", label: "Views generated across videos" },
+      { valor: 35, sufixo: "+", label: "Brands worked with" },
+      { valor: 98, sufixo: "%", label: "Client approval rate" },
+      { valor: 40, sufixo: "K+", label: "Engaged followers" }
+    ],
+
+    tituloDepoimentos: "What brands say",
+    // EDIT HERE: client testimonials
+    depoimentos: [
+      { fala: "Nicoly delivered an authentic video that exceeded our expectations. Product sales increased in the very first week of the campaign.", nome: "Fernanda Souza", empresa: "Bella Cosméticos" },
+      { fala: "Professional from start to finish. She met the deadline, understood the brief and delivered content that really speaks to our audience.", nome: "Rafael Lima", empresa: "Studio Fit Pro" },
+      { fala: "We hired Nicoly for an unboxing video and the result was so good we already signed a monthly contract with her.", nome: "Camila Torres", empresa: "Essência Natural" },
+      { fala: "Quality content, fast communication and a strategic eye for what actually converts. I recommend her to any brand.", nome: "Bruno Alves", empresa: "Viaje Fácil" }
+    ],
+
+    tituloContato: "Let's work together?",
+    labelNome: "Name",
+    labelEmail: "Email",
+    labelMensagem: "Message",
+    botaoEnviar: "Send message",
+    erroFormulario: "Please fill in all fields before sending.",
+    confirmacaoFormulario: "Thanks for your message! Your email app will open so you can finish sending it.",
+    assuntoEmail: "Partnership proposal",
+    corpoEmailNome: "Name",
+    corpoEmailEmail: "Email",
+    corpoEmailMensagem: "Message",
+    whatsappMensagem: "Hi Nicoly, I saw your portfolio and would like to talk about a project!",
+    botaoWhatsapp: "Chat on WhatsApp",
+    botaoEmail: "Send email",
+    botaoInstagram: "View Instagram",
+
+    // EDIT HERE: text for the "quick proposal" popup that appears after scrolling down the page
+    proposta: {
+      tag: "Request a proposal",
+      tituloAntes: "Let's create content that ",
+      tituloDestaque: "drives results",
+      tituloDepois: "?",
+      subtitulo: "Tell me quickly what you need.",
+      labelNome: "Name",
+      placeholderNome: "your name",
+      labelEmpresa: "Company",
+      placeholderEmpresa: "brand name",
+      labelEmail: "Email",
+      placeholderEmail: "email@company.com",
+      labelOrcamento: "Budget (optional)",
+      // EDIT HERE: budget ranges shown in the dropdown
+      opcoesOrcamento: [
+        "Prefer not to say",
+        "Up to $500",
+        "$500 - $1,000",
+        "$1,000 - $2,500",
+        "$2,500 - $5,000",
+        "Above $5,000",
+        "Recurring monthly package"
+      ],
+      labelMensagem: "Message",
+      placeholderMensagem: "campaign goal, deadline, references",
+      botaoEnviar: "Request a proposal",
+      erro: "Please fill in name, company, email and message.",
+      confirmacao: "Thanks! Your email app will open so you can finish sending it.",
+      assuntoEmail: "Quick proposal request",
+      corpoEmailNome: "Name",
+      corpoEmailEmpresa: "Company",
+      corpoEmailEmail: "Email",
+      corpoEmailOrcamento: "Budget",
+      corpoEmailMensagem: "Message"
+    },
+
+    direitosAutorais: "All rights reserved.",
+
+    ariaLabels: {
+      hero: "Introduction",
+      marcasFaixa: "Brands that have trusted Nicoly's work",
+      sobre: "About Nicoly",
+      portfolio: "Portfolio of work",
+      servicos: "Services offered",
+      resultados: "Results and numbers",
+      depoimentos: "Client testimonials",
+      contato: "Contact",
+      heroFoto: "Illustrative photo of Nicoly Wapenik creating content",
+      sobreFoto: "Photo of Nicoly Wapenik smiling",
+      assistirVideo: "Play video",
+      fecharVideo: "Close video",
+      abrirMenu: "Open navigation menu",
+      fecharMenu: "Close navigation menu"
     }
-  })();
+  },
 
-  const formLogin = document.getElementById("form-login");
-  const formRecuperar = document.getElementById("form-recuperar");
-  const faixaErro = document.getElementById("faixa-erro");
-  const faixaSucesso = document.getElementById("faixa-sucesso");
-  const botaoEntrar = document.getElementById("botao-entrar");
-  const botaoRecuperar = document.getElementById("botao-recuperar");
+  pt: {
+    htmlLang: "pt-BR",
+    pageTitle: "Nicoly Wapenik | Criadora de Conteúdo UGC",
+    pageDescription: "Nicoly Wapenik, criadora de conteúdo UGC. Vídeos e fotos autênticos que ajudam marcas a venderem mais.",
+    skipLink: "Pular para o conteúdo",
+    botaoIdioma: "EN",
+    botaoIdiomaAriaLabel: "Mudar idioma para inglês",
 
-  function esconderMensagens(){
-    faixaErro.hidden = true;
-    faixaSucesso.hidden = true;
+    nav: { sobre: "Sobre", portfolio: "Portfólio", servicos: "Serviços", resultados: "Resultados", depoimentos: "Depoimentos", contato: "Contato" },
+
+    profissao: "Criadora de Conteúdo UGC",
+
+    hero: {
+      tag: "Disponível para novos projetos",
+      subtitulo: "Eu tenho um olhar curioso para os pequenos detalhes que fazem o conteúdo parecer real, e não roteirizado. Uso isso para criar vídeos e fotos que parecem recomendação de amiga, e vendem mais porque as pessoas realmente confiam neles.",
+      textoBotao: "Fale comigo",
+      textoBotaoSecundario: "Ver trabalhos →",
+      legendaFoto: "criadora de UGC ✦"
+    },
+
+    tituloSobre: "Sobre mim",
+    sobre: "Eu sou a Nicoly, uma criadora brasileira morando em Dublin, e sempre fui do tipo que repara nos pequenos detalhes: o jeito que a luz bate em um ambiente, o detalhe que faz um momento parecer real, e não encenado. Essa curiosidade está no centro de tudo o que eu crio. Eu produzo conteúdo, para produtos e para serviços, que parece leve, honesto e humano. Não é um roteiro performado, é um momento compartilhado. E como eu crio fluentemente em português e em inglês, ajudo marcas a construírem essa mesma conexão genuína com públicos dos dois lados do idioma.",
+
+    tituloPortfolio: "Portfólio",
+    categorias: { todos: "Todos", beleza: "Beleza e Skincare", pet: "Pet", bebida: "Comida e Bebida", tech: "Tech", lifestyle: "Estilo de Vida e Bem-estar" },
+    portfolio: [
+      { titulo: "ETUDE - Soon Jung 2x Barrier Intensive Cream", categoria: "beleza", videoId: "H14BJgQmNO0", url: "https://youtube.com/shorts/H14BJgQmNO0?feature=share", capa: "capa-etude.jpg" },
+      { titulo: "Peripera - Ink The Velvet", categoria: "beleza", videoId: "dfTINKqTjzs", url: "https://youtube.com/shorts/dfTINKqTjzs?feature=share", capa: "capa-peripera.jpg" },
+      { titulo: "L'Oreal Paris - Telescopic Mascara", categoria: "beleza", videoId: "MuwpFpaKqTs", url: "https://youtube.com/shorts/MuwpFpaKqTs?feature=share", capa: "capa-loreal.jpg" },
+      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
+      { titulo: "SVibe - Snail Curve", categoria: "lifestyle", videoId: "HbXCH_8PfUU", url: "https://youtube.com/shorts/HbXCH_8PfUU?feature=share", capa: null },
+      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "LHRu6c0oXUE", url: "https://youtube.com/shorts/LHRu6c0oXUE?feature=share", capa: "capa-snail-gizi-1.jpg" },
+      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "xtDeodjhyc4", url: "https://youtube.com/shorts/xtDeodjhyc4?feature=share", capa: "capa-snail-gizi-2.jpg" },
+      { titulo: "Audio-Technica - Lifestyle", categoria: "lifestyle", videoId: "b9QIpbp_aNE", url: "https://youtube.com/shorts/b9QIpbp_aNE?feature=share", capa: "capa-audio-technica.jpg" },
+      { titulo: "Sony - ZV-E10 II", categoria: "tech", videoId: "1Z3MBP3tatc", url: "https://youtube.com/shorts/1Z3MBP3tatc?feature=share", capa: "capa-sony.jpg" },
+      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" }
+    ],
+
+    tituloServicos: "Serviços",
+    servicos: [
+      { emoji: "🎬", titulo: "Vídeo UGC", descricao: "Vídeos autênticos estilo depoimento, feitos para parar o scroll e gerar conexão real com a sua marca." },
+      { emoji: "📱", titulo: "Reels para redes sociais", descricao: "Roteiro, gravação e edição de Reels dinâmicos, prontos para publicar." },
+      { emoji: "📸", titulo: "Fotos de produto", descricao: "Fotos com estética profissional que valorizam o produto e aumentam a conversão em anúncios e site." },
+      { emoji: "📦", titulo: "Unboxing", descricao: "Vídeos de unboxing genuínos, mostrando a primeira impressão real do produto para gerar desejo de compra." },
+      { emoji: "💬", titulo: "Depoimento em vídeo", descricao: "Depoimentos naturais e persuasivos, perfeitos para campanhas de tráfego pago e prova social." },
+      { emoji: "🎯", titulo: "Conteúdo para anúncios", descricao: "Vídeos pensados para performance, com gancho forte nos primeiros segundos e chamada para ação clara." }
+    ],
+
+    tituloResultados: "Resultados",
+    resultados: [
+      { valor: 500, sufixo: "K+", label: "Visualizações geradas em vídeos" },
+      { valor: 35, sufixo: "+", label: "Marcas atendidas" },
+      { valor: 98, sufixo: "%", label: "Taxa de aprovação dos clientes" },
+      { valor: 40, sufixo: "K+", label: "Seguidores engajados" }
+    ],
+
+    tituloDepoimentos: "O que as marcas dizem",
+    depoimentos: [
+      { fala: "A Nicoly entregou um vídeo autêntico que superou nossas expectativas. As vendas do produto aumentaram logo na primeira semana de campanha.", nome: "Fernanda Souza", empresa: "Bella Cosméticos" },
+      { fala: "Profissionalismo do início ao fim. Cumpriu prazo, entendeu o briefing e entregou um conteúdo que realmente conversa com o nosso público.", nome: "Rafael Lima", empresa: "Studio Fit Pro" },
+      { fala: "Contratamos a Nicoly para um unboxing e o resultado foi tão bom que já fechamos um contrato mensal com ela.", nome: "Camila Torres", empresa: "Essência Natural" },
+      { fala: "Conteúdo de qualidade, comunicação rápida e um olhar estratégico para o que realmente converte. Recomendo para qualquer marca.", nome: "Bruno Alves", empresa: "Viaje Fácil" }
+    ],
+
+    tituloContato: "Vamos trabalhar juntas?",
+    labelNome: "Nome",
+    labelEmail: "E-mail",
+    labelMensagem: "Mensagem",
+    botaoEnviar: "Enviar mensagem",
+    erroFormulario: "Preencha todos os campos antes de enviar.",
+    confirmacaoFormulario: "Obrigada pela mensagem! Seu aplicativo de e-mail vai abrir para você concluir o envio.",
+    assuntoEmail: "Proposta de parceria",
+    corpoEmailNome: "Nome",
+    corpoEmailEmail: "E-mail",
+    corpoEmailMensagem: "Mensagem",
+    whatsappMensagem: "Olá Nicoly, vi seu portfólio e quero conversar sobre um projeto!",
+    botaoWhatsapp: "Falar no WhatsApp",
+    botaoEmail: "Enviar e-mail",
+    botaoInstagram: "Ver Instagram",
+
+    proposta: {
+      tag: "Peça uma proposta",
+      tituloAntes: "Vamos criar um conteúdo que ",
+      tituloDestaque: "gera resultado",
+      tituloDepois: "?",
+      subtitulo: "Me conta rapidinho o que você precisa.",
+      labelNome: "Nome",
+      placeholderNome: "seu nome",
+      labelEmpresa: "Empresa",
+      placeholderEmpresa: "nome da marca",
+      labelEmail: "E-mail",
+      placeholderEmail: "email@empresa.com",
+      labelOrcamento: "Orçamento (opcional)",
+      opcoesOrcamento: [
+        "Prefiro não dizer",
+        "Até R$ 2.000",
+        "R$ 2.000 - R$ 5.000",
+        "R$ 5.000 - R$ 10.000",
+        "R$ 10.000 - R$ 20.000",
+        "Acima de R$ 20.000",
+        "Pacote mensal recorrente"
+      ],
+      labelMensagem: "Mensagem",
+      placeholderMensagem: "objetivo da campanha, prazo, referências",
+      botaoEnviar: "Pedir uma proposta",
+      erro: "Preencha nome, empresa, e-mail e mensagem.",
+      confirmacao: "Obrigada! Seu aplicativo de e-mail vai abrir para você concluir o envio.",
+      assuntoEmail: "Pedido de proposta rápida",
+      corpoEmailNome: "Nome",
+      corpoEmailEmpresa: "Empresa",
+      corpoEmailEmail: "E-mail",
+      corpoEmailOrcamento: "Orçamento",
+      corpoEmailMensagem: "Mensagem"
+    },
+
+    direitosAutorais: "Todos os direitos reservados.",
+
+    ariaLabels: {
+      hero: "Introdução",
+      marcasFaixa: "Marcas que já confiaram no trabalho de Nicoly",
+      sobre: "Sobre Nicoly",
+      portfolio: "Portfólio de trabalhos",
+      servicos: "Serviços oferecidos",
+      resultados: "Resultados e números",
+      depoimentos: "Depoimentos de clientes",
+      contato: "Contato",
+      heroFoto: "Foto ilustrativa de Nicoly Wapenik criando conteúdo",
+      sobreFoto: "Foto de Nicoly Wapenik sorrindo",
+      assistirVideo: "Reproduzir vídeo",
+      fecharVideo: "Fechar vídeo",
+      abrirMenu: "Abrir menu de navegação",
+      fecharMenu: "Fechar menu de navegação"
+    }
   }
+};
 
-  function mostrarErro(mensagem){
-    faixaSucesso.hidden = true;
-    faixaErro.textContent = mensagem;
-    faixaErro.hidden = false;
-  }
+// DEFAULT LANGUAGE: English, because Nicoly lives in Ireland
+let idiomaAtual = "en";
 
-  formLogin.addEventListener("submit", async (evento) => {
+function renderizarHeaderEMeta(t){
+  document.getElementById("page-title").textContent = t.pageTitle;
+  document.title = t.pageTitle;
+  document.getElementById("page-description").setAttribute("content", t.pageDescription);
+  document.documentElement.lang = t.htmlLang;
+  document.getElementById("skip-link").textContent = t.skipLink;
+
+  document.getElementById("nav-sobre").textContent = t.nav.sobre;
+  document.getElementById("nav-portfolio").textContent = t.nav.portfolio;
+  document.getElementById("nav-servicos").textContent = t.nav.servicos;
+  document.getElementById("nav-contato").textContent = t.nav.contato;
+
+  const botaoIdioma = document.getElementById("btn-idioma");
+  botaoIdioma.textContent = t.botaoIdioma;
+  botaoIdioma.setAttribute("aria-label", t.botaoIdiomaAriaLabel);
+}
+
+function renderizarHero(t){
+  document.getElementById("hero-tag").textContent = t.hero.tag;
+  document.getElementById("hero-titulo").textContent = DADOS.nome;
+  document.getElementById("hero-subtitulo").textContent = t.hero.subtitulo;
+  document.getElementById("hero-cta").textContent = t.hero.textoBotao;
+  document.getElementById("hero-cta-secundario").textContent = t.hero.textoBotaoSecundario;
+  document.getElementById("hero-foto-legenda").textContent = t.hero.legendaFoto;
+  document.getElementById("hero").setAttribute("aria-label", t.ariaLabels.hero);
+  document.querySelector("#hero-foto img").alt = t.ariaLabels.heroFoto;
+}
+
+function renderizarMarcas(){
+  const track = document.getElementById("marcas-track");
+  const listaDupla = [...DADOS.marcas, ...DADOS.marcas];
+  track.innerHTML = listaDupla.map(m => `<span>${m}</span>`).join("");
+}
+
+function renderizarSobre(t){
+  document.getElementById("titulo-sobre").textContent = t.tituloSobre;
+  document.getElementById("sobre-paragrafo").textContent = t.sobre;
+  document.getElementById("sobre").setAttribute("aria-label", t.ariaLabels.sobre);
+  document.querySelector("#sobre-foto img").alt = t.ariaLabels.sobreFoto;
+}
+
+function renderizarPortfolio(t){
+  document.getElementById("titulo-portfolio").textContent = t.tituloPortfolio;
+  document.getElementById("portfolio").setAttribute("aria-label", t.ariaLabels.portfolio);
+  document.getElementById("portfolio-modal-fechar").setAttribute("aria-label", t.ariaLabels.fecharVideo);
+
+  const chavesCategoria = ["todos", ...new Set(t.portfolio.map(i => i.categoria))];
+  const filtrosEl = document.getElementById("filtros");
+  filtrosEl.innerHTML = chavesCategoria.map((chave, i) =>
+    `<button class="filtro-btn${i === 0 ? " ativo" : ""}" data-categoria="${chave}">${t.categorias[chave]}</button>`
+  ).join("");
+
+  const galeriaEl = document.getElementById("galeria");
+  galeriaEl.innerHTML = t.portfolio.map((item) => `
+    <button type="button" class="item-portfolio" data-categoria="${item.categoria}" data-video-id="${item.videoId}" data-titulo="${item.titulo}" aria-label="${t.ariaLabels.assistirVideo}: ${item.titulo}">
+      <span class="portfolio-midia">
+        <img src="${item.capa || ('https://img.youtube.com/vi/' + item.videoId + '/hqdefault.jpg')}" alt="" loading="lazy">
+        <span class="play-icon" aria-hidden="true">▶</span>
+      </span>
+      <span class="portfolio-info">
+        <span class="portfolio-titulo">${item.titulo}</span>
+        <span class="portfolio-subtitulo">${t.categorias[item.categoria]}</span>
+      </span>
+    </button>
+  `).join("");
+  // EDIT HERE: add new work by adding an item to the "portfolio" array above (both en and pt)
+
+  galeriaEl.querySelectorAll(".item-portfolio").forEach(botao => {
+    botao.addEventListener("click", () => {
+      abrirModalPortfolio(botao.dataset.videoId, botao.dataset.titulo, botao);
+    });
+  });
+
+  filtrosEl.querySelectorAll(".filtro-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      filtrosEl.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      const chave = btn.dataset.categoria;
+      galeriaEl.querySelectorAll(".item-portfolio").forEach(item => {
+        const mostrar = chave === "todos" || item.dataset.categoria === chave;
+        item.classList.toggle("escondido", !mostrar);
+      });
+    });
+  });
+}
+
+function renderizarServicos(t){
+  document.getElementById("titulo-servicos").textContent = t.tituloServicos;
+  document.getElementById("servicos").setAttribute("aria-label", t.ariaLabels.servicos);
+  const el = document.getElementById("grid-servicos");
+  el.innerHTML = t.servicos.map(s => `
+    <div class="card-servico reveal">
+      <p class="emoji" aria-hidden="true">${s.emoji}</p>
+      <h3>${s.titulo}</h3>
+      <p>${s.descricao}</p>
+    </div>
+  `).join("");
+}
+
+function renderizarContato(t){
+  document.getElementById("titulo-contato").textContent = t.tituloContato;
+  document.getElementById("contato").setAttribute("aria-label", t.ariaLabels.contato);
+  document.getElementById("label-nome").textContent = t.labelNome;
+  document.getElementById("label-email").textContent = t.labelEmail;
+  document.getElementById("label-mensagem").textContent = t.labelMensagem;
+  document.getElementById("botao-enviar").textContent = t.botaoEnviar;
+
+  document.getElementById("link-whatsapp").href = `https://wa.me/${DADOS.whatsappNumero}?text=${encodeURIComponent(t.whatsappMensagem)}`;
+  document.getElementById("link-whatsapp").textContent = t.botaoWhatsapp;
+  document.getElementById("link-email").href = `mailto:${DADOS.email}`;
+  document.getElementById("link-email").textContent = t.botaoEmail;
+  document.getElementById("link-instagram").href = `https://instagram.com/${DADOS.instagramUsuario}`;
+  document.getElementById("link-instagram").textContent = t.botaoInstagram;
+}
+
+function renderizarRodape(t){
+  document.getElementById("rodape-nome").textContent = `${DADOS.nome} · ${t.profissao}`;
+  document.getElementById("rodape-redes").innerHTML = `
+    <a href="https://instagram.com/${DADOS.instagramUsuario}" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://wa.me/${DADOS.whatsappNumero}" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="mailto:${DADOS.email}">Email</a>
+  `;
+  document.getElementById("rodape-copyright").textContent = `© ${new Date().getFullYear()} ${DADOS.nome}. ${t.direitosAutorais}`;
+}
+
+function renderizarTudo(idioma){
+  const t = TRADUCOES[idioma];
+  renderizarHeaderEMeta(t);
+  renderizarHero(t);
+  renderizarMarcas();
+  renderizarSobre(t);
+  renderizarPortfolio(t);
+  renderizarServicos(t);
+  renderizarContato(t);
+  renderizarRodape(t);
+  renderizarProposta(t);
+
+  configurarRevelacao();
+}
+
+function renderizarProposta(t){
+  const p = t.proposta;
+  document.getElementById("proposta-tag").textContent = p.tag;
+  document.getElementById("proposta-titulo").innerHTML =
+    `${p.tituloAntes}<span class="proposta-destaque">${p.tituloDestaque}</span>${p.tituloDepois}`;
+  document.getElementById("proposta-subtitulo").textContent = p.subtitulo;
+
+  document.getElementById("proposta-label-nome").textContent = p.labelNome;
+  document.getElementById("proposta-nome").placeholder = p.placeholderNome;
+  document.getElementById("proposta-label-empresa").textContent = p.labelEmpresa;
+  document.getElementById("proposta-empresa").placeholder = p.placeholderEmpresa;
+  document.getElementById("proposta-label-email").textContent = p.labelEmail;
+  document.getElementById("proposta-email").placeholder = p.placeholderEmail;
+  document.getElementById("proposta-label-mensagem").textContent = p.labelMensagem;
+  document.getElementById("proposta-mensagem").placeholder = p.placeholderMensagem;
+  document.getElementById("proposta-botao-enviar").textContent = p.botaoEnviar;
+
+  document.getElementById("proposta-label-orcamento").textContent = p.labelOrcamento;
+  const selectOrcamento = document.getElementById("proposta-orcamento");
+  selectOrcamento.innerHTML = p.opcoesOrcamento.map(opcao => `<option>${opcao}</option>`).join("");
+}
+
+// ===================== PORTFOLIO VIDEO MODAL =====================
+let ultimoBotaoDePortfolio = null;
+
+function abrirModalPortfolio(videoId, titulo, botaoOrigem){
+  const modal = document.getElementById("portfolio-modal");
+  const midia = document.getElementById("portfolio-modal-midia");
+  midia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="${titulo}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  modal.setAttribute("aria-label", titulo);
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+  ultimoBotaoDePortfolio = botaoOrigem;
+  document.getElementById("portfolio-modal-fechar").focus();
+}
+
+function fecharModalPortfolio(){
+  const modal = document.getElementById("portfolio-modal");
+  if(modal.hidden) return;
+  document.getElementById("portfolio-modal-midia").innerHTML = "";
+  modal.hidden = true;
+  document.body.style.overflow = "";
+  if(ultimoBotaoDePortfolio) ultimoBotaoDePortfolio.focus();
+}
+
+function configurarModalPortfolio(){
+  const modal = document.getElementById("portfolio-modal");
+  document.getElementById("portfolio-modal-fechar").addEventListener("click", fecharModalPortfolio);
+  modal.addEventListener("click", (evento) => {
+    if(evento.target === modal) fecharModalPortfolio();
+  });
+  document.addEventListener("keydown", (evento) => {
+    if(evento.key === "Escape") fecharModalPortfolio();
+  });
+}
+
+// ===================== HAMBURGER MENU =====================
+function configurarMenu(){
+  const btn = document.getElementById("btn-menu");
+  const nav = document.getElementById("nav-principal");
+  btn.addEventListener("click", () => {
+    const aberto = nav.classList.toggle("aberto");
+    btn.classList.toggle("aberto", aberto);
+    btn.setAttribute("aria-expanded", aberto ? "true" : "false");
+    btn.setAttribute("aria-label", aberto ? TRADUCOES[idiomaAtual].ariaLabels.fecharMenu : TRADUCOES[idiomaAtual].ariaLabels.abrirMenu);
+  });
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("aberto");
+      btn.classList.remove("aberto");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+// ===================== LANGUAGE TOGGLE =====================
+function configurarIdioma(){
+  document.getElementById("btn-idioma").addEventListener("click", () => {
+    idiomaAtual = idiomaAtual === "en" ? "pt" : "en";
+    renderizarTudo(idiomaAtual);
+  });
+}
+
+// ===================== SCROLL REVEAL ANIMATIONS =====================
+function configurarRevelacao(){
+  const observer = new IntersectionObserver((entradas) => {
+    entradas.forEach(entrada => {
+      if(entrada.isIntersecting){
+        entrada.target.classList.add("visivel");
+        observer.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll(".reveal:not(.visivel)").forEach(el => observer.observe(el));
+}
+
+// ===================== CONTACT FORM =====================
+function configurarFormulario(){
+  const form = document.getElementById("form-contato");
+  const msg = document.getElementById("msg-confirmacao");
+
+  form.addEventListener("submit", (evento) => {
     evento.preventDefault();
-    esconderMensagens();
-
+    const t = TRADUCOES[idiomaAtual];
+    const nome = document.getElementById("campo-nome").value.trim();
     const email = document.getElementById("campo-email").value.trim();
-    const senha = document.getElementById("campo-senha").value;
+    const mensagem = document.getElementById("campo-mensagem").value.trim();
 
-    botaoEntrar.disabled = true;
-    botaoEntrar.textContent = "Entrando...";
-
-    try {
-      await Auth.login(email, senha);
-      window.location.href = "/painel/painel.html";
-    } catch (erro) {
-      mostrarErro(erro.message || "Não foi possível entrar. Tente novamente.");
-      botaoEntrar.disabled = false;
-      botaoEntrar.textContent = "Entrar";
+    if(!nome || !email || !mensagem){
+      msg.textContent = t.erroFormulario;
+      return;
     }
+
+    const assunto = encodeURIComponent(`${t.assuntoEmail}: ${nome}`);
+    const corpo = encodeURIComponent(`${t.corpoEmailNome}: ${nome}\n${t.corpoEmailEmail}: ${email}\n\n${t.corpoEmailMensagem}:\n${mensagem}`);
+    window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+
+    msg.textContent = t.confirmacaoFormulario;
+    form.reset();
+  });
+}
+
+// ===================== PROPOSAL POPUP =====================
+let propostaJaMostrada = false;
+
+function abrirModalProposta(){
+  const modal = document.getElementById("proposta-modal");
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+  document.getElementById("proposta-modal-fechar").focus();
+}
+
+function fecharModalProposta(){
+  const modal = document.getElementById("proposta-modal");
+  if(modal.hidden) return;
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function configurarModalProposta(){
+  document.getElementById("proposta-modal-fechar").addEventListener("click", fecharModalProposta);
+  document.getElementById("proposta-modal").addEventListener("click", (evento) => {
+    if(evento.target.id === "proposta-modal") fecharModalProposta();
+  });
+  document.addEventListener("keydown", (evento) => {
+    if(evento.key === "Escape") fecharModalProposta();
   });
 
-  document.getElementById("link-esqueci").addEventListener("click", () => {
-    esconderMensagens();
-    formLogin.hidden = true;
-    formRecuperar.hidden = false;
-  });
+  // Opens 1 minute after the page loads, but waits until the visitor
+  // is done watching a portfolio video before interrupting them.
+  const tentarMostrarProposta = () => {
+    if(propostaJaMostrada) return;
+    const modalVideoAberto = !document.getElementById("portfolio-modal").hidden;
+    if(modalVideoAberto){
+      setTimeout(tentarMostrarProposta, 5000);
+      return;
+    }
+    propostaJaMostrada = true;
+    abrirModalProposta();
+  };
+  setTimeout(tentarMostrarProposta, 60000);
+}
 
-  document.getElementById("link-voltar").addEventListener("click", () => {
-    esconderMensagens();
-    formRecuperar.hidden = true;
-    formLogin.hidden = false;
-  });
+function configurarFormularioProposta(){
+  const form = document.getElementById("form-proposta");
+  const msg = document.getElementById("proposta-msg-confirmacao");
 
-  formRecuperar.addEventListener("submit", async (evento) => {
+  form.addEventListener("submit", (evento) => {
     evento.preventDefault();
-    esconderMensagens();
+    const t = TRADUCOES[idiomaAtual];
+    const p = t.proposta;
+    const nome = document.getElementById("proposta-nome").value.trim();
+    const empresa = document.getElementById("proposta-empresa").value.trim();
+    const email = document.getElementById("proposta-email").value.trim();
+    const orcamento = document.getElementById("proposta-orcamento").value;
+    const mensagem = document.getElementById("proposta-mensagem").value.trim();
 
-    const email = document.getElementById("campo-email-recuperar").value.trim();
-    botaoRecuperar.disabled = true;
-    botaoRecuperar.textContent = "Enviando...";
-
-    try {
-      await Auth.recuperarSenha(email);
-      faixaSucesso.textContent = "Enviamos um link de recuperação para o seu e-mail.";
-      faixaSucesso.hidden = false;
-    } catch (erro) {
-      mostrarErro("Não foi possível enviar o link. Verifique o e-mail digitado.");
+    if(!nome || !empresa || !email || !mensagem){
+      msg.textContent = p.erro;
+      return;
     }
 
-    botaoRecuperar.disabled = false;
-    botaoRecuperar.textContent = "Enviar link de recuperação";
+    const assunto = encodeURIComponent(`${p.assuntoEmail}: ${empresa}`);
+    const corpo = encodeURIComponent(`${p.corpoEmailNome}: ${nome}\n${p.corpoEmailEmpresa}: ${empresa}\n${p.corpoEmailEmail}: ${email}\n${p.corpoEmailOrcamento}: ${orcamento}\n\n${p.corpoEmailMensagem}:\n${mensagem}`);
+    window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+
+    msg.textContent = p.confirmacao;
+    form.reset();
   });
+}
+
+// ===================== INITIALIZATION =====================
+document.addEventListener("DOMContentLoaded", () => {
+  renderizarTudo(idiomaAtual);
+  configurarMenu();
+  configurarIdioma();
+  configurarFormulario();
+  configurarModalPortfolio();
+  configurarModalProposta();
+  configurarFormularioProposta();
+});
 </script>
 
 </body>
