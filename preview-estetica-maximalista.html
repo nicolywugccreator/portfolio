@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Nicoly Wapenik | UGC Content Creator (Preview)</title>
+<meta name="description" id="page-description" content="Preview only, not connected to the live site.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Permanent+Marker&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#14141a;
+    --azul:#3e8eff;
+    --coral:#ff4b3e;
+    --amarelo:#ffda1a;
+    --creme:#fbf3e7;
+    --branco:#ffffff;
+    --sombra-dura:5px 5px 0 var(--preto);
+    --sombra-dura-lg:9px 9px 0 var(--preto);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--preto);
+    font-family:'Poppins', sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    line-height:1;
+    margin:0 0 .5em 0;
+    text-transform:uppercase;
+  }
+  p{margin:0 0 1em 0;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ul{list-style:none;margin:0;padding:0;}
+  section{padding:5rem 6vw;max-width:1280px;margin:0 auto;position:relative;}
+
+  .skip-link{
+    position:absolute;left:-999px;top:0;background:var(--amarelo);color:var(--preto);
+    padding:.8rem 1.2rem;z-index:999;font-weight:600;
+  }
+  .skip-link:focus{left:1rem;top:1rem;}
+  :focus-visible{outline:3px solid var(--azul);outline-offset:3px;}
+
+  .doodle{position:absolute;pointer-events:none;user-select:none;font-family:'Permanent Marker',cursive;line-height:1;z-index:1;}
+
+  .tag-manuscrita{
+    font-family:'Poppins', sans-serif;
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+    font-size:.85rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--preto);
+    background:var(--branco);
+    border:2.5px solid var(--preto);
+    border-radius:999px;
+    padding:.5rem 1.1rem;
+    box-shadow:3px 3px 0 var(--preto);
+    margin-bottom:1.2rem;
+  }
+  .tag-manuscrita::before{content:"✺";color:var(--coral);}
+
+  .btn{
+    display:inline-block;
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    padding:1rem 2rem;
+    border:3px solid var(--preto);
+    border-radius:999px;
+    box-shadow:var(--sombra-dura);
+    transition:transform .15s ease, box-shadow .15s ease;
+    cursor:pointer;
+  }
+  .btn:hover, .btn:focus-visible{
+    transform:translate(-3px,-3px);
+    box-shadow:8px 8px 0 var(--preto);
+  }
+  .btn:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--preto);}
+  .btn-primario{background:var(--coral);color:var(--branco);}
+  .btn-contato{background:var(--azul);color:var(--branco);margin:.4rem;}
+
+  /* ===================== HEADER ===================== */
+  .site-header{
+    position:fixed;top:0;left:0;right:0;z-index:500;
+    background:var(--creme);
+    border-bottom:3px solid var(--preto);
+  }
+  .header-inner{
+    max-width:1280px;margin:0 auto;padding:.9rem 6vw;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  }
+  .logo{font-family:'Archivo Black', sans-serif;font-size:1.4rem;letter-spacing:.5px;}
+  .logo::before{content:"✱ ";color:var(--coral);}
+  .logo span{color:var(--azul);}
+  .nav-principal{margin-left:auto;}
+  .nav-principal ul{display:flex;gap:1.4rem;align-items:center;}
+  .nav-principal a{
+    font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;
+    padding:.5rem 1rem;border-radius:999px;border:2.5px solid transparent;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .nav-principal a:hover, .nav-principal a:focus-visible{border-color:var(--preto);background:var(--amarelo);}
+  .nav-cta{background:var(--preto) !important;color:var(--branco) !important;border-color:var(--preto) !important;box-shadow:3px 3px 0 var(--coral);}
+  .controles-header{display:flex;align-items:center;gap:.7rem;}
+  .btn-idioma{
+    font-family:'Poppins', sans-serif;font-weight:800;font-size:.85rem;
+    background:var(--amarelo);color:var(--preto);
+    border:2.5px solid var(--preto);border-radius:999px;padding:.45rem 1rem;
+    box-shadow:3px 3px 0 var(--preto);cursor:pointer;transition:transform .15s ease;
+  }
+  .btn-idioma:hover, .btn-idioma:focus-visible{transform:translate(-2px,-2px);}
+  .btn-hamburguer{
+    display:none;flex-direction:column;justify-content:center;gap:5px;
+    width:44px;height:44px;background:var(--branco);border:2.5px solid var(--preto);
+    border-radius:10px;box-shadow:3px 3px 0 var(--preto);cursor:pointer;flex-shrink:0;
+  }
+  .btn-hamburguer span{display:block;width:22px;height:3px;background:var(--preto);margin:0 auto;transition:transform .25s ease, opacity .25s ease;}
+  .btn-hamburguer.aberto span:nth-child(1){transform:translateY(8px) rotate(45deg);}
+  .btn-hamburguer.aberto span:nth-child(2){opacity:0;}
+  .btn-hamburguer.aberto span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
+
+  @media (max-width:900px){
+    .nav-principal{
+      position:fixed;top:64px;left:0;right:0;background:var(--creme);
+      border-bottom:3px solid var(--preto);max-height:0;overflow:hidden;transition:max-height .3s ease;
+    }
+    .nav-principal.aberto{max-height:420px;}
+    .nav-principal ul{flex-direction:column;align-items:flex-start;gap:.5rem;padding:1rem 6vw 1.5rem;}
+    .nav-principal li{width:100%;}
+    .nav-principal li a{display:block;}
+    .btn-hamburguer{display:flex;}
+  }
+
+  /* ===================== HERO ===================== */
+  .hero{padding-top:9.5rem;overflow:visible;}
+  .hero-inner{display:flex;align-items:center;gap:3rem;flex-wrap:wrap;position:relative;}
+  .hero-texto{flex:1 1 380px;position:relative;z-index:2;}
+  .hero-texto h1{font-size:clamp(2.6rem, 6.5vw, 4.6rem);position:relative;}
+  .hero-texto h1::before{
+    content:"Hello, I'm";display:block;font-family:'Caveat',cursive;font-weight:700;
+    font-size:2.4rem;color:var(--coral);text-transform:none;line-height:1;margin-bottom:.1em;
+  }
+  .hero-subtitulo{
+    font-size:1.15rem;max-width:38ch;font-weight:600;
+    background:var(--amarelo);display:inline;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    padding:.1em .3em;box-shadow:2px 2px 0 rgba(20,20,26,.15);
+  }
+  .hero-foto{
+    flex:1 1 320px;max-width:420px;aspect-ratio:4/5;margin:0 auto;
+    border-radius:50% 50% 45% 55% / 55% 45% 55% 45%;
+    border:4px solid var(--preto);
+    background:var(--azul);
+    box-shadow:var(--sombra-dura-lg);
+    position:relative;overflow:hidden;transform:rotate(-2deg);z-index:2;
+  }
+  .hero-foto img{width:100%;height:100%;object-fit:cover;display:block;transform:rotate(2deg) scale(1.08);}
+  .hero-inner::before{
+    content:"";position:absolute;right:2%;top:-6%;width:340px;height:340px;max-width:70%;
+    background:var(--amarelo);border-radius:50%;z-index:1;
+  }
+  .doodle-asterisco-1{top:-2.2rem;left:38%;font-size:2.6rem;color:var(--azul);transform:rotate(12deg);}
+  .doodle-asterisco-2{top:3rem;right:2%;font-size:1.8rem;color:var(--coral);transform:rotate(-8deg);}
+  .doodle-seta{bottom:-1.5rem;left:2%;font-size:2.6rem;color:var(--preto);transform:rotate(8deg);}
+  .doodle-pontos{
+    top:1rem;left:0%;width:90px;height:90px;border-radius:12px;
+    background-image:radial-gradient(var(--preto) 1.6px, transparent 1.6px);
+    background-size:10px 10px;opacity:.5;transform:rotate(-6deg);
+  }
+  /* TO SWAP THE PHOTO: replace foto-hero.jpg (in the same folder as this file) with your own image */
+
+  /* ===================== BRAND STRIP ===================== */
+  .marcas-faixa{
+    background:var(--preto);padding:1.2rem 0;overflow:hidden;
+    border-top:4px solid var(--coral);border-bottom:4px solid var(--coral);
+  }
+  .marcas-track{display:flex;gap:3rem;white-space:nowrap;animation:rolar 22s linear infinite;width:max-content;}
+  .marcas-track span{color:var(--creme);font-family:'Archivo Black', sans-serif;font-size:1.1rem;text-transform:uppercase;opacity:.9;}
+  @keyframes rolar{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ===================== ABOUT ===================== */
+  .sobre{display:flex;align-items:center;gap:3rem;flex-wrap:wrap;}
+  .sobre-foto{
+    flex:1 1 300px;max-width:380px;aspect-ratio:1/1;
+    border-radius:50% 50% 50% 8%;border:4px solid var(--preto);
+    background:var(--coral);box-shadow:var(--sombra-dura-lg);overflow:hidden;position:relative;z-index:2;
+  }
+  .sobre-foto img{width:100%;height:100%;object-fit:cover;display:block;}
+  .sobre{position:relative;}
+  .sobre::before{
+    content:"";position:absolute;left:1%;top:8%;width:300px;height:300px;max-width:60%;
+    background:var(--amarelo);border-radius:38% 62% 63% 37% / 41% 44% 56% 59%;z-index:1;
+  }
+  .sobre-texto{flex:1 1 380px;position:relative;z-index:2;}
+  .sobre-texto h2::after{content:"";display:block;width:70px;height:8px;background:var(--azul);margin-top:.3rem;border-radius:4px;}
+  .sobre-texto p{font-size:1.08rem;}
+
+  /* ===================== PORTFOLIO ===================== */
+  .portfolio h2, .servicos h2, .contato h2{text-align:center;}
+  .portfolio h2::after, .servicos h2::after{
+    content:"";display:block;width:90px;height:8px;background:var(--coral);margin:.4rem auto 0;border-radius:4px;
+  }
+  .filtros{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin:1.5rem 0 2.5rem;}
+  .filtro-btn{
+    font-family:'Poppins', sans-serif;font-weight:700;background:var(--branco);
+    border:2.5px solid var(--preto);border-radius:999px;padding:.5rem 1.2rem;
+    box-shadow:3px 3px 0 var(--preto);cursor:pointer;transition:transform .15s ease, background .15s ease;
+  }
+  .filtro-btn:hover, .filtro-btn:focus-visible{transform:translate(-2px,-2px);}
+  .filtro-btn.ativo{background:var(--coral);color:var(--branco);}
+
+  .galeria{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:1.6rem;}
+  .item-portfolio{
+    border:4px solid var(--preto);border-radius:16px;aspect-ratio:3/4;
+    box-shadow:var(--sombra-dura);display:flex;align-items:flex-end;padding:1rem;
+    transition:transform .2s ease;position:relative;
+  }
+  .item-portfolio:hover{transform:rotate(-1deg) translateY(-4px);}
+  .item-portfolio span{
+    background:var(--branco);border:2px solid var(--preto);padding:.3rem .7rem;
+    border-radius:999px;font-weight:700;font-size:.85rem;max-width:82%;
+  }
+  .item-portfolio::after{
+    content:"→";position:absolute;bottom:.9rem;right:.9rem;width:34px;height:34px;
+    background:var(--branco);border:2.5px solid var(--preto);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  .item-portfolio.escondido{display:none;}
+
+  /* ===================== SERVICES ===================== */
+  .servicos{background:var(--azul);border-radius:28px;margin-top:2rem;margin-bottom:2rem;}
+  .servicos h2, .servicos h2::after{color:var(--branco);}
+  .servicos h2::after{background:var(--amarelo);}
+  .grid-servicos{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.8rem;}
+  .card-servico{
+    background:var(--branco);border:3px solid var(--preto);border-radius:14px;
+    padding:1.8rem;box-shadow:var(--sombra-dura);
+  }
+  .card-servico .emoji{
+    font-size:1.5rem;display:inline-flex;align-items:center;justify-content:center;
+    width:52px;height:52px;border-radius:50%;border:2.5px solid var(--preto);
+    background:var(--amarelo);margin-bottom:.6rem;
+  }
+  .card-servico:nth-child(2) .emoji{background:var(--coral);}
+  .card-servico:nth-child(3) .emoji{background:var(--azul);}
+  .card-servico:nth-child(4) .emoji{background:var(--amarelo);}
+  .card-servico:nth-child(5) .emoji{background:var(--coral);}
+  .card-servico:nth-child(6) .emoji{background:var(--azul);}
+  .card-servico h3{font-size:1.1rem;text-transform:none;font-family:'Archivo Black', sans-serif;}
+
+  /* ===================== CONTACT ===================== */
+  .contato{background:var(--coral);border-radius:28px;margin-bottom:3rem;}
+  .contato h2{color:var(--branco);}
+  .contato-grid{
+    display:flex;gap:3rem;flex-wrap:wrap;background:var(--branco);
+    border:4px solid var(--preto);border-radius:16px;box-shadow:var(--sombra-dura-lg);padding:2.5rem;
+  }
+  .form-contato{flex:1 1 320px;display:flex;flex-direction:column;gap:.4rem;}
+  .form-contato label{font-weight:800;font-size:.85rem;text-transform:uppercase;}
+  .form-contato input, .form-contato textarea{
+    font-family:'Poppins', sans-serif;padding:.8rem;border:2.5px solid var(--preto);
+    border-radius:10px;font-size:1rem;margin-bottom:.8rem;resize:vertical;
+  }
+  .form-contato input:focus, .form-contato textarea:focus{outline:3px solid var(--azul);}
+  .msg-confirmacao{font-weight:700;color:var(--azul);min-height:1.2em;}
+  .contato-direto{flex:1 1 260px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;}
+  .contato-direto .btn-contato{width:100%;text-align:center;}
+  .contato-direto .btn-contato:nth-child(2){background:var(--amarelo);color:var(--preto);}
+  .contato-direto .btn-contato:nth-child(3){background:var(--preto);color:var(--branco);}
+
+  /* ===================== FOOTER ===================== */
+  .rodape{
+    background:var(--preto);color:var(--creme);text-align:center;padding:3rem 6vw 2rem;
+    border-top:6px solid transparent;
+    border-image:linear-gradient(90deg, var(--amarelo) 25%, var(--coral) 25% 50%, var(--azul) 50% 75%, var(--amarelo) 75%) 1;
+  }
+  .rodape-redes{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+  .rodape-redes a{
+    border:2.5px solid var(--creme);border-radius:999px;padding:.5rem 1.2rem;font-weight:700;
+    transition:background .15s ease, color .15s ease;
+  }
+  .rodape-redes a:nth-child(1):hover{background:var(--coral);border-color:var(--coral);}
+  .rodape-redes a:nth-child(2):hover{background:var(--azul);border-color:var(--azul);}
+  .rodape-redes a:nth-child(3):hover{background:var(--amarelo);border-color:var(--amarelo);color:var(--preto);}
+
+  /* ===================== SCROLL REVEAL ===================== */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visivel{opacity:1;transform:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .marcas-track{animation:none;}
+  }
+
+  @media (max-width:600px){
+    section{padding:3.5rem 6vw;}
+    .hero{padding-top:7rem;}
+    .contato-grid{padding:1.5rem;}
+    .doodle{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link" id="skip-link">Skip to content</a>
+
+<header class="site-header" id="topo">
+  <div class="header-inner">
+    <a href="#topo" class="logo">Nicoly<span>.</span></a>
+    <nav class="nav-principal" id="nav-principal">
+      <ul>
+        <li><a href="#sobre" id="nav-sobre">About</a></li>
+        <li><a href="#portfolio" id="nav-portfolio">Portfolio</a></li>
+        <li><a href="#servicos" id="nav-servicos">Services</a></li>
+        <li><a href="#contato" class="nav-cta" id="nav-contato">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="controles-header">
+      <button class="btn-idioma" id="btn-idioma" aria-label="Switch language to Portuguese">PT</button>
+      <button class="btn-hamburguer" id="btn-menu" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-principal">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="hero" aria-label="Introduction">
+    <span class="doodle doodle-asterisco-1" aria-hidden="true">✺</span>
+    <span class="doodle doodle-asterisco-2" aria-hidden="true">✱</span>
+    <span class="doodle doodle-seta" aria-hidden="true">↝</span>
+    <span class="doodle doodle-pontos" aria-hidden="true"></span>
+    <div class="hero-inner">
+      <div class="hero-texto">
+        <p class="tag-manuscrita" id="hero-tag"></p>
+        <h1 id="hero-titulo"></h1>
+        <p class="hero-subtitulo" id="hero-subtitulo"></p>
+        <div style="margin-top:1.6rem;">
+          <a href="#contato" class="btn btn-primario" id="hero-cta"></a>
+        </div>
+      </div>
+      <div class="hero-foto" id="hero-foto">
+        <img src="foto-hero.jpg" alt="Nicoly Wapenik, UGC content creator, smiling at the camera">
+      </div>
+    </div>
+  </section>
+
+  <section class="marcas-faixa" id="marcas-faixa" aria-label="Brands that have trusted Nicoly's work">
+    <div class="marcas-track" id="marcas-track"></div>
+  </section>
+
+  <section class="sobre reveal" id="sobre" aria-label="About Nicoly">
+    <div class="sobre-foto" id="sobre-foto">
+      <img src="foto-sobre.jpg" alt="Nicoly Wapenik at home, smiling at the camera">
+    </div>
+    <div class="sobre-texto">
+      <h2 id="titulo-sobre">About me</h2>
+      <p id="sobre-paragrafo"></p>
+    </div>
+  </section>
+
+  <section class="portfolio" id="portfolio" aria-label="Portfolio of work">
+    <h2 class="reveal" id="titulo-portfolio">Portfolio</h2>
+    <div class="filtros" id="filtros"></div>
+    <div class="galeria" id="galeria"></div>
+  </section>
+
+  <section class="servicos" id="servicos" aria-label="Services offered">
+    <h2 class="reveal" id="titulo-servicos">Services</h2>
+    <div class="grid-servicos" id="grid-servicos"></div>
+  </section>
+
+  <section class="contato" id="contato" aria-label="Contact">
+    <h2 class="reveal" id="titulo-contato">Let's work together?</h2>
+    <div class="contato-grid">
+      <form class="form-contato reveal" id="form-contato" novalidate>
+        <label for="campo-nome" id="label-nome">Name</label>
+        <input type="text" id="campo-nome" name="nome" required autocomplete="name">
+        <label for="campo-email" id="label-email">Email</label>
+        <input type="email" id="campo-email" name="email" required autocomplete="email">
+        <label for="campo-mensagem" id="label-mensagem">Message</label>
+        <textarea id="campo-mensagem" name="mensagem" rows="5" required></textarea>
+        <button type="submit" class="btn btn-primario" id="botao-enviar">Send message</button>
+        <p class="msg-confirmacao" id="msg-confirmacao" role="status" aria-live="polite"></p>
+      </form>
+      <div class="contato-direto reveal">
+        <a href="#" class="btn btn-contato" id="link-whatsapp" target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <a href="#" class="btn btn-contato" id="link-email">Send email</a>
+        <a href="#" class="btn btn-contato" id="link-instagram" target="_blank" rel="noopener">View Instagram</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <p id="rodape-nome"></p>
+  <div class="rodape-redes" id="rodape-redes"></div>
+  <p id="rodape-copyright"></p>
+</footer>
+
+<script>
+const DADOS = {
+  nome: "Nicoly Wapenik",
+  email: "nicolyw.ugccreator@gmail.com",
+  whatsappExibicao: "+353 83 308 6317",
+  whatsappNumero: "353833086317",
+  instagramExibicao: "@nicoly.ugccreator",
+  instagramUsuario: "nicoly.ugccreator",
+  marcas: ["butternut box", "Svibe", "Raycon", "Anavrin"]
+};
+
+const TRADUCOES = {
+  en: {
+    htmlLang: "en",
+    pageTitle: "Nicoly Wapenik | UGC Content Creator (Preview)",
+    pageDescription: "Preview only, not connected to the live site.",
+    skipLink: "Skip to content",
+    botaoIdioma: "PT",
+    botaoIdiomaAriaLabel: "Switch language to Portuguese",
+    nav: { sobre: "About", portfolio: "Portfolio", servicos: "Services", contato: "Contact" },
+    profissao: "UGC Content Creator",
+    hero: {
+      tag: "Available for new projects",
+      subtitulo: "I have a curious eye for the small details that make content feel real instead of scripted. I use that to create videos and photos that feel like a friend's recommendation, and sell more because people genuinely trust them.",
+      textoBotao: "Get in touch"
+    },
+    tituloSobre: "About me",
+    sobre: "I'm Nicoly, a Brazilian creator living in Dublin, and I've always been the type to notice the small things: the way light hits a room, the detail that makes a moment feel real instead of staged. That curiosity is at the heart of everything I create. I make content, for products and for services, that feels light, honest, and human. Not a script performed, but a moment shared. And because I create fluently in both Portuguese and English, I help brands build that same genuine connection with audiences on either side of the language.",
+    tituloPortfolio: "Portfolio",
+    categorias: { todos: "All", beleza: "Beauty", pet: "Pet", bebida: "Food and Beverage", tech: "Tech", diy: "DIY", lifestyle: "Lifestyle & Wellness" },
+    portfolio: [
+      { titulo: "Skincare review video", categoria: "beleza" },
+      { titulo: "Makeup kit unboxing", categoria: "beleza" },
+      { titulo: "Dog treats taste test", categoria: "pet" },
+      { titulo: "Pet accessories unboxing", categoria: "pet" },
+      { titulo: "Quick recipe video", categoria: "bebida" },
+      { titulo: "Craft drink taste test", categoria: "bebida" },
+      { titulo: "Gadget unboxing video", categoria: "tech" },
+      { titulo: "App walkthrough Reel", categoria: "tech" },
+      { titulo: "Step by step DIY tutorial", categoria: "diy" },
+      { titulo: "Home hack in Stories", categoria: "diy" },
+      { titulo: "Morning routine Reel", categoria: "lifestyle" },
+      { titulo: "Wellness product review", categoria: "lifestyle" }
+    ],
+    tituloServicos: "Services",
+    servicos: [
+      { emoji: "🎬", titulo: "UGC Video", descricao: "Authentic testimonial style videos, made to stop the scroll and build a real connection with your brand." },
+      { emoji: "📱", titulo: "Reels for social media", descricao: "Scripting, filming and editing dynamic Reels, ready to publish." },
+      { emoji: "📸", titulo: "Product photos", descricao: "Professional looking photos that showcase your product and boost conversion on ads and your website." },
+      { emoji: "📦", titulo: "Unboxing", descricao: "Genuine unboxing videos capturing the real first impression of the product to build purchase desire." },
+      { emoji: "💬", titulo: "Video testimonial", descricao: "Natural, persuasive testimonials, perfect for paid traffic campaigns and social proof." },
+      { emoji: "🎯", titulo: "Ad content", descricao: "Videos built for performance, with a strong hook in the first seconds and a clear call to action." }
+    ],
+    tituloContato: "Let's work together?",
+    labelNome: "Name", labelEmail: "Email", labelMensagem: "Message",
+    botaoEnviar: "Send message",
+    erroFormulario: "Please fill in all fields before sending.",
+    confirmacaoFormulario: "Thanks for your message! Your email app will open so you can finish sending it.",
+    assuntoEmail: "Partnership proposal", corpoEmailNome: "Name", corpoEmailEmail: "Email", corpoEmailMensagem: "Message",
+    whatsappMensagem: "Hi Nicoly, I saw your portfolio and would like to talk about a project!",
+    botaoWhatsapp: "Chat on WhatsApp", botaoEmail: "Send email", botaoInstagram: "View Instagram",
+    direitosAutorais: "All rights reserved.",
+    ariaLabels: {
+      hero: "Introduction", marcasFaixa: "Brands that have trusted Nicoly's work", sobre: "About Nicoly",
+      portfolio: "Portfolio of work", servicos: "Services offered", contato: "Contact",
+      heroFoto: "Illustrative photo of Nicoly Wapenik creating content", sobreFoto: "Photo of Nicoly Wapenik smiling",
+      abrirMenu: "Open navigation menu", fecharMenu: "Close navigation menu"
+    }
+  },
+  pt: {
+    htmlLang: "pt-BR",
+    pageTitle: "Nicoly Wapenik | Criadora de Conteúdo UGC (Preview)",
+    pageDescription: "Apenas uma prévia, não conectada ao site publicado.",
+    skipLink: "Pular para o conteúdo",
+    botaoIdioma: "EN",
+    botaoIdiomaAriaLabel: "Mudar idioma para inglês",
+    nav: { sobre: "Sobre", portfolio: "Portfólio", servicos: "Serviços", contato: "Contato" },
+    profissao: "Criadora de Conteúdo UGC",
+    hero: {
+      tag: "Disponível para novos projetos",
+      subtitulo: "Eu tenho um olhar curioso para os pequenos detalhes que fazem o conteúdo parecer real, e não roteirizado. Uso isso para criar vídeos e fotos que parecem recomendação de amiga, e vendem mais porque as pessoas realmente confiam neles.",
+      textoBotao: "Fale comigo"
+    },
+    tituloSobre: "Sobre mim",
+    sobre: "Eu sou a Nicoly, uma criadora brasileira morando em Dublin, e sempre fui do tipo que repara nos pequenos detalhes: o jeito que a luz bate em um ambiente, o detalhe que faz um momento parecer real, e não encenado. Essa curiosidade está no centro de tudo o que eu crio. Eu produzo conteúdo, para produtos e para serviços, que parece leve, honesto e humano. Não é um roteiro performado, é um momento compartilhado. E como eu crio fluentemente em português e em inglês, ajudo marcas a construírem essa mesma conexão genuína com públicos dos dois lados do idioma.",
+    tituloPortfolio: "Portfólio",
+    categorias: { todos: "Todos", beleza: "Beleza", pet: "Pet", bebida: "Comida e Bebida", tech: "Tech", diy: "DIY", lifestyle: "Estilo de Vida e Bem-estar" },
+    portfolio: [
+      { titulo: "Resenha de skincare em vídeo", categoria: "beleza" },
+      { titulo: "Unboxing de kit de maquiagem", categoria: "beleza" },
+      { titulo: "Teste de petiscos para cachorro", categoria: "pet" },
+      { titulo: "Unboxing de acessórios pet", categoria: "pet" },
+      { titulo: "Receita rápida em vídeo", categoria: "bebida" },
+      { titulo: "Degustação de bebida artesanal", categoria: "bebida" },
+      { titulo: "Unboxing de gadget", categoria: "tech" },
+      { titulo: "Reels mostrando um aplicativo", categoria: "tech" },
+      { titulo: "Tutorial DIY passo a passo", categoria: "diy" },
+      { titulo: "Dica de casa em Stories", categoria: "diy" },
+      { titulo: "Reels de rotina matinal", categoria: "lifestyle" },
+      { titulo: "Resenha de produto de bem-estar", categoria: "lifestyle" }
+    ],
+    tituloServicos: "Serviços",
+    servicos: [
+      { emoji: "🎬", titulo: "Vídeo UGC", descricao: "Vídeos autênticos estilo depoimento, feitos para parar o scroll e gerar conexão real com a sua marca." },
+      { emoji: "📱", titulo: "Reels para redes sociais", descricao: "Roteiro, gravação e edição de Reels dinâmicos, prontos para publicar." },
+      { emoji: "📸", titulo: "Fotos de produto", descricao: "Fotos com estética profissional que valorizam o produto e aumentam a conversão em anúncios e site." },
+      { emoji: "📦", titulo: "Unboxing", descricao: "Vídeos de unboxing genuínos, mostrando a primeira impressão real do produto para gerar desejo de compra." },
+      { emoji: "💬", titulo: "Depoimento em vídeo", descricao: "Depoimentos naturais e persuasivos, perfeitos para campanhas de tráfego pago e prova social." },
+      { emoji: "🎯", titulo: "Conteúdo para anúncios", descricao: "Vídeos pensados para performance, com gancho forte nos primeiros segundos e chamada para ação clara." }
+    ],
+    tituloContato: "Vamos trabalhar juntas?",
+    labelNome: "Nome", labelEmail: "E-mail", labelMensagem: "Mensagem",
+    botaoEnviar: "Enviar mensagem",
+    erroFormulario: "Preencha todos os campos antes de enviar.",
+    confirmacaoFormulario: "Obrigada pela mensagem! Seu aplicativo de e-mail vai abrir para você concluir o envio.",
+    assuntoEmail: "Proposta de parceria", corpoEmailNome: "Nome", corpoEmailEmail: "E-mail", corpoEmailMensagem: "Mensagem",
+    whatsappMensagem: "Olá Nicoly, vi seu portfólio e quero conversar sobre um projeto!",
+    botaoWhatsapp: "Falar no WhatsApp", botaoEmail: "Enviar e-mail", botaoInstagram: "Ver Instagram",
+    direitosAutorais: "Todos os direitos reservados.",
+    ariaLabels: {
+      hero: "Introdução", marcasFaixa: "Marcas que já confiaram no trabalho de Nicoly", sobre: "Sobre Nicoly",
+      portfolio: "Portfólio de trabalhos", servicos: "Serviços oferecidos", contato: "Contato",
+      heroFoto: "Foto ilustrativa de Nicoly Wapenik criando conteúdo", sobreFoto: "Foto de Nicoly Wapenik sorrindo",
+      abrirMenu: "Abrir menu de navegação", fecharMenu: "Fechar menu de navegação"
+    }
+  }
+};
+
+const GRADIENTES = [
+  "linear-gradient(135deg, #3e8eff, #ff4b3e)",
+  "linear-gradient(135deg, #ffda1a, #3e8eff)",
+  "linear-gradient(135deg, #ff4b3e, #ffda1a)",
+  "linear-gradient(135deg, #14141a, #3e8eff)",
+  "linear-gradient(135deg, #ffda1a, #ff4b3e)",
+  "linear-gradient(135deg, #3e8eff, #ffda1a)"
+];
+
+let idiomaAtual = "en";
+
+function renderizarHeaderEMeta(t){
+  document.getElementById("page-title").textContent = t.pageTitle;
+  document.title = t.pageTitle;
+  document.getElementById("page-description").setAttribute("content", t.pageDescription);
+  document.documentElement.lang = t.htmlLang;
+  document.getElementById("skip-link").textContent = t.skipLink;
+  document.getElementById("nav-sobre").textContent = t.nav.sobre;
+  document.getElementById("nav-portfolio").textContent = t.nav.portfolio;
+  document.getElementById("nav-servicos").textContent = t.nav.servicos;
+  document.getElementById("nav-contato").textContent = t.nav.contato;
+  const botaoIdioma = document.getElementById("btn-idioma");
+  botaoIdioma.textContent = t.botaoIdioma;
+  botaoIdioma.setAttribute("aria-label", t.botaoIdiomaAriaLabel);
+}
+
+function renderizarHero(t){
+  document.getElementById("hero-tag").textContent = t.hero.tag;
+  document.getElementById("hero-titulo").textContent = DADOS.nome;
+  document.getElementById("hero-subtitulo").textContent = t.hero.subtitulo;
+  document.getElementById("hero-cta").textContent = t.hero.textoBotao;
+  document.getElementById("hero").setAttribute("aria-label", t.ariaLabels.hero);
+  document.querySelector("#hero-foto img").alt = t.ariaLabels.heroFoto;
+}
+
+function renderizarMarcas(){
+  const track = document.getElementById("marcas-track");
+  const listaDupla = [...DADOS.marcas, ...DADOS.marcas];
+  track.innerHTML = listaDupla.map(m => `<span>${m}</span>`).join("");
+}
+
+function renderizarSobre(t){
+  document.getElementById("titulo-sobre").textContent = t.tituloSobre;
+  document.getElementById("sobre-paragrafo").textContent = t.sobre;
+  document.getElementById("sobre").setAttribute("aria-label", t.ariaLabels.sobre);
+  document.querySelector("#sobre-foto img").alt = t.ariaLabels.sobreFoto;
+}
+
+function renderizarPortfolio(t){
+  document.getElementById("titulo-portfolio").textContent = t.tituloPortfolio;
+  document.getElementById("portfolio").setAttribute("aria-label", t.ariaLabels.portfolio);
+  const chavesCategoria = ["todos", ...new Set(t.portfolio.map(i => i.categoria))];
+  const filtrosEl = document.getElementById("filtros");
+  filtrosEl.innerHTML = chavesCategoria.map((chave, i) =>
+    `<button class="filtro-btn${i === 0 ? " ativo" : ""}" data-categoria="${chave}">${t.categorias[chave]}</button>`
+  ).join("");
+  const galeriaEl = document.getElementById("galeria");
+  galeriaEl.innerHTML = t.portfolio.map((item, i) => `
+    <div class="item-portfolio" data-categoria="${item.categoria}" style="background:${GRADIENTES[i % GRADIENTES.length]}" role="img" aria-label="${item.titulo}">
+      <span>${item.titulo}</span>
+    </div>
+  `).join("");
+  filtrosEl.querySelectorAll(".filtro-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      filtrosEl.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      const chave = btn.dataset.categoria;
+      galeriaEl.querySelectorAll(".item-portfolio").forEach(item => {
+        const mostrar = chave === "todos" || item.dataset.categoria === chave;
+        item.classList.toggle("escondido", !mostrar);
+      });
+    });
+  });
+}
+
+function renderizarServicos(t){
+  document.getElementById("titulo-servicos").textContent = t.tituloServicos;
+  document.getElementById("servicos").setAttribute("aria-label", t.ariaLabels.servicos);
+  const el = document.getElementById("grid-servicos");
+  el.innerHTML = t.servicos.map(s => `
+    <div class="card-servico reveal">
+      <p class="emoji" aria-hidden="true">${s.emoji}</p>
+      <h3>${s.titulo}</h3>
+      <p>${s.descricao}</p>
+    </div>
+  `).join("");
+}
+
+function renderizarContato(t){
+  document.getElementById("titulo-contato").textContent = t.tituloContato;
+  document.getElementById("contato").setAttribute("aria-label", t.ariaLabels.contato);
+  document.getElementById("label-nome").textContent = t.labelNome;
+  document.getElementById("label-email").textContent = t.labelEmail;
+  document.getElementById("label-mensagem").textContent = t.labelMensagem;
+  document.getElementById("botao-enviar").textContent = t.botaoEnviar;
+  document.getElementById("link-whatsapp").href = `https://wa.me/${DADOS.whatsappNumero}?text=${encodeURIComponent(t.whatsappMensagem)}`;
+  document.getElementById("link-whatsapp").textContent = t.botaoWhatsapp;
+  document.getElementById("link-email").href = `mailto:${DADOS.email}`;
+  document.getElementById("link-email").textContent = t.botaoEmail;
+  document.getElementById("link-instagram").href = `https://instagram.com/${DADOS.instagramUsuario}`;
+  document.getElementById("link-instagram").textContent = t.botaoInstagram;
+}
+
+function renderizarRodape(t){
+  document.getElementById("rodape-nome").textContent = `${DADOS.nome} · ${t.profissao}`;
+  document.getElementById("rodape-redes").innerHTML = `
+    <a href="https://instagram.com/${DADOS.instagramUsuario}" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://wa.me/${DADOS.whatsappNumero}" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="mailto:${DADOS.email}">Email</a>
+  `;
+  document.getElementById("rodape-copyright").textContent = `© ${new Date().getFullYear()} ${DADOS.nome}. ${t.direitosAutorais}`;
+}
+
+function renderizarTudo(idioma){
+  const t = TRADUCOES[idioma];
+  renderizarHeaderEMeta(t);
+  renderizarHero(t);
+  renderizarMarcas();
+  renderizarSobre(t);
+  renderizarPortfolio(t);
+  renderizarServicos(t);
+  renderizarContato(t);
+  renderizarRodape(t);
+  configurarRevelacao();
+}
+
+function configurarMenu(){
+  const btn = document.getElementById("btn-menu");
+  const nav = document.getElementById("nav-principal");
+  btn.addEventListener("click", () => {
+    const aberto = nav.classList.toggle("aberto");
+    btn.classList.toggle("aberto", aberto);
+    btn.setAttribute("aria-expanded", aberto ? "true" : "false");
+    btn.setAttribute("aria-label", aberto ? TRADUCOES[idiomaAtual].ariaLabels.fecharMenu : TRADUCOES[idiomaAtual].ariaLabels.abrirMenu);
+  });
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("aberto");
+      btn.classList.remove("aberto");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+function configurarIdioma(){
+  document.getElementById("btn-idioma").addEventListener("click", () => {
+    idiomaAtual = idiomaAtual === "en" ? "pt" : "en";
+    renderizarTudo(idiomaAtual);
+  });
+}
+
+function configurarRevelacao(){
+  const observer = new IntersectionObserver((entradas) => {
+    entradas.forEach(entrada => {
+      if(entrada.isIntersecting){
+        entrada.target.classList.add("visivel");
+        observer.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal:not(.visivel)").forEach(el => observer.observe(el));
+}
+
+function configurarFormulario(){
+  const form = document.getElementById("form-contato");
+  const msg = document.getElementById("msg-confirmacao");
+  form.addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    const t = TRADUCOES[idiomaAtual];
+    const nome = document.getElementById("campo-nome").value.trim();
+    const email = document.getElementById("campo-email").value.trim();
+    const mensagem = document.getElementById("campo-mensagem").value.trim();
+    if(!nome || !email || !mensagem){
+      msg.textContent = t.erroFormulario;
+      return;
+    }
+    const assunto = encodeURIComponent(`${t.assuntoEmail}: ${nome}`);
+    const corpo = encodeURIComponent(`${t.corpoEmailNome}: ${nome}\n${t.corpoEmailEmail}: ${email}\n\n${t.corpoEmailMensagem}:\n${mensagem}`);
+    window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+    msg.textContent = t.confirmacaoFormulario;
+    form.reset();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderizarTudo(idiomaAtual);
+  configurarMenu();
+  configurarIdioma();
+  configurarFormulario();
+});
+</script>
+
+</body>
+</html>
