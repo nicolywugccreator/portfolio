@@ -32,12 +32,13 @@ window.Auth = {
   },
 
   // Verifica se existe uma sessão ativa. Se não houver, redireciona
-  // para login.html e retorna null. Deve rodar no topo de painel.html.
+  // para login.html (na raiz do site) e retorna null. Deve rodar no
+  // topo de painel.html.
   async checkAuth() {
     const { data } = await sb.auth.getSession();
 
     if (!data.session) {
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
       return null;
     }
 
@@ -47,7 +48,7 @@ window.Auth = {
   // Encerra a sessão e volta para a tela de login.
   async logout() {
     await sb.auth.signOut();
-    window.location.href = "login.html";
+    window.location.href = "/login.html";
   },
 
   // Envia o e-mail de recuperação de senha do Supabase.
