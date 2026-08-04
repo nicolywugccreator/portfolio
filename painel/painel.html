@@ -20,6 +20,7 @@
     --texto-suave:rgba(17,17,17,.6);
     --sucesso:#2D7A4F;
     --erro:#C4453C;
+    --limao-texto:#5c8a12; /* mesma cor do limao do portfolio, mas escurecida para ficar legivel como texto */
     --sombra-dura:5px 5px 0 var(--preto);
     --sombra-dura-lg:8px 8px 0 var(--preto);
   }
@@ -426,10 +427,10 @@
   .cartao-kpi{display:flex;flex-direction:column;gap:.4rem;}
   .cartao-kpi .rotulo{font-size:.78rem;font-weight:700;text-transform:uppercase;color:var(--texto-suave);}
   .cartao-kpi .valor{font-family:'Archivo Black', sans-serif;font-size:1.7rem;}
-  .cartao-kpi.ganhos .valor{color:var(--sucesso);}
-  .cartao-kpi.despesas .valor{color:var(--erro);}
-  .cartao-kpi.saldo .valor.positivo{color:var(--sucesso);}
-  .cartao-kpi.saldo .valor.negativo{color:var(--erro);}
+  .cartao-kpi.ganhos .valor{color:var(--limao-texto);}
+  .cartao-kpi.despesas .valor{color:var(--magenta);}
+  .cartao-kpi.saldo .valor.positivo{color:var(--limao-texto);}
+  .cartao-kpi.saldo .valor.negativo{color:var(--magenta);}
 
   .financeiro-filtros-e-acao{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem;}
   .filtro-tipo{display:flex;gap:.5rem;flex-wrap:wrap;}
@@ -446,8 +447,8 @@
   }
   .linha-financeiro:last-child{border-bottom:none;}
   .linha-financeiro-cabecalho{font-weight:700;font-size:.72rem;text-transform:uppercase;color:var(--texto-suave);}
-  .valor-positivo{color:var(--sucesso);font-weight:700;white-space:nowrap;}
-  .valor-negativo{color:var(--erro);font-weight:700;white-space:nowrap;}
+  .valor-positivo{color:var(--limao-texto);font-weight:700;white-space:nowrap;}
+  .valor-negativo{color:var(--magenta);font-weight:700;white-space:nowrap;}
   .acoes-linha{display:flex;gap:.3rem;}
   @media (max-width:700px){
     .linha-financeiro{grid-template-columns:55px 1fr 90px 70px;font-size:.8rem;}
@@ -464,8 +465,8 @@
     font-family:'Poppins', sans-serif;font-weight:600;cursor:pointer;color:var(--preto);
     transition:background .15s ease, border-color .15s ease, color .15s ease;
   }
-  .botao-tipo-transacao.receita.ativo{background:var(--sucesso);color:var(--branco);border-color:var(--sucesso);}
-  .botao-tipo-transacao.despesa.ativo{background:var(--erro);color:var(--branco);border-color:var(--erro);}
+  .botao-tipo-transacao.receita.ativo{background:var(--limao);color:var(--preto);border-color:var(--limao);}
+  .botao-tipo-transacao.despesa.ativo{background:var(--magenta);color:var(--branco);border-color:var(--magenta);}
 
   /* ===================== TOAST ===================== */
   .toast{
