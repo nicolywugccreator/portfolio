@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Login | meu.painel</title>
+<title>Login | my.panel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -135,37 +135,37 @@
 <body>
 
 <main class="cartao-login">
-  <p class="logo">meu<span>.</span>painel</p>
-  <h1>Acesso restrito</h1>
-  <p class="subtitulo">Faça login para ver os números do seu portfólio.</p>
+  <p class="logo">my<span>.</span>panel</p>
+  <h1>Restricted access</h1>
+  <p class="subtitulo">Log in to see your portfolio numbers.</p>
 
   <div class="faixa-erro" id="faixa-erro" hidden></div>
   <div class="faixa-sucesso" id="faixa-sucesso" hidden></div>
 
   <form id="form-login">
-    <label for="campo-email">E-mail</label>
+    <label for="campo-email">Email</label>
     <input type="email" id="campo-email" required autocomplete="email">
 
-    <label for="campo-senha">Senha</label>
+    <label for="campo-senha">Password</label>
     <input type="password" id="campo-senha" required autocomplete="current-password">
 
-    <button type="button" class="link-esqueci" id="link-esqueci">Esqueci minha senha</button>
-    <button type="submit" class="botao-entrar" id="botao-entrar">Entrar</button>
+    <button type="button" class="link-esqueci" id="link-esqueci">Forgot my password</button>
+    <button type="submit" class="botao-entrar" id="botao-entrar">Log in</button>
   </form>
 
   <form id="form-recuperar" hidden>
-    <label for="campo-email-recuperar">E-mail</label>
+    <label for="campo-email-recuperar">Email</label>
     <input type="email" id="campo-email-recuperar" required autocomplete="email">
 
-    <button type="submit" class="botao-entrar" id="botao-recuperar">Enviar link de recuperação</button>
-    <button type="button" class="link-esqueci" id="link-voltar">Voltar para o login</button>
+    <button type="submit" class="botao-entrar" id="botao-recuperar">Send recovery link</button>
+    <button type="button" class="link-esqueci" id="link-voltar">Back to login</button>
   </form>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/painel/js/auth.js"></script>
 <script>
-  // Se já existir uma sessão ativa, pula direto para o painel.
+  // If a session is already active, skip straight to the dashboard.
   (async () => {
     const { data } = await Auth.sb.auth.getSession();
     if (data.session) {
@@ -199,15 +199,15 @@
     const senha = document.getElementById("campo-senha").value;
 
     botaoEntrar.disabled = true;
-    botaoEntrar.textContent = "Entrando...";
+    botaoEntrar.textContent = "Logging in...";
 
     try {
       await Auth.login(email, senha);
       window.location.href = "/painel/painel.html";
     } catch (erro) {
-      mostrarErro(erro.message || "Não foi possível entrar. Tente novamente.");
+      mostrarErro(erro.message || "Could not log in. Please try again.");
       botaoEntrar.disabled = false;
-      botaoEntrar.textContent = "Entrar";
+      botaoEntrar.textContent = "Log in";
     }
   });
 
@@ -229,18 +229,18 @@
 
     const email = document.getElementById("campo-email-recuperar").value.trim();
     botaoRecuperar.disabled = true;
-    botaoRecuperar.textContent = "Enviando...";
+    botaoRecuperar.textContent = "Sending...";
 
     try {
       await Auth.recuperarSenha(email);
-      faixaSucesso.textContent = "Enviamos um link de recuperação para o seu e-mail.";
+      faixaSucesso.textContent = "We sent a recovery link to your email.";
       faixaSucesso.hidden = false;
     } catch (erro) {
-      mostrarErro("Não foi possível enviar o link. Verifique o e-mail digitado.");
+      mostrarErro("Could not send the link. Check the email address entered.");
     }
 
     botaoRecuperar.disabled = false;
-    botaoRecuperar.textContent = "Enviar link de recuperação";
+    botaoRecuperar.textContent = "Send recovery link";
   });
 </script>
 
