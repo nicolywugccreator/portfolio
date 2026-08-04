@@ -1205,21 +1205,99 @@ function renderizarProposta(t){
 // ===================== PORTFOLIO VIDEO MODAL =====================
 let ultimoBotaoDePortfolio = null;
 
+// ===================== YOUTUBE IFRAME API (para medir quanto foi assistido) =====================
+let ytApiPronta = false;
+let ytApiFalhou = false;
+const filaCallbacksYT = [];
+
+window.onYouTubeIframeAPIReady = function(){
+  ytApiPronta = true;
+  filaCallbacksYT.forEach(fn => fn());
+  filaCallbacksYT.length = 0;
+};
+
+function comYouTubeAPI(aoPronto, aoFalhar){
+  if(ytApiPronta){ aoPronto(); return; }
+  if(ytApiFalhou){ aoFalhar(); return; }
+
+  filaCallbacksYT.push(aoPronto);
+  if(!document.getElementById("youtube-iframe-api-script")){
+    const script = document.createElement("script");
+    script.id = "youtube-iframe-api-script";
+    script.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(script);
+  }
+  setTimeout(() => {
+    if(!ytApiPronta){
+      ytApiFalhou = true;
+      aoFalhar();
+    }
+  }, 4000);
+}
+
+let ytPlayerAtual = null;
+let ytVideoIdAtual = null;
+let ytTituloAtual = null;
+
+// Registra ate onde a pessoa chegou no video (usado ao fechar o modal ou quando o video termina)
+function registrarProgressoVideo(){
+  if(!ytPlayerAtual || typeof ytPlayerAtual.getDuration !== "function") return;
+  try {
+    const duracao = Math.round(ytPlayerAtual.getDuration());
+    if(!duracao) return;
+    const segundos = Math.round(ytPlayerAtual.getCurrentTime());
+    const percentual = Math.min(100, Math.round((segundos / duracao) * 100));
+    registrarEvento("video_progress", ytVideoIdAtual, { title: ytTituloAtual, seconds: segundos, duration: duracao, percent: percentual });
+  } catch (erro) {
+    console.warn("Could not read video progress:", erro);
+  }
+}
+
 function abrirModalPortfolio(videoId, titulo, botaoOrigem){
   const modal = document.getElementById("portfolio-modal");
   const midia = document.getElementById("portfolio-modal-midia");
-  midia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="${titulo}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  midia.innerHTML = `<div id="youtube-player-portfolio"></div>`;
   modal.setAttribute("aria-label", titulo);
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   ultimoBotaoDePortfolio = botaoOrigem;
   document.getElementById("portfolio-modal-fechar").focus();
   registrarEvento("video_view", videoId, { title: titulo });
+
+  ytPlayerAtual = null;
+  ytVideoIdAtual = videoId;
+  ytTituloAtual = titulo;
+
+  comYouTubeAPI(
+    () => {
+      if(!document.getElementById("youtube-player-portfolio")) return;
+      ytPlayerAtual = new YT.Player("youtube-player-portfolio", {
+        videoId: videoId,
+        playerVars: { autoplay: 1, rel: 0 },
+        events: {
+          onStateChange: (evento) => {
+            if(evento.data === YT.PlayerState.ENDED) registrarProgressoVideo();
+          }
+        }
+      });
+    },
+    () => {
+      const alvo = document.getElementById("youtube-player-portfolio");
+      if(alvo){
+        alvo.outerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="${titulo}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+      }
+    }
+  );
 }
 
 function fecharModalPortfolio(){
   const modal = document.getElementById("portfolio-modal");
   if(modal.hidden) return;
+  registrarProgressoVideo();
+  if(ytPlayerAtual && typeof ytPlayerAtual.destroy === "function"){
+    ytPlayerAtual.destroy();
+  }
+  ytPlayerAtual = null;
   document.getElementById("portfolio-modal-midia").innerHTML = "";
   modal.hidden = true;
   document.body.style.overflow = "";
