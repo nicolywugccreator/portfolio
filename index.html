@@ -1357,11 +1357,28 @@ function configurarRevelacao(){
 }
 
 // ===================== CONTACT FORM =====================
+// ===================== DIRECT EMAIL DELIVERY (Web3Forms) =====================
+// Sends the message straight to Nicoly's inbox from the browser, no email
+// app needed on the visitor's side. WEB3FORMS_ACCESS_KEY is a public key,
+// safe to expose in client-side code (same model as the Supabase anon key).
+const WEB3FORMS_ACCESS_KEY = "941df993-2b14-43d5-a6f0-cf681a4e8d20";
+
+async function enviarEmailWeb3Forms(campos){
+  const resposta = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({ access_key: WEB3FORMS_ACCESS_KEY, ...campos })
+  });
+  const resultado = await resposta.json();
+  if(!resultado.success) throw new Error(resultado.message || "Web3Forms request failed");
+}
+
 function configurarFormulario(){
   const form = document.getElementById("form-contato");
   const msg = document.getElementById("msg-confirmacao");
+  const botao = document.getElementById("botao-enviar");
 
-  form.addEventListener("submit", (evento) => {
+  form.addEventListener("submit", async (evento) => {
     evento.preventDefault();
     const t = TRADUCOES[idiomaAtual];
     const nome = document.getElementById("campo-nome").value.trim();
@@ -1373,15 +1390,30 @@ function configurarFormulario(){
       return;
     }
 
-    const assunto = encodeURIComponent(`${t.assuntoEmail}: ${nome}`);
-    const corpo = encodeURIComponent(`${t.corpoEmailNome}: ${nome}\n${t.corpoEmailEmail}: ${email}\n\n${t.corpoEmailMensagem}:\n${mensagem}`);
-    window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+    const textoOriginal = botao.textContent;
+    botao.disabled = true;
 
     registrarEvento("button_click", "contact_form_submit");
     registrarLead({ name: nome, email: email, message: mensagem, source: "contact" });
 
+    try {
+      await enviarEmailWeb3Forms({
+        subject: `${t.assuntoEmail}: ${nome}`,
+        from_name: nome,
+        email: email,
+        message: mensagem
+      });
+    } catch (erro) {
+      console.error("Web3Forms failed, falling back to mailto:", erro);
+      const assunto = encodeURIComponent(`${t.assuntoEmail}: ${nome}`);
+      const corpo = encodeURIComponent(`${t.corpoEmailNome}: ${nome}\n${t.corpoEmailEmail}: ${email}\n\n${t.corpoEmailMensagem}:\n${mensagem}`);
+      window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+    }
+
     msg.textContent = t.confirmacaoFormulario;
     form.reset();
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
   });
 }
 
@@ -1429,8 +1461,9 @@ function configurarModalProposta(){
 function configurarFormularioProposta(){
   const form = document.getElementById("form-proposta");
   const msg = document.getElementById("proposta-msg-confirmacao");
+  const botao = document.getElementById("proposta-botao-enviar");
 
-  form.addEventListener("submit", (evento) => {
+  form.addEventListener("submit", async (evento) => {
     evento.preventDefault();
     const t = TRADUCOES[idiomaAtual];
     const p = t.proposta;
@@ -1445,15 +1478,32 @@ function configurarFormularioProposta(){
       return;
     }
 
-    const assunto = encodeURIComponent(`${p.assuntoEmail}: ${empresa}`);
-    const corpo = encodeURIComponent(`${p.corpoEmailNome}: ${nome}\n${p.corpoEmailEmpresa}: ${empresa}\n${p.corpoEmailEmail}: ${email}\n${p.corpoEmailOrcamento}: ${orcamento}\n\n${p.corpoEmailMensagem}:\n${mensagem}`);
-    window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+    const textoOriginal = botao.textContent;
+    botao.disabled = true;
 
     registrarEvento("button_click", "contact_proposal_submit");
     registrarLead({ name: nome, email: email, brand: empresa, budget: orcamento, message: mensagem, source: "popup" });
 
+    try {
+      await enviarEmailWeb3Forms({
+        subject: `${p.assuntoEmail}: ${empresa}`,
+        from_name: nome,
+        email: email,
+        company: empresa,
+        budget: orcamento,
+        message: mensagem
+      });
+    } catch (erro) {
+      console.error("Web3Forms failed, falling back to mailto:", erro);
+      const assunto = encodeURIComponent(`${p.assuntoEmail}: ${empresa}`);
+      const corpo = encodeURIComponent(`${p.corpoEmailNome}: ${nome}\n${p.corpoEmailEmpresa}: ${empresa}\n${p.corpoEmailEmail}: ${email}\n${p.corpoEmailOrcamento}: ${orcamento}\n\n${p.corpoEmailMensagem}:\n${mensagem}`);
+      window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
+    }
+
     msg.textContent = p.confirmacao;
     form.reset();
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
   });
 }
 
