@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Painel | meu.painel</title>
+<title>Dashboard | my.panel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -130,7 +130,7 @@
   .botao-periodo:hover{transform:translate(-1px,-1px);}
   .botao-periodo.ativo{background:var(--magenta);color:var(--branco);}
 
-  /* ===================== CARTOES GENERICOS ===================== */
+  /* ===================== GENERIC CARDS ===================== */
   .cartao{
     background:var(--branco);
     border:3px solid var(--preto);
@@ -148,7 +148,7 @@
     font-weight:600;
   }
 
-  /* ===================== ABA: MENU PRINCIPAL ===================== */
+  /* ===================== TAB: HOME ===================== */
   .grid-cartoes{
     display:grid;grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
     gap:1rem;margin-bottom:1.2rem;
@@ -181,7 +181,7 @@
   .barra-dia:hover{background:var(--magenta);}
   .rotulo-dia{font-size:.68rem;color:var(--texto-suave);white-space:nowrap;}
 
-  /* ===================== ABA: PORTFOLIO ===================== */
+  /* ===================== TAB: PORTFOLIO ===================== */
   .pilha-blocos{display:flex;flex-direction:column;gap:1.2rem;}
   .bloco-cartao h3{font-size:1.05rem;margin-bottom:1rem;}
 
@@ -241,7 +241,7 @@
   }
   .botao-pequeno.botao-whatsapp{background:var(--limao);}
 
-  /* ===================== ABA: MINHA ROTINA ===================== */
+  /* ===================== TAB: MY ROUTINE ===================== */
   .grid-rotina{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem;margin-bottom:1.2rem;align-items:start;}
   @media (max-width:960px){.grid-rotina{grid-template-columns:1fr;}}
 
@@ -346,7 +346,7 @@
     .linha-agenda span:nth-child(3){display:none;}
   }
 
-  /* ===================== BOTAO GENERICO (.btn) ===================== */
+  /* ===================== GENERIC BUTTON (.btn) ===================== */
   .btn{
     display:inline-block;font-family:'Poppins', sans-serif;font-weight:700;
     padding:.75rem 1.4rem;border:2px solid var(--preto);border-radius:8px;
@@ -357,7 +357,7 @@
   .btn:active{transform:translate(0,0);box-shadow:1px 1px 0 var(--preto);}
   .btn-primario{background:var(--laranja);color:var(--preto);}
 
-  /* ===================== MODAL GENERICO ===================== */
+  /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
     position:fixed;inset:0;z-index:1000;background:rgba(17,17,17,.6);
     display:flex;align-items:center;justify-content:center;padding:1.5rem;
@@ -376,7 +376,7 @@
   .modal-fechar:hover{background:var(--erro);color:var(--branco);}
   .modal-caixa h3{font-size:1.2rem;margin-bottom:1rem;padding-right:2rem;}
 
-  /* ===================== ABA: FINANCEIRO ===================== */
+  /* ===================== TAB: FINANCE ===================== */
   .financeiro-cabecalho{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;}
   .financeiro-saudacao{margin:0;color:var(--texto-suave);font-size:.95rem;}
   .financeiro-controles{display:flex;align-items:center;gap:.7rem;}
@@ -451,7 +451,7 @@
     padding:.4rem .8rem;font-weight:700;cursor:pointer;font-family:'Poppins', sans-serif;flex-shrink:0;
   }
 
-  /* ===================== ABA: CLIENTES ===================== */
+  /* ===================== TAB: CLIENTS ===================== */
   .grid-clientes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
   .cartao-cliente-nome{font-family:'Archivo Black', sans-serif;font-size:1rem;text-transform:none;margin-bottom:.2rem;}
   .cartao-cliente-empresa{font-size:.8rem;color:var(--texto-suave);margin-bottom:.7rem;}
@@ -466,140 +466,146 @@
   <div class="overlay-sidebar" id="overlay-sidebar" hidden></div>
 
   <aside class="sidebar" id="sidebar">
-    <p class="sidebar-logo">meu<span>.</span>painel</p>
+    <p class="sidebar-logo">my<span>.</span>panel</p>
     <ul class="nav-lista">
       <li>
         <button type="button" class="nav-item ativo" data-tab="principal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-          Menu Principal
+          Home
         </button>
       </li>
       <li>
         <button type="button" class="nav-item" data-tab="portfolio">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="20" y1="20" x2="20" y2="14"/></svg>
-          Portfólio
+          Portfolio
         </button>
       </li>
       <li>
         <button type="button" class="nav-item" data-tab="rotina">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Minha Rotina
+          My Routine
         </button>
       </li>
       <li>
         <button type="button" class="nav-item" data-tab="financeiro">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-          Financeiro
+          Finance
         </button>
       </li>
       <li>
         <button type="button" class="nav-item" data-tab="clientes">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Clientes
+          Clients
+        </button>
+      </li>
+      <li>
+        <button type="button" class="nav-item" data-tab="brainstorm">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2Z"/></svg>
+          Brainstorm
         </button>
       </li>
     </ul>
     <div class="sidebar-rodape">
-      <p class="sidebar-email" id="rodape-email">carregando...</p>
-      <button type="button" class="botao-sair" id="botao-sair">Sair</button>
+      <p class="sidebar-email" id="rodape-email">loading...</p>
+      <button type="button" class="botao-sair" id="botao-sair">Log out</button>
     </div>
   </aside>
 
   <main class="conteudo">
-    <button type="button" class="botao-menu-mobile" id="botao-menu-mobile" aria-label="Abrir menu">
+    <button type="button" class="botao-menu-mobile" id="botao-menu-mobile" aria-label="Open menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
 
     <div id="area-conteudo">
       <div class="cabecalho">
-        <h1 id="titulo-pagina">Menu Principal</h1>
+        <h1 id="titulo-pagina">Home</h1>
         <div class="filtro-periodo" id="filtro-periodo">
-          <button type="button" class="botao-periodo ativo" data-periodo="tudo">Tudo</button>
+          <button type="button" class="botao-periodo ativo" data-periodo="tudo">All</button>
           <button type="button" class="botao-periodo" data-periodo="7d">7d</button>
           <button type="button" class="botao-periodo" data-periodo="30d">30d</button>
           <button type="button" class="botao-periodo" data-periodo="90d">90d</button>
         </div>
       </div>
 
-      <!-- ================= ABA: MENU PRINCIPAL ================= -->
+      <!-- ================= TAB: HOME ================= -->
       <section id="aba-principal" class="painel-aba">
-        <p style="margin:0 0 1.2rem;color:var(--texto-suave);">Olá! Aqui estão os números do seu portfólio.</p>
+        <p style="margin:0 0 1.2rem;color:var(--texto-suave);">Hi! Here are your portfolio numbers.</p>
 
         <div class="grid-cartoes">
           <div class="cartao-numero destaque">
             <span class="numero" id="num-visitas">0</span>
-            <span class="rotulo">Visitas</span>
+            <span class="rotulo">Visits</span>
           </div>
           <div class="cartao-numero">
             <span class="numero" id="num-visitantes">0</span>
-            <span class="rotulo">Visitantes únicos</span>
+            <span class="rotulo">Unique visitors</span>
           </div>
           <div class="cartao-numero">
             <span class="numero" id="num-cliques">0</span>
-            <span class="rotulo">Cliques em botões</span>
+            <span class="rotulo">Button clicks</span>
           </div>
           <div class="cartao-numero">
             <span class="numero" id="num-videos">0</span>
-            <span class="rotulo">Vídeos vistos</span>
+            <span class="rotulo">Videos watched</span>
           </div>
           <div class="cartao-numero">
             <span class="numero" id="num-mensagens">0</span>
-            <span class="rotulo">Mensagens</span>
+            <span class="rotulo">Messages</span>
           </div>
         </div>
 
         <div class="cartao cartao-contato">
           <span class="numero" id="num-contato">0</span>
-          <p class="rotulo">Clicaram para entrar em contato</p>
-          <p class="explicacao">Conta quem clicou em WhatsApp, e-mail, Instagram ou no botão de enviar o formulário.</p>
+          <p class="rotulo">Clicked to get in touch</p>
+          <p class="explicacao">Counts who clicked WhatsApp, email, Instagram, or submitted the contact form.</p>
         </div>
 
         <div class="cartao grafico-card">
-          <h3>Visitas nos últimos 14 dias</h3>
-          <p class="grafico-subtitulo">Passe o mouse em cima de uma barra para ver o dia e a contagem.</p>
+          <h3>Visits in the last 14 days</h3>
+          <p class="grafico-subtitulo">Hover over a bar to see the day and count.</p>
           <div class="grafico-barras" id="grafico-barras"></div>
         </div>
       </section>
 
-      <!-- ================= ABA: PORTFOLIO ================= -->
+      <!-- ================= TAB: PORTFOLIO ================= -->
       <section id="aba-portfolio" class="painel-aba" hidden>
         <div class="pilha-blocos">
           <div class="cartao bloco-cartao">
-            <h3>Vídeos mais vistos</h3>
+            <h3>Most watched videos</h3>
             <div id="lista-videos"></div>
           </div>
 
           <div class="cartao bloco-cartao">
-            <h3>Botões mais clicados</h3>
+            <h3>Most clicked buttons</h3>
             <div id="lista-botoes"></div>
           </div>
 
           <div class="cartao bloco-cartao">
-            <h3>Cliques para contato</h3>
+            <h3>Contact clicks</h3>
             <div id="lista-contato"></div>
           </div>
 
           <div class="cartao bloco-cartao">
-            <h3>Mensagens recebidas</h3>
+            <h3>Messages received</h3>
             <div id="lista-mensagens"></div>
           </div>
         </div>
       </section>
 
-      <!-- ================= ABA: MINHA ROTINA ================= -->
+      <!-- ================= TAB: MY ROUTINE ================= -->
       <section id="aba-rotina" class="painel-aba" hidden>
         <div class="grid-rotina">
           <div class="cartao cartao-calendario">
             <div class="calendario-cabecalho">
-              <h3 id="calendario-mes-ano">Mês</h3>
+              <h3 id="calendario-mes-ano">Month</h3>
               <div class="calendario-nav">
-                <button type="button" class="botao-nav-calendario" id="mes-anterior" aria-label="Mês anterior">‹</button>
-                <button type="button" class="botao-periodo" id="ir-para-hoje">hoje</button>
-                <button type="button" class="botao-nav-calendario" id="mes-seguinte" aria-label="Próximo mês">›</button>
+                <button type="button" class="botao-nav-calendario" id="mes-anterior" aria-label="Previous month">‹</button>
+                <button type="button" class="botao-periodo" id="ir-para-hoje">today</button>
+                <button type="button" class="botao-nav-calendario" id="mes-seguinte" aria-label="Next month">›</button>
               </div>
             </div>
             <div class="calendario-dias-semana">
-              <span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span><span>DOM</span>
+              <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
             </div>
             <div class="calendario-grade" id="calendario-grade"></div>
           </div>
@@ -608,51 +614,51 @@
             <div class="dia-selecionado-cabecalho">
               <span class="dia-selecionado-numero" id="dia-sel-numero">1</span>
               <div>
-                <p class="dia-selecionado-nome" id="dia-sel-nome">Hoje</p>
-                <p class="dia-selecionado-contagem" id="dia-sel-contagem">0 compromissos</p>
+                <p class="dia-selecionado-nome" id="dia-sel-nome">Today</p>
+                <p class="dia-selecionado-contagem" id="dia-sel-contagem">0 appointments</p>
               </div>
             </div>
             <div class="lista-itens-dia" id="lista-itens-dia"></div>
-            <button type="button" class="botao-adicionar-agenda" id="botao-adicionar-agenda">+ Adicionar na agenda</button>
+            <button type="button" class="botao-adicionar-agenda" id="botao-adicionar-agenda">+ Add to schedule</button>
 
             <form class="form-agenda" id="form-agenda" hidden novalidate>
-              <label for="agenda-titulo">O que é</label>
-              <input type="text" id="agenda-titulo" required placeholder="ex: Gravação pra marca X">
+              <label for="agenda-titulo">What is it</label>
+              <input type="text" id="agenda-titulo" required placeholder="e.g. Filming for brand X">
 
-              <label for="agenda-tipo">Tipo</label>
+              <label for="agenda-tipo">Type</label>
               <select id="agenda-tipo">
-                <option value="evento">Evento</option>
-                <option value="entrega">Entrega</option>
-                <option value="pendencia">Pendência</option>
+                <option value="evento">Event</option>
+                <option value="entrega">Delivery</option>
+                <option value="pendencia">Pending</option>
               </select>
 
-              <label class="checkbox-linha"><input type="checkbox" id="agenda-dia-todo" checked> Dia todo</label>
+              <label class="checkbox-linha"><input type="checkbox" id="agenda-dia-todo" checked> All day</label>
 
-              <label for="agenda-horario" id="rotulo-agenda-horario" hidden>Horário</label>
+              <label for="agenda-horario" id="rotulo-agenda-horario" hidden>Time</label>
               <input type="time" id="agenda-horario" hidden>
 
               <div class="form-agenda-acoes">
-                <button type="submit" class="btn btn-primario">Salvar</button>
-                <button type="button" class="botao-cancelar" id="agenda-cancelar">Cancelar</button>
+                <button type="submit" class="btn btn-primario">Save</button>
+                <button type="button" class="botao-cancelar" id="agenda-cancelar">Cancel</button>
               </div>
             </form>
           </div>
         </div>
 
         <div class="cartao cartao-tudo-marcado">
-          <h3>Tudo o que está marcado</h3>
-          <p class="grafico-subtitulo" id="contagem-tudo-marcado">0 itens. Clique no dia para abrir ele no calendário.</p>
+          <h3>Everything scheduled</h3>
+          <p class="grafico-subtitulo" id="contagem-tudo-marcado">0 items. Click a day to open it in the calendar.</p>
           <div class="tabela-agenda" id="tabela-agenda"></div>
         </div>
       </section>
 
-      <!-- ================= ABA: FINANCEIRO ================= -->
+      <!-- ================= TAB: FINANCE ================= -->
       <section id="aba-financeiro" class="painel-aba" hidden>
         <div class="financeiro-cabecalho">
-          <p class="financeiro-saudacao" id="financeiro-saudacao">Olá! Aqui está o resumo do seu financeiro.</p>
+          <p class="financeiro-saudacao" id="financeiro-saudacao">Hi! Here's your financial summary.</p>
           <div class="financeiro-controles">
-            <input type="month" id="financeiro-mes" class="financeiro-mes" aria-label="Escolher mês">
-            <button type="button" class="botao-olho" id="botao-olho" aria-label="Esconder valores">
+            <input type="month" id="financeiro-mes" class="financeiro-mes" aria-label="Choose month">
+            <button type="button" class="botao-olho" id="botao-olho" aria-label="Hide amounts">
               <svg id="icone-olho-aberto" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
               <svg id="icone-olho-fechado" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 8 11 8a21.6 21.6 0 0 1-2.34 3.44M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
             </button>
@@ -661,26 +667,26 @@
 
         <div class="grid-kpis">
           <div class="cartao cartao-kpi ganhos">
-            <span class="rotulo">Ganhos</span>
-            <span class="valor" id="kpi-ganhos">R$ 0,00</span>
+            <span class="rotulo">Income</span>
+            <span class="valor" id="kpi-ganhos">€0.00</span>
           </div>
           <div class="cartao cartao-kpi despesas">
-            <span class="rotulo">Despesas</span>
-            <span class="valor" id="kpi-despesas">R$ 0,00</span>
+            <span class="rotulo">Expenses</span>
+            <span class="valor" id="kpi-despesas">€0.00</span>
           </div>
           <div class="cartao cartao-kpi saldo">
-            <span class="rotulo">Saldo</span>
-            <span class="valor" id="kpi-saldo">R$ 0,00</span>
+            <span class="rotulo">Balance</span>
+            <span class="valor" id="kpi-saldo">€0.00</span>
           </div>
         </div>
 
         <div class="financeiro-filtros-e-acao">
           <div class="filtro-tipo">
-            <button type="button" class="botao-periodo ativo" data-tipo="todas">Todas</button>
-            <button type="button" class="botao-periodo" data-tipo="receita">Receitas</button>
-            <button type="button" class="botao-periodo" data-tipo="despesa">Despesas</button>
+            <button type="button" class="botao-periodo ativo" data-tipo="todas">All</button>
+            <button type="button" class="botao-periodo" data-tipo="receita">Income</button>
+            <button type="button" class="botao-periodo" data-tipo="despesa">Expenses</button>
           </div>
-          <button type="button" class="botao-nova-transacao" id="botao-nova-transacao">+ Nova transação</button>
+          <button type="button" class="botao-nova-transacao" id="botao-nova-transacao">+ New transaction</button>
         </div>
 
         <div class="cartao">
@@ -688,84 +694,113 @@
         </div>
       </section>
 
-      <!-- ================= ABA: CLIENTES ================= -->
+      <!-- ================= TAB: CLIENTS ================= -->
       <section id="aba-clientes" class="painel-aba" hidden>
         <div class="financeiro-filtros-e-acao">
-          <p style="margin:0;color:var(--texto-suave);">Cadastre e organize seus clientes.</p>
-          <button type="button" class="botao-nova-transacao" id="botao-novo-cliente">+ Novo cliente</button>
+          <p style="margin:0;color:var(--texto-suave);">Add and organize your clients.</p>
+          <button type="button" class="botao-nova-transacao" id="botao-novo-cliente">+ New client</button>
         </div>
         <div id="lista-clientes" class="grid-clientes"></div>
+      </section>
+
+      <!-- ================= TAB: BRAINSTORM ================= -->
+      <section id="aba-brainstorm" class="painel-aba" hidden>
+        <div class="financeiro-filtros-e-acao">
+          <p style="margin:0;color:var(--texto-suave);">Capture your content ideas before you forget them.</p>
+          <button type="button" class="botao-nova-transacao" id="botao-nova-ideia">+ New idea</button>
+        </div>
+        <div id="lista-ideias" class="grid-clientes"></div>
       </section>
     </div>
   </main>
 </div>
 
-<!-- ================= MODAL: NOVA/EDITAR TRANSACAO ================= -->
+<!-- ================= MODAL: NEW/EDIT TRANSACTION ================= -->
 <div class="modal-overlay" id="modal-transacao" role="dialog" aria-modal="true" hidden>
   <div class="modal-caixa">
     <button type="button" class="modal-fechar" id="fechar-modal-transacao">&times;</button>
-    <h3 id="titulo-modal-transacao">Nova transação</h3>
+    <h3 id="titulo-modal-transacao">New transaction</h3>
 
     <div class="seletor-tipo-transacao">
-      <button type="button" class="botao-tipo-transacao receita ativo" id="botao-tipo-receita" data-tipo="receita">Receita</button>
-      <button type="button" class="botao-tipo-transacao despesa" id="botao-tipo-despesa" data-tipo="despesa">Despesa</button>
+      <button type="button" class="botao-tipo-transacao receita ativo" id="botao-tipo-receita" data-tipo="receita">Income</button>
+      <button type="button" class="botao-tipo-transacao despesa" id="botao-tipo-despesa" data-tipo="despesa">Expense</button>
     </div>
 
     <form class="form-contato" id="form-transacao" novalidate>
       <input type="hidden" id="transacao-id">
       <input type="hidden" id="transacao-tipo" value="receita">
 
-      <label for="transacao-valor">Valor</label>
-      <input type="number" id="transacao-valor" step="0.01" min="0" required placeholder="0,00">
+      <label for="transacao-valor">Amount</label>
+      <input type="number" id="transacao-valor" step="0.01" min="0" required placeholder="0.00">
 
-      <label for="transacao-fonte" id="rotulo-transacao-fonte">Fonte</label>
-      <input type="text" id="transacao-fonte" required placeholder="ex: UGC, Hotmart">
+      <label for="transacao-fonte" id="rotulo-transacao-fonte">Source</label>
+      <input type="text" id="transacao-fonte" required placeholder="e.g. UGC, Hotmart">
 
-      <label for="transacao-descricao">Descrição (opcional)</label>
-      <input type="text" id="transacao-descricao" placeholder="detalhes da transação">
+      <label for="transacao-descricao">Description (optional)</label>
+      <input type="text" id="transacao-descricao" placeholder="transaction details">
 
-      <label for="transacao-data">Data</label>
+      <label for="transacao-data">Date</label>
       <input type="date" id="transacao-data" required>
 
       <div id="grupo-transacao-cliente">
-        <label for="transacao-cliente">Cliente (opcional)</label>
-        <input type="text" id="transacao-cliente" list="lista-clientes-datalist" placeholder="nome do cliente">
+        <label for="transacao-cliente">Client (optional)</label>
+        <input type="text" id="transacao-cliente" list="lista-clientes-datalist" placeholder="client name">
         <datalist id="lista-clientes-datalist"></datalist>
       </div>
 
-      <button type="submit" class="btn btn-primario" id="botao-salvar-transacao">Salvar</button>
+      <button type="submit" class="btn btn-primario" id="botao-salvar-transacao">Save</button>
     </form>
   </div>
 </div>
 
-<!-- ================= MODAL: NOVO/EDITAR CLIENTE ================= -->
+<!-- ================= MODAL: NEW/EDIT CLIENT ================= -->
 <div class="modal-overlay" id="modal-cliente" role="dialog" aria-modal="true" hidden>
   <div class="modal-caixa">
     <button type="button" class="modal-fechar" id="fechar-modal-cliente">&times;</button>
-    <h3 id="titulo-modal-cliente">Novo cliente</h3>
+    <h3 id="titulo-modal-cliente">New client</h3>
 
     <form class="form-contato" id="form-cliente" novalidate>
       <input type="hidden" id="cliente-id">
 
-      <label for="cliente-nome">Nome</label>
+      <label for="cliente-nome">Company Name</label>
       <input type="text" id="cliente-nome" required>
 
-      <label for="cliente-empresa">Empresa (opcional)</label>
+      <label for="cliente-empresa">Client Name (optional)</label>
       <input type="text" id="cliente-empresa">
 
-      <label for="cliente-email">E-mail (opcional)</label>
+      <label for="cliente-email">Email (optional)</label>
       <input type="email" id="cliente-email">
 
-      <label for="cliente-telefone">Telefone (opcional)</label>
-      <input type="text" id="cliente-telefone" placeholder="+55 11 91234-5678">
+      <label for="cliente-telefone">Phone (optional)</label>
+      <input type="text" id="cliente-telefone" placeholder="+353 83 000 0000">
 
-      <label for="cliente-instagram">Instagram (opcional)</label>
-      <input type="text" id="cliente-instagram" placeholder="@marca">
+      <label for="cliente-instagram">Instagram (optional)</label>
+      <input type="text" id="cliente-instagram" placeholder="@brand">
 
-      <label for="cliente-observacoes">Observações (opcional)</label>
+      <label for="cliente-observacoes">Notes (optional)</label>
       <textarea id="cliente-observacoes" rows="3"></textarea>
 
-      <button type="submit" class="btn btn-primario" id="botao-salvar-cliente">Salvar</button>
+      <button type="submit" class="btn btn-primario" id="botao-salvar-cliente">Save</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: NEW/EDIT IDEA ================= -->
+<div class="modal-overlay" id="modal-ideia" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-ideia">&times;</button>
+    <h3 id="titulo-modal-ideia">New idea</h3>
+
+    <form class="form-contato" id="form-ideia" novalidate>
+      <input type="hidden" id="ideia-id">
+
+      <label for="ideia-titulo">Title</label>
+      <input type="text" id="ideia-titulo" required placeholder="e.g. Skincare routine video">
+
+      <label for="ideia-descricao">Description (optional)</label>
+      <textarea id="ideia-descricao" rows="4" placeholder="details, references, notes..."></textarea>
+
+      <button type="submit" class="btn btn-primario" id="botao-salvar-ideia">Save</button>
     </form>
   </div>
 </div>
@@ -773,7 +808,7 @@
 <!-- ================= TOAST ================= -->
 <div class="toast" id="toast">
   <span id="toast-mensagem"></span>
-  <button type="button" class="toast-desfazer" id="toast-desfazer" hidden>Desfazer</button>
+  <button type="button" class="toast-desfazer" id="toast-desfazer" hidden>Undo</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -785,16 +820,21 @@
     financeiro: [], clientes: [], mesFinanceiro: "", filtroTipoFinanceiro: "todas",
     tipoTransacaoSelecionado: "receita",
     valoresOcultos: localStorage.getItem("painel_valores_ocultos") === "1",
-    usuarioId: null
+    usuarioId: null,
+    ideias: []
   };
 
   function formatarMoeda(valor){
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valor || 0);
+    return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(valor || 0);
   }
 
-  // ===================== BUSCA PAGINADA =====================
-  // O Supabase devolve no maximo 1000 linhas por consulta. Essa funcao
-  // busca em blocos de 1000, em laco, ate nao vir mais nada, e junta tudo.
+  function traduzirTipoAgenda(tipo){
+    return { evento: "Event", entrega: "Delivery", pendencia: "Pending" }[tipo] || tipo;
+  }
+
+  // ===================== PAGINATED FETCH =====================
+  // Supabase returns at most 1000 rows per query. This function fetches
+  // in blocks of 1000, in a loop, until nothing more comes back.
   async function buscarTudo(tabela){
     const TAMANHO_BLOCO = 1000;
     let inicio = 0;
@@ -835,7 +875,7 @@
     return nome.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  // ===================== INICIALIZACAO =====================
+  // ===================== INITIALIZATION =====================
   async function iniciar(){
     const usuario = await Auth.checkAuth();
     if(!usuario) return;
@@ -854,7 +894,7 @@
     } catch (erro) {
       console.error(erro);
       document.getElementById("area-conteudo").innerHTML =
-        '<div class="cartao-erro">Não foi possível carregar os dados agora. Tente recarregar a página em alguns instantes.</div>';
+        '<div class="cartao-erro">Could not load your data right now. Try reloading the page in a moment.</div>';
       document.body.classList.add("autenticado");
       return;
     }
@@ -862,16 +902,23 @@
     try {
       await carregarAgenda();
     } catch (erro) {
-      console.warn("Tabela painel_agenda ainda não configurada:", erro);
+      console.warn("painel_agenda table not set up yet:", erro);
       estado.agenda = [];
     }
 
     try {
       await Promise.all([carregarFinanceiro(), carregarClientes()]);
     } catch (erro) {
-      console.warn("Tabelas financeiro/clientes ainda não configuradas:", erro);
+      console.warn("financeiro/clientes tables not set up yet:", erro);
       estado.financeiro = [];
       estado.clientes = [];
+    }
+
+    try {
+      await carregarIdeias();
+    } catch (erro) {
+      console.warn("brainstorm table not set up yet:", erro);
+      estado.ideias = [];
     }
 
     configurarAbas();
@@ -880,6 +927,7 @@
     configurarRotina();
     configurarFinanceiro();
     configurarClientes();
+    configurarIdeias();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -888,11 +936,12 @@
     renderTudoMarcado();
     renderFinanceiro();
     renderClientes();
+    renderIdeias();
   }
 
-  // ===================== ABAS =====================
+  // ===================== TABS =====================
   function configurarAbas(){
-    const abasComOcultacao = ["rotina", "financeiro", "clientes"];
+    const abasComOcultacao = ["rotina", "financeiro", "clientes", "brainstorm"];
     document.querySelectorAll(".nav-item").forEach(botao => {
       botao.addEventListener("click", () => {
         const aba = botao.dataset.tab;
@@ -902,10 +951,11 @@
         document.getElementById("aba-rotina").hidden = aba !== "rotina";
         document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
         document.getElementById("aba-clientes").hidden = aba !== "clientes";
+        document.getElementById("aba-brainstorm").hidden = aba !== "brainstorm";
         document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
         const titulos = {
-          principal: "Menu Principal", portfolio: "Portfólio", rotina: "Minha Rotina",
-          financeiro: "Financeiro", clientes: "Clientes"
+          principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
+          financeiro: "Finance", clientes: "Clients", brainstorm: "Brainstorm"
         };
         document.getElementById("titulo-pagina").textContent = titulos[aba];
         fecharSidebarMobile();
@@ -913,10 +963,10 @@
     });
   }
 
-  // ===================== FILTRO DE PERIODO =====================
-  // Escopado a #filtro-periodo de proposito: existem outros botoes com a
-  // mesma classe visual ".botao-periodo" (o "hoje" do calendario, os
-  // filtros de tipo do financeiro) que nao devem cair nesse filtro.
+  // ===================== PERIOD FILTER =====================
+  // Scoped to #filtro-periodo on purpose: other buttons share the same
+  // ".botao-periodo" visual class (the calendar's "today", the finance
+  // type filters) and must not be caught by this filter.
   function configurarFiltroPeriodo(){
     document.querySelectorAll("#filtro-periodo .botao-periodo").forEach(botao => {
       botao.addEventListener("click", () => {
@@ -927,7 +977,7 @@
     });
   }
 
-  // ===================== SIDEBAR MOBILE =====================
+  // ===================== MOBILE SIDEBAR =====================
   function configurarSidebarMobile(){
     document.getElementById("botao-menu-mobile").addEventListener("click", () => {
       document.getElementById("sidebar").classList.add("aberta");
@@ -940,11 +990,11 @@
     document.getElementById("overlay-sidebar").hidden = true;
   }
 
-  // ===================== ABA: MINHA ROTINA (calendario e agenda) =====================
-  const NOMES_MES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  const NOMES_DIA_SEMANA = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
+  // ===================== TAB: MY ROUTINE (calendar and schedule) =====================
+  const NOMES_MES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const NOMES_DIA_SEMANA = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-  // Formata uma data local como "AAAA-MM-DD", sem depender de fuso horario
+  // Formats a local date as "YYYY-MM-DD", independent of timezone
   function dataParaChave(data){
     const ano = data.getFullYear();
     const mes = String(data.getMonth() + 1).padStart(2, "0");
@@ -1022,17 +1072,17 @@
         renderTudoMarcado();
       } catch (erro) {
         console.error(erro);
-        alert("Não foi possível salvar. Verifique se o setup.sql mais recente já foi rodado no Supabase.");
+        alert("Could not save. Check that the latest setup.sql has been run on Supabase.");
       }
     });
   }
 
   function renderCalendario(){
     document.getElementById("calendario-mes-ano").textContent =
-      `${NOMES_MES[estado.mesVisivel.getMonth()]} de ${estado.mesVisivel.getFullYear()}`;
+      `${NOMES_MES[estado.mesVisivel.getMonth()]} ${estado.mesVisivel.getFullYear()}`;
 
     const primeiroDiaMes = new Date(estado.mesVisivel.getFullYear(), estado.mesVisivel.getMonth(), 1);
-    const deslocamento = (primeiroDiaMes.getDay() + 6) % 7; // semana comecando na segunda
+    const deslocamento = (primeiroDiaMes.getDay() + 6) % 7; // week starting on Monday
     const inicioGrade = new Date(primeiroDiaMes);
     inicioGrade.setDate(inicioGrade.getDate() - deslocamento);
 
@@ -1077,24 +1127,24 @@
     document.getElementById("dia-sel-numero").textContent = estado.diaSelecionado.getDate();
     document.getElementById("dia-sel-nome").textContent = NOMES_DIA_SEMANA[estado.diaSelecionado.getDay()];
     document.getElementById("dia-sel-contagem").textContent =
-      itensDoDia.length === 1 ? "1 compromisso" : `${itensDoDia.length} compromissos`;
+      itensDoDia.length === 1 ? "1 appointment" : `${itensDoDia.length} appointments`;
 
     const lista = document.getElementById("lista-itens-dia");
     if(itensDoDia.length === 0){
-      lista.innerHTML = '<p class="texto-vazio">Nada marcado para esse dia.</p>';
+      lista.innerHTML = '<p class="texto-vazio">Nothing scheduled for this day.</p>';
       return;
     }
 
     lista.innerHTML = itensDoDia.map(item => `
       <div class="item-agenda ${item.concluido ? "concluido" : ""}">
         <div class="item-agenda-info">
-          <span class="item-agenda-hora">${item.dia_todo ? "dia todo" : (item.horario || "")}</span>
-          <span class="badge-tipo tipo-${item.tipo}">${item.tipo}</span>
+          <span class="item-agenda-hora">${item.dia_todo ? "all day" : (item.horario || "")}</span>
+          <span class="badge-tipo tipo-${item.tipo}">${traduzirTipoAgenda(item.tipo)}</span>
           <p class="item-agenda-titulo">${escapeHtml(item.titulo)}</p>
         </div>
         <div class="item-agenda-acoes">
-          <button type="button" class="botao-icone botao-concluir" data-id="${item.id}" aria-label="Marcar como feito">✓</button>
-          <button type="button" class="botao-icone excluir" data-id="${item.id}" aria-label="Excluir">✕</button>
+          <button type="button" class="botao-icone botao-concluir" data-id="${item.id}" aria-label="Mark as done">✓</button>
+          <button type="button" class="botao-icone excluir" data-id="${item.id}" aria-label="Delete">✕</button>
         </div>
       </div>
     `).join("");
@@ -1142,24 +1192,24 @@
       .filter(item => !item.concluido)
       .sort((a, b) => a.data.localeCompare(b.data));
 
-    contagem.textContent = `${pendentes.length} ${pendentes.length === 1 ? "item" : "itens"}. Clique no dia para abrir ele no calendário.`;
+    contagem.textContent = `${pendentes.length} ${pendentes.length === 1 ? "item" : "items"}. Click a day to open it in the calendar.`;
 
     if(pendentes.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nenhuma entrega ou pendência marcada ainda.</p>';
+      container.innerHTML = '<p class="texto-vazio">No deliveries or tasks scheduled yet.</p>';
       return;
     }
 
     container.innerHTML = `
       <div class="linha-agenda linha-agenda-cabecalho">
-        <span>DIA</span><span>HORA</span><span>TIPO</span><span>O QUE É</span>
+        <span>DAY</span><span>TIME</span><span>TYPE</span><span>WHAT</span>
       </div>
     ` + pendentes.map(item => {
       const [ano, mes, dia] = item.data.split("-");
       return `
         <div class="linha-agenda" data-data="${item.data}">
           <span>${dia}/${mes}</span>
-          <span>${item.dia_todo ? "dia todo" : (item.horario || "-")}</span>
-          <span class="badge-tipo tipo-${item.tipo}">${item.tipo}</span>
+          <span>${item.dia_todo ? "all day" : (item.horario || "-")}</span>
+          <span class="badge-tipo tipo-${item.tipo}">${traduzirTipoAgenda(item.tipo)}</span>
           <span>${escapeHtml(item.titulo)}</span>
         </div>
       `;
@@ -1176,7 +1226,7 @@
     });
   }
 
-  // ===================== TOAST (avisos com opcao de desfazer) =====================
+  // ===================== TOAST (with optional undo) =====================
   let temporizadorToast = null;
 
   function mostrarToast(mensagem, opcoes = {}){
@@ -1202,7 +1252,7 @@
     }, opcoes.comDesfazer ? 6000 : 3500);
   }
 
-  // ===================== ABA: FINANCEIRO =====================
+  // ===================== TAB: FINANCE =====================
   async function carregarFinanceiro(){
     const { data, error } = await Auth.sb
       .from("financeiro")
@@ -1258,7 +1308,7 @@
   function atualizarIconeOlho(){
     document.getElementById("icone-olho-aberto").hidden = estado.valoresOcultos;
     document.getElementById("icone-olho-fechado").hidden = !estado.valoresOcultos;
-    document.getElementById("botao-olho").setAttribute("aria-label", estado.valoresOcultos ? "Mostrar valores" : "Esconder valores");
+    document.getElementById("botao-olho").setAttribute("aria-label", estado.valoresOcultos ? "Show amounts" : "Hide amounts");
   }
 
   function selecionarTipoTransacao(tipo){
@@ -1266,8 +1316,8 @@
     document.getElementById("transacao-tipo").value = tipo;
     document.getElementById("botao-tipo-receita").classList.toggle("ativo", tipo === "receita");
     document.getElementById("botao-tipo-despesa").classList.toggle("ativo", tipo === "despesa");
-    document.getElementById("rotulo-transacao-fonte").textContent = tipo === "receita" ? "Fonte" : "Categoria";
-    document.getElementById("transacao-fonte").placeholder = tipo === "receita" ? "ex: UGC, Hotmart" : "ex: Marketing, Equipamento";
+    document.getElementById("rotulo-transacao-fonte").textContent = tipo === "receita" ? "Source" : "Category";
+    document.getElementById("transacao-fonte").placeholder = tipo === "receita" ? "e.g. UGC, Hotmart" : "e.g. Marketing, Equipment";
     document.getElementById("grupo-transacao-cliente").style.display = tipo === "receita" ? "block" : "none";
   }
 
@@ -1279,7 +1329,7 @@
       estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
 
     if(item){
-      document.getElementById("titulo-modal-transacao").textContent = "Editar transação";
+      document.getElementById("titulo-modal-transacao").textContent = "Edit transaction";
       document.getElementById("transacao-id").value = item.id;
       document.getElementById("transacao-valor").value = item.value;
       document.getElementById("transacao-fonte").value = item.fonte;
@@ -1288,7 +1338,7 @@
       document.getElementById("transacao-cliente").value = item.cliente || "";
       selecionarTipoTransacao(item.type);
     } else {
-      document.getElementById("titulo-modal-transacao").textContent = "Nova transação";
+      document.getElementById("titulo-modal-transacao").textContent = "New transaction";
       document.getElementById("transacao-id").value = "";
       document.getElementById("transacao-data").value = dataParaChave(new Date());
       selecionarTipoTransacao("receita");
@@ -1313,7 +1363,7 @@
     const tipo = estado.tipoTransacaoSelecionado;
 
     if(!valor || !fonte || !data){
-      mostrarToast("Preencha valor, fonte e data.");
+      mostrarToast("Please fill in amount, source, and date.");
       return;
     }
 
@@ -1333,27 +1383,27 @@
         if(error) throw error;
         const indice = estado.financeiro.findIndex(t => String(t.id) === String(id));
         if(indice > -1) estado.financeiro[indice] = atualizado[0];
-        mostrarToast("Transação atualizada.");
+        mostrarToast("Transaction updated.");
       } else {
         registro.user_id = estado.usuarioId;
         const { data: criado, error } = await Auth.sb.from("financeiro").insert(registro).select();
         if(error) throw error;
         estado.financeiro.unshift(criado[0]);
-        mostrarToast("Transação adicionada.");
+        mostrarToast("Transaction added.");
       }
 
       fecharModalTransacao();
       renderFinanceiro();
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Não foi possível salvar. Verifique se o setup.sql mais recente já foi rodado no Supabase.");
+      mostrarToast("Could not save. Check that the latest setup.sql has been run on Supabase.");
     }
   }
 
   async function excluirTransacao(id){
     const item = estado.financeiro.find(t => String(t.id) === String(id));
     if(!item) return;
-    if(!confirm("Excluir esta transação?")) return;
+    if(!confirm("Delete this transaction?")) return;
 
     try {
       const { error } = await Auth.sb.from("financeiro").delete().eq("id", id);
@@ -1361,7 +1411,7 @@
       estado.financeiro = estado.financeiro.filter(t => String(t.id) !== String(id));
       renderFinanceiro();
 
-      mostrarToast("Transação excluída.", {
+      mostrarToast("Transaction deleted.", {
         comDesfazer: true,
         aoDesfazer: async () => {
           try {
@@ -1369,16 +1419,16 @@
             if(erroRestaurar) throw erroRestaurar;
             estado.financeiro.push(restaurado[0]);
             renderFinanceiro();
-            mostrarToast("Transação restaurada.");
+            mostrarToast("Transaction restored.");
           } catch (erro) {
             console.error(erro);
-            mostrarToast("Não foi possível desfazer.");
+            mostrarToast("Could not undo.");
           }
         }
       });
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Não foi possível excluir. Tente novamente.");
+      mostrarToast("Could not delete. Try again.");
     }
   }
 
@@ -1405,8 +1455,8 @@
       tabela.innerHTML = `
         <div class="estado-vazio">
           <div class="estado-vazio-icone">💳</div>
-          <p>Nenhuma transação. Registre suas receitas e despesas para acompanhar suas finanças.</p>
-          <button type="button" class="btn btn-primario" id="botao-vazio-nova-transacao">Nova transação</button>
+          <p>No transactions yet. Add your income and expenses to keep track of your finances.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-nova-transacao">New transaction</button>
         </div>
       `;
       document.getElementById("botao-vazio-nova-transacao").addEventListener("click", () => abrirModalTransacao());
@@ -1417,7 +1467,7 @@
 
     tabela.innerHTML = `
       <div class="linha-financeiro linha-financeiro-cabecalho">
-        <span>DATA</span><span>DESCRIÇÃO</span><span>CLIENTE</span><span>VALOR</span><span></span>
+        <span>DATE</span><span>DESCRIPTION</span><span>CLIENT</span><span>AMOUNT</span><span></span>
       </div>
     ` + ordenados.map(t => {
       const [ano, mes, dia] = t.date.split("-");
@@ -1431,8 +1481,8 @@
           <span>${t.cliente ? escapeHtml(t.cliente) : "-"}</span>
           <span class="${classeValor}">${valorTexto}</span>
           <span class="acoes-linha">
-            <button type="button" class="botao-icone" data-editar="${t.id}" aria-label="Editar">✎</button>
-            <button type="button" class="botao-icone excluir" data-excluir="${t.id}" aria-label="Excluir">✕</button>
+            <button type="button" class="botao-icone" data-editar="${t.id}" aria-label="Edit">✎</button>
+            <button type="button" class="botao-icone excluir" data-excluir="${t.id}" aria-label="Delete">✕</button>
           </span>
         </div>
       `;
@@ -1449,7 +1499,7 @@
     });
   }
 
-  // ===================== ABA: CLIENTES =====================
+  // ===================== TAB: CLIENTS =====================
   async function carregarClientes(){
     const { data, error } = await Auth.sb
       .from("clientes")
@@ -1476,7 +1526,7 @@
     form.reset();
 
     if(item){
-      document.getElementById("titulo-modal-cliente").textContent = "Editar cliente";
+      document.getElementById("titulo-modal-cliente").textContent = "Edit client";
       document.getElementById("cliente-id").value = item.id;
       document.getElementById("cliente-nome").value = item.nome;
       document.getElementById("cliente-empresa").value = item.empresa || "";
@@ -1485,7 +1535,7 @@
       document.getElementById("cliente-instagram").value = item.instagram || "";
       document.getElementById("cliente-observacoes").value = item.observacoes || "";
     } else {
-      document.getElementById("titulo-modal-cliente").textContent = "Novo cliente";
+      document.getElementById("titulo-modal-cliente").textContent = "New client";
       document.getElementById("cliente-id").value = "";
     }
 
@@ -1502,7 +1552,7 @@
     const id = document.getElementById("cliente-id").value;
     const nome = document.getElementById("cliente-nome").value.trim();
     if(!nome){
-      mostrarToast("Informe o nome do cliente.");
+      mostrarToast("Please enter the company name.");
       return;
     }
 
@@ -1522,13 +1572,13 @@
         if(error) throw error;
         const indice = estado.clientes.findIndex(c => String(c.id) === String(id));
         if(indice > -1) estado.clientes[indice] = data[0];
-        mostrarToast("Cliente atualizado.");
+        mostrarToast("Client updated.");
       } else {
         registro.user_id = estado.usuarioId;
         const { data, error } = await Auth.sb.from("clientes").insert(registro).select();
         if(error) throw error;
         estado.clientes.push(data[0]);
-        mostrarToast("Cliente adicionado.");
+        mostrarToast("Client added.");
       }
 
       estado.clientes.sort((a, b) => a.nome.localeCompare(b.nome));
@@ -1536,21 +1586,21 @@
       renderClientes();
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Não foi possível salvar. Verifique se o setup.sql mais recente já foi rodado no Supabase.");
+      mostrarToast("Could not save. Check that the latest setup.sql has been run on Supabase.");
     }
   }
 
   async function excluirCliente(id){
-    if(!confirm("Excluir este cliente?")) return;
+    if(!confirm("Delete this client?")) return;
     try {
       const { error } = await Auth.sb.from("clientes").delete().eq("id", id);
       if(error) throw error;
       estado.clientes = estado.clientes.filter(c => String(c.id) !== String(id));
       renderClientes();
-      mostrarToast("Cliente excluído.");
+      mostrarToast("Client deleted.");
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Não foi possível excluir. Tente novamente.");
+      mostrarToast("Could not delete. Try again.");
     }
   }
 
@@ -1561,8 +1611,8 @@
       container.innerHTML = `
         <div class="estado-vazio" style="grid-column:1/-1;">
           <div class="estado-vazio-icone">🧑‍💼</div>
-          <p>Nenhum cliente cadastrado ainda.</p>
-          <button type="button" class="btn btn-primario" id="botao-vazio-novo-cliente">Novo cliente</button>
+          <p>No clients added yet.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-novo-cliente">New client</button>
         </div>
       `;
       document.getElementById("botao-vazio-novo-cliente").addEventListener("click", () => abrirModalCliente());
@@ -1579,8 +1629,8 @@
           ${c.instagram ? `<div>${escapeHtml(c.instagram)}</div>` : ""}
         </div>
         <div class="cartao-cliente-acoes">
-          <button type="button" class="botao-icone" data-editar-cliente="${c.id}" aria-label="Editar">✎</button>
-          <button type="button" class="botao-icone excluir" data-excluir-cliente="${c.id}" aria-label="Excluir">✕</button>
+          <button type="button" class="botao-icone" data-editar-cliente="${c.id}" aria-label="Edit">✎</button>
+          <button type="button" class="botao-icone excluir" data-excluir-cliente="${c.id}" aria-label="Delete">✕</button>
         </div>
       </div>
     `).join("");
@@ -1596,7 +1646,140 @@
     });
   }
 
-  // ===================== REDESENHAR =====================
+  // ===================== TAB: BRAINSTORM =====================
+  async function carregarIdeias(){
+    const { data, error } = await Auth.sb
+      .from("brainstorm")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if(error) throw error;
+    estado.ideias = data;
+  }
+
+  function configurarIdeias(){
+    document.getElementById("botao-nova-ideia").addEventListener("click", () => abrirModalIdeia());
+    document.getElementById("fechar-modal-ideia").addEventListener("click", fecharModalIdeia);
+    document.getElementById("modal-ideia").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-ideia") fecharModalIdeia();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalIdeia();
+    });
+    document.getElementById("form-ideia").addEventListener("submit", salvarIdeia);
+  }
+
+  function abrirModalIdeia(item = null){
+    const form = document.getElementById("form-ideia");
+    form.reset();
+
+    if(item){
+      document.getElementById("titulo-modal-ideia").textContent = "Edit idea";
+      document.getElementById("ideia-id").value = item.id;
+      document.getElementById("ideia-titulo").value = item.title;
+      document.getElementById("ideia-descricao").value = item.description || "";
+    } else {
+      document.getElementById("titulo-modal-ideia").textContent = "New idea";
+      document.getElementById("ideia-id").value = "";
+    }
+
+    document.getElementById("modal-ideia").hidden = false;
+  }
+
+  function fecharModalIdeia(){
+    document.getElementById("modal-ideia").hidden = true;
+  }
+
+  async function salvarIdeia(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("ideia-id").value;
+    const titulo = document.getElementById("ideia-titulo").value.trim();
+    if(!titulo){
+      mostrarToast("Please enter a title.");
+      return;
+    }
+
+    const registro = {
+      title: titulo,
+      description: document.getElementById("ideia-descricao").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      if(id){
+        const { data, error } = await Auth.sb.from("brainstorm").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const indice = estado.ideias.findIndex(i => String(i.id) === String(id));
+        if(indice > -1) estado.ideias[indice] = data[0];
+        mostrarToast("Idea updated.");
+      } else {
+        registro.user_id = estado.usuarioId;
+        const { data, error } = await Auth.sb.from("brainstorm").insert(registro).select();
+        if(error) throw error;
+        estado.ideias.unshift(data[0]);
+        mostrarToast("Idea added.");
+      }
+
+      fecharModalIdeia();
+      renderIdeias();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the latest setup.sql has been run on Supabase.");
+    }
+  }
+
+  async function excluirIdeia(id){
+    if(!confirm("Delete this idea?")) return;
+    try {
+      const { error } = await Auth.sb.from("brainstorm").delete().eq("id", id);
+      if(error) throw error;
+      estado.ideias = estado.ideias.filter(i => String(i.id) !== String(id));
+      renderIdeias();
+      mostrarToast("Idea deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function renderIdeias(){
+    const container = document.getElementById("lista-ideias");
+
+    if(estado.ideias.length === 0){
+      container.innerHTML = `
+        <div class="estado-vazio" style="grid-column:1/-1;">
+          <div class="estado-vazio-icone">💡</div>
+          <p>No ideas yet. Jot down your next content ideas here.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-nova-ideia">New idea</button>
+        </div>
+      `;
+      document.getElementById("botao-vazio-nova-ideia").addEventListener("click", () => abrirModalIdeia());
+      return;
+    }
+
+    container.innerHTML = estado.ideias.map(i => `
+      <div class="cartao cartao-cliente">
+        <p class="cartao-cliente-nome">${escapeHtml(i.title)}</p>
+        ${i.description ? `<div class="cartao-cliente-info">${escapeHtml(i.description)}</div>` : ""}
+        <div class="cartao-cliente-acoes">
+          <button type="button" class="botao-icone" data-editar-ideia="${i.id}" aria-label="Edit">✎</button>
+          <button type="button" class="botao-icone excluir" data-excluir-ideia="${i.id}" aria-label="Delete">✕</button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-editar-ideia]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.ideias.find(i => String(i.id) === botao.dataset.editarIdeia);
+        if(item) abrirModalIdeia(item);
+      });
+    });
+    container.querySelectorAll("[data-excluir-ideia]").forEach(botao => {
+      botao.addEventListener("click", () => excluirIdeia(botao.dataset.excluirIdeia));
+    });
+  }
+
+  // ===================== REDRAW =====================
   function redesenharTudo(){
     const eventosFiltrados = estado.eventos.filter(e => dentroDoPeriodo(e.created_at, estado.periodo));
     const leadsFiltrados = estado.leads.filter(l => dentroDoPeriodo(l.created_at, estado.periodo));
@@ -1605,7 +1788,7 @@
     renderPortfolio(eventosFiltrados, leadsFiltrados);
   }
 
-  // ===================== ABA: MENU PRINCIPAL =====================
+  // ===================== TAB: HOME =====================
   function renderPrincipal(eventos, leads){
     const pageViews = eventos.filter(e => e.event_type === "page_view");
     const cliques = eventos.filter(e => e.event_type === "button_click");
@@ -1642,7 +1825,7 @@
     });
 
     if(contagensPorDia.every(c => c.contagem === 0)){
-      container.innerHTML = '<p class="texto-vazio">Nenhuma visita registrada ainda.</p>';
+      container.innerHTML = '<p class="texto-vazio">No visits recorded yet.</p>';
       return;
     }
 
@@ -1650,17 +1833,17 @@
 
     container.innerHTML = contagensPorDia.map(c => {
       const altura = Math.max(2, Math.round((c.contagem / maiorValor) * 140));
-      const rotulo = c.data.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+      const rotulo = c.data.toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit" });
       return `
         <div class="coluna-dia">
-          <div class="barra-dia" style="height:${altura}px" title="${rotulo}: ${c.contagem} visitas"></div>
+          <div class="barra-dia" style="height:${altura}px" title="${rotulo}: ${c.contagem} visits"></div>
           <span class="rotulo-dia">${rotulo}</span>
         </div>
       `;
     }).join("");
   }
 
-  // ===================== ABA: PORTFOLIO =====================
+  // ===================== TAB: PORTFOLIO =====================
   function renderPortfolio(eventos, leads){
     renderVideosMaisVistos(eventos);
     renderBotoesMaisClicados(eventos);
@@ -1673,7 +1856,7 @@
     const videoViews = eventos.filter(e => e.event_type === "video_view" && e.event_name);
 
     if(videoViews.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nenhum vídeo assistido ainda.</p>';
+      container.innerHTML = '<p class="texto-vazio">No videos watched yet.</p>';
       return;
     }
 
@@ -1709,7 +1892,7 @@
     const cliques = eventos.filter(e => e.event_type === "button_click" && e.event_name);
 
     if(cliques.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nenhum clique registrado ainda.</p>';
+      container.innerHTML = '<p class="texto-vazio">No clicks recorded yet.</p>';
       return;
     }
 
@@ -1737,7 +1920,7 @@
     );
 
     if(cliques.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nenhum clique de contato ainda.</p>';
+      container.innerHTML = '<p class="texto-vazio">No contact clicks yet.</p>';
       return;
     }
 
@@ -1757,16 +1940,16 @@
     const container = document.getElementById("lista-mensagens");
 
     if(leads.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nenhuma mensagem por enquanto.</p>';
+      container.innerHTML = '<p class="texto-vazio">No messages yet.</p>';
       return;
     }
 
     const ordenado = [...leads].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     container.innerHTML = ordenado.map(lead => {
-      const data = new Date(lead.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
-      const origem = lead.source === "popup" ? "Pop-up" : "Contato";
-      const nome = escapeHtml(lead.name || "Sem nome");
+      const data = new Date(lead.created_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" });
+      const origem = lead.source === "popup" ? "Popup" : "Contact";
+      const nome = escapeHtml(lead.name || "No name");
       const email = escapeHtml(lead.email || "");
       const telefone = lead.phone ? escapeHtml(lead.phone) : "";
       const marca = lead.brand ? escapeHtml(lead.brand) : "";
@@ -1782,13 +1965,13 @@
             <span class="mensagem-data">${data}</span>
           </summary>
           <div class="mensagem-corpo">
-            <p><strong>E-mail:</strong> ${email}</p>
-            ${telefone ? `<p><strong>Telefone:</strong> ${telefone}</p>` : ""}
-            ${marca ? `<p><strong>Marca:</strong> ${marca}</p>` : ""}
-            ${orcamento ? `<p><strong>Orçamento:</strong> ${orcamento}</p>` : ""}
+            <p><strong>Email:</strong> ${email}</p>
+            ${telefone ? `<p><strong>Phone:</strong> ${telefone}</p>` : ""}
+            ${marca ? `<p><strong>Brand:</strong> ${marca}</p>` : ""}
+            ${orcamento ? `<p><strong>Budget:</strong> ${orcamento}</p>` : ""}
             <p class="mensagem-texto">${mensagem}</p>
             <div class="mensagem-acoes">
-              <a class="botao-pequeno" href="mailto:${email}">Responder por e-mail</a>
+              <a class="botao-pequeno" href="mailto:${email}">Reply by email</a>
               ${digitosTelefone ? `<a class="botao-pequeno botao-whatsapp" href="https://wa.me/${digitosTelefone}" target="_blank" rel="noopener">WhatsApp</a>` : ""}
             </div>
           </div>
