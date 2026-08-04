@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Content delivery | Nicoly Wapenik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#111111;
+    --azul:#2b6fff;
+    --laranja:#ff6a2b;
+    --limao:#c3f53a;
+    --magenta:#ff3da6;
+    --papel:#f7f2e6;
+    --branco:#ffffff;
+    --texto-suave:rgba(17,17,17,.6);
+    --sombra-dura:5px 5px 0 var(--preto);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background-color:var(--papel);
+    background-image:
+      linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size:38px 38px;
+    color:var(--preto);
+    font-family:'Poppins', sans-serif;
+    padding:2.5rem 1.2rem;
+  }
+  .pagina{max-width:640px;margin:0 auto;}
+  .marca{font-family:'Archivo Black', sans-serif;font-size:1.1rem;margin:0 0 2rem;}
+  .marca span{color:var(--magenta);}
+  .cartao-estado{
+    background:var(--branco);border:3px solid var(--preto);border-radius:16px;
+    padding:2.2rem 1.6rem;box-shadow:var(--sombra-dura);text-align:center;
+  }
+  .cartao-estado p{color:var(--texto-suave);margin:0;}
+  h1{font-family:'Archivo Black', sans-serif;text-transform:none;font-size:1.5rem;margin:0 0 .3rem;}
+  .subtitulo{color:var(--texto-suave);font-size:.9rem;margin:0 0 2rem;}
+  .lista-videos{display:flex;flex-direction:column;gap:1.4rem;}
+  .item-video{
+    background:var(--branco);border:3px solid var(--preto);border-radius:16px;
+    padding:1.2rem;box-shadow:var(--sombra-dura);
+  }
+  .item-video-titulo{font-family:'Archivo Black', sans-serif;font-size:.95rem;margin:0 0 .8rem;}
+  .item-video video{width:100%;border-radius:10px;background:var(--preto);display:block;}
+  .item-video-abrir{
+    display:inline-block;margin-top:.8rem;font-size:.85rem;font-weight:600;
+    color:var(--azul);text-decoration:underline;
+  }
+</style>
+</head>
+<body>
+
+<main class="pagina">
+  <p class="marca">nicoly<span>.</span>wapenik</p>
+  <div id="area-conteudo">
+    <div class="cartao-estado"><p>Loading...</p></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = "https://ozzzhazgslrnuuzxwwez.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96enpoYXpnc2xybnV1enh3d2V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4OTc5NzksImV4cCI6MjEwMDQ3Mzk3OX0.rtGSesuIMZmcDNYFqorUjxiiKZwtgpGP5Zeis8Q3TGI";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function escapeHtml(texto){
+    const div = document.createElement("div");
+    div.textContent = String(texto);
+    return div.innerHTML;
+  }
+
+  function mostrarErro(){
+    document.getElementById("area-conteudo").innerHTML = `
+      <div class="cartao-estado">
+        <p>This link is invalid or has expired. Please ask for a new one.</p>
+      </div>
+    `;
+  }
+
+  async function iniciar(){
+    const parametros = new URLSearchParams(window.location.search);
+    const token = parametros.get("t");
+
+    if(!token){
+      mostrarErro();
+      return;
+    }
+
+    const { data, error } = await sb
+      .from("entregas_links")
+      .select("cliente,expires_at,arquivos")
+      .eq("share_token", token)
+      .maybeSingle();
+
+    if(error || !data){
+      mostrarErro();
+      return;
+    }
+
+    const validoAte = new Date(data.expires_at).toLocaleDateString("en-IE", { day: "numeric", month: "long", year: "numeric" });
+
+    document.getElementById("area-conteudo").innerHTML = `
+      <h1>${escapeHtml(data.cliente)}</h1>
+      <p class="subtitulo">Your content is ready. This link is available until ${validoAte}.</p>
+      <div class="lista-videos">
+        ${data.arquivos.map(arquivo => `
+          <div class="item-video">
+            <p class="item-video-titulo">${escapeHtml(arquivo.titulo)}</p>
+            <video controls preload="metadata" src="${escapeHtml(arquivo.url)}"></video>
+            <a class="item-video-abrir" href="${escapeHtml(arquivo.url)}" target="_blank" rel="noopener">Open in a new tab</a>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  iniciar();
+</script>
+
+</body>
+</html>
