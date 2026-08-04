@@ -402,6 +402,24 @@
   }
   .entrega-link-validade{font-size:.75rem;color:var(--texto-suave);margin:.3rem 0 0;}
 
+  .lista-entregas-solta{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:1.2rem;}
+  .pasta-entrega{border:2px solid var(--preto);border-radius:14px;background:var(--branco);margin-bottom:1.2rem;overflow:hidden;}
+  .pasta-cabecalho{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:1rem 1.2rem;cursor:pointer;flex-wrap:wrap;
+  }
+  .pasta-info{display:flex;align-items:center;gap:.6rem;}
+  .pasta-nome{font-family:'Archivo Black', sans-serif;font-size:1rem;margin:0;}
+  .pasta-contagem{font-size:.78rem;color:var(--texto-suave);font-weight:600;}
+  .pasta-acoes{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+  .pasta-seta{transition:transform .15s ease;font-size:.9rem;}
+  .pasta-entrega.aberta .pasta-seta{transform:rotate(180deg);}
+  .pasta-link-area{padding:0 1.2rem;}
+  .pasta-link-area:not(:empty){padding-bottom:1rem;}
+  .pasta-corpo{padding:0 1.2rem 1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;border-top:1.5px solid rgba(17,17,17,.1);}
+  .pasta-corpo[hidden]{display:none;}
+  .pasta-corpo{padding-top:1.2rem;}
+
   /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
     position:fixed;inset:0;z-index:1000;background:rgba(17,17,17,.6);
@@ -770,7 +788,7 @@
           <p style="margin:0;color:var(--texto-suave);">Upload finished videos and generate a download link to send to each client.</p>
           <button type="button" class="botao-nova-transacao" id="botao-nova-entrega">+ New delivery</button>
         </div>
-        <div id="lista-entregas" class="grid-clientes"></div>
+        <div id="lista-entregas"></div>
       </section>
     </div>
   </main>
@@ -1911,11 +1929,12 @@
     document.getElementById("form-entrega").addEventListener("submit", salvarEntrega);
   }
 
-  function abrirModalEntrega(){
+  function abrirModalEntrega(clientePreenchido = ""){
     const form = document.getElementById("form-entrega");
     form.reset();
     document.getElementById("lista-clientes-datalist-entrega").innerHTML =
       estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
+    document.getElementById("entrega-cliente").value = clientePreenchido;
     document.getElementById("modal-entrega").hidden = false;
   }
 
@@ -1986,6 +2005,43 @@
     }
   }
 
+  const URL_BASE_ENTREGA = "https://nicolyugccreator.com/entrega/";
+
+  function agruparEntregasPorCliente(lista){
+    const mapa = new Map();
+    const semCliente = [];
+    lista.forEach(item => {
+      if(item.cliente){
+        if(!mapa.has(item.cliente)) mapa.set(item.cliente, []);
+        mapa.get(item.cliente).push(item);
+      } else {
+        semCliente.push(item);
+      }
+    });
+    return {
+      grupos: Array.from(mapa.entries()).map(([cliente, itens]) => ({ cliente, itens })),
+      semCliente
+    };
+  }
+
+  function cartaoEntregaHtml(e){
+    return `
+      <div class="cartao cartao-cliente">
+        <p class="cartao-cliente-nome">${escapeHtml(e.titulo)}</p>
+        <div class="cartao-cliente-info">
+          <div class="cartao-entrega-arquivo">${escapeHtml(e.nome_arquivo)}</div>
+          <div>${formatarTamanho(e.tamanho)}</div>
+          <div>${new Date(e.created_at).toLocaleDateString("en-IE")}</div>
+        </div>
+        <div class="entrega-link-area" id="link-area-${e.id}"></div>
+        <div class="cartao-cliente-acoes">
+          <button type="button" class="btn btn-secundario btn-pequeno" data-gerar-link="${e.id}">Generate link</button>
+          <button type="button" class="botao-icone excluir" data-excluir-entrega="${e.id}" aria-label="Delete">✕</button>
+        </div>
+      </div>
+    `;
+  }
+
   function mostrarOpcoesLink(id){
     const area = document.getElementById(`link-area-${id}`);
     area.innerHTML = `
@@ -2038,12 +2094,83 @@
     }
   }
 
+  function mostrarOpcoesLinkPasta(indice, cliente){
+    const area = document.getElementById(`pasta-link-area-${indice}`);
+    area.innerHTML = `
+      <div class="entrega-opcoes-link">
+        ${OPCOES_VALIDADE_LINK.map(o => `<button type="button" class="btn btn-secundario btn-pequeno" data-criar-link-pasta="${indice}:${o.segundos}">${o.rotulo}</button>`).join("")}
+      </div>
+    `;
+    area.querySelectorAll("[data-criar-link-pasta]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        const [idx, segundos] = botao.dataset.criarLinkPasta.split(":");
+        gerarLinkPasta(cliente, Number(segundos), Number(idx));
+      });
+    });
+  }
+
+  async function gerarLinkPasta(cliente, segundos, indice){
+    const itens = estado.entregas.filter(e => e.cliente === cliente);
+    const area = document.getElementById(`pasta-link-area-${indice}`);
+    if(!itens.length || !area) return;
+
+    area.innerHTML = `<p class="entrega-link-validade">Generating link...</p>`;
+
+    try {
+      const caminhos = itens.map(e => e.caminho_arquivo);
+      const { data, error } = await Auth.sb.storage.from("entregas").createSignedUrls(caminhos, segundos);
+      if(error) throw error;
+
+      const arquivos = itens.map((item, i) => ({
+        titulo: item.titulo,
+        nome_arquivo: item.nome_arquivo,
+        url: data[i].signedUrl
+      }));
+
+      const shareToken = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + segundos * 1000).toISOString();
+
+      const { error: erroLink } = await Auth.sb.from("entregas_links").insert({
+        user_id: estado.usuarioId,
+        cliente,
+        share_token: shareToken,
+        expires_at: expiresAt,
+        arquivos
+      });
+      if(erroLink) throw erroLink;
+
+      const link = `${URL_BASE_ENTREGA}?t=${shareToken}`;
+      const rotuloValidade = OPCOES_VALIDADE_LINK.find(o => o.segundos === segundos)?.rotulo || "";
+      area.innerHTML = `
+        <div class="entrega-link-pronto">
+          <input type="text" readonly value="${escapeHtml(link)}" id="pasta-link-input-${indice}">
+          <button type="button" class="btn btn-secundario btn-pequeno" id="pasta-copiar-link-${indice}">Copy</button>
+        </div>
+        <p class="entrega-link-validade">Link valid for ${rotuloValidade}, gives access to all ${itens.length} video${itens.length > 1 ? "s" : ""}.</p>
+      `;
+      document.getElementById(`pasta-link-input-${indice}`).addEventListener("click", (evento) => evento.target.select());
+      document.getElementById(`pasta-copiar-link-${indice}`).addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(link);
+          mostrarToast("Link copied.");
+        } catch (erro) {
+          document.getElementById(`pasta-link-input-${indice}`).select();
+          mostrarToast("Could not copy automatically, link is selected, press Ctrl+C.");
+        }
+      });
+    } catch (erro) {
+      console.error(erro);
+      area.innerHTML = `<p class="entrega-link-validade">Could not generate the link. Check that the latest setup.sql has been run on Supabase.</p>`;
+    }
+  }
+
   function renderEntregas(){
     const container = document.getElementById("lista-entregas");
 
     if(estado.entregas.length === 0){
       container.innerHTML = `
-        <div class="estado-vazio" style="grid-column:1/-1;">
+        <div class="estado-vazio">
           <div class="estado-vazio-icone">🎬</div>
           <p>No deliveries uploaded yet.</p>
           <button type="button" class="btn btn-primario" id="botao-vazio-nova-entrega">New delivery</button>
@@ -2053,28 +2180,71 @@
       return;
     }
 
-    container.innerHTML = estado.entregas.map(e => `
-      <div class="cartao cartao-cliente">
-        <p class="cartao-cliente-nome">${escapeHtml(e.titulo)}</p>
-        ${e.cliente ? `<p class="cartao-cliente-empresa">${escapeHtml(e.cliente)}</p>` : ""}
-        <div class="cartao-cliente-info">
-          <div class="cartao-entrega-arquivo">${escapeHtml(e.nome_arquivo)}</div>
-          <div>${formatarTamanho(e.tamanho)}</div>
-          <div>${new Date(e.created_at).toLocaleDateString("en-IE")}</div>
+    const { grupos, semCliente } = agruparEntregasPorCliente(estado.entregas);
+
+    const htmlPastas = grupos.map((grupo, indice) => `
+      <div class="pasta-entrega" data-pasta="${indice}">
+        <div class="pasta-cabecalho" data-toggle-pasta="${indice}">
+          <div class="pasta-info">
+            <div>
+              <p class="pasta-nome">${escapeHtml(grupo.cliente)}</p>
+              <p class="pasta-contagem">${grupo.itens.length} video${grupo.itens.length > 1 ? "s" : ""}</p>
+            </div>
+          </div>
+          <div class="pasta-acoes">
+            <button type="button" class="btn btn-secundario btn-pequeno" data-add-video-pasta="${escapeHtml(grupo.cliente)}">+ Add video</button>
+            <button type="button" class="btn btn-secundario btn-pequeno" data-gerar-link-pasta="${indice}">Generate link for all</button>
+            <span class="pasta-seta">▾</span>
+          </div>
         </div>
-        <div class="entrega-link-area" id="link-area-${e.id}"></div>
-        <div class="cartao-cliente-acoes">
-          <button type="button" class="btn btn-secundario btn-pequeno" data-gerar-link="${e.id}">Generate link</button>
-          <button type="button" class="botao-icone excluir" data-excluir-entrega="${e.id}" aria-label="Delete">✕</button>
+        <div class="pasta-link-area" id="pasta-link-area-${indice}"></div>
+        <div class="pasta-corpo" id="pasta-corpo-${indice}" hidden>
+          ${grupo.itens.map(cartaoEntregaHtml).join("")}
         </div>
       </div>
     `).join("");
 
+    const htmlSoltas = semCliente.length
+      ? `<div class="lista-entregas-solta">${semCliente.map(cartaoEntregaHtml).join("")}</div>`
+      : "";
+
+    container.innerHTML = htmlPastas + htmlSoltas;
+
+    container.querySelectorAll("[data-toggle-pasta]").forEach(cabecalho => {
+      cabecalho.addEventListener("click", () => {
+        const pasta = cabecalho.closest(".pasta-entrega");
+        const corpo = document.getElementById(`pasta-corpo-${cabecalho.dataset.togglePasta}`);
+        const aberta = pasta.classList.toggle("aberta");
+        corpo.hidden = !aberta;
+      });
+    });
+
+    container.querySelectorAll("[data-add-video-pasta]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        abrirModalEntrega(botao.dataset.addVideoPasta);
+      });
+    });
+
+    container.querySelectorAll("[data-gerar-link-pasta]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        const indice = Number(botao.dataset.gerarLinkPasta);
+        mostrarOpcoesLinkPasta(indice, grupos[indice].cliente);
+      });
+    });
+
     container.querySelectorAll("[data-gerar-link]").forEach(botao => {
-      botao.addEventListener("click", () => mostrarOpcoesLink(botao.dataset.gerarLink));
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        mostrarOpcoesLink(botao.dataset.gerarLink);
+      });
     });
     container.querySelectorAll("[data-excluir-entrega]").forEach(botao => {
-      botao.addEventListener("click", () => excluirEntrega(botao.dataset.excluirEntrega));
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        excluirEntrega(botao.dataset.excluirEntrega);
+      });
     });
   }
 
@@ -2124,176 +2294,4 @@
     });
 
     if(contagensPorDia.every(c => c.contagem === 0)){
-      container.innerHTML = '<p class="texto-vazio">No visits recorded yet.</p>';
-      return;
-    }
-
-    const maiorValor = Math.max(1, ...contagensPorDia.map(c => c.contagem));
-
-    container.innerHTML = contagensPorDia.map(c => {
-      const altura = Math.max(2, Math.round((c.contagem / maiorValor) * 140));
-      const rotulo = c.data.toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit" });
-      return `
-        <div class="coluna-dia">
-          <div class="barra-dia" style="height:${altura}px" title="${rotulo}: ${c.contagem} visits"></div>
-          <span class="rotulo-dia">${rotulo}</span>
-        </div>
-      `;
-    }).join("");
-  }
-
-  // ===================== TAB: PORTFOLIO =====================
-  function renderPortfolio(eventos, leads){
-    renderVideosMaisVistos(eventos);
-    renderBotoesMaisClicados(eventos);
-    renderCliquesContato(eventos);
-    renderMensagens(leads);
-  }
-
-  function renderVideosMaisVistos(eventos){
-    const container = document.getElementById("lista-videos");
-    const videoViews = eventos.filter(e => e.event_type === "video_view" && e.event_name);
-    const videoProgresso = eventos.filter(e => e.event_type === "video_progress" && e.event_name && e.metadata && typeof e.metadata.percent === "number");
-
-    if(videoViews.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No videos watched yet.</p>';
-      return;
-    }
-
-    const contagens = {};
-    const titulos = {};
-    videoViews.forEach(e => {
-      contagens[e.event_name] = (contagens[e.event_name] || 0) + 1;
-      if(e.metadata && e.metadata.title) titulos[e.event_name] = e.metadata.title;
-    });
-
-    // Media de quanto (%) do video foi assistido, por video
-    const percentuaisPorVideo = {};
-    videoProgresso.forEach(e => {
-      if(!percentuaisPorVideo[e.event_name]) percentuaisPorVideo[e.event_name] = [];
-      percentuaisPorVideo[e.event_name].push(e.metadata.percent);
-    });
-
-    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
-    const maior = ordenado[0][1];
-
-    container.innerHTML = ordenado.map(([id, contagem]) => {
-      const titulo = escapeHtml(titulos[id] || id);
-      const largura = Math.max(6, Math.round((contagem / maior) * 100));
-      const idCodificado = encodeURIComponent(id);
-      const listaPercentuais = percentuaisPorVideo[id];
-      const percentualMedio = listaPercentuais && listaPercentuais.length
-        ? Math.round(listaPercentuais.reduce((soma, p) => soma + p, 0) / listaPercentuais.length)
-        : null;
-      return `
-        <a class="item-video" href="https://www.youtube.com/watch?v=${idCodificado}" target="_blank" rel="noopener">
-          <img src="https://i.ytimg.com/vi/${idCodificado}/mqdefault.jpg" alt="" loading="lazy">
-          <div class="item-video-info">
-            <p class="item-video-titulo">${titulo}</p>
-            <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
-            ${percentualMedio !== null ? `<span class="item-video-percentual">${percentualMedio}% avg watched</span>` : ""}
-          </div>
-          <span class="item-video-contagem">${contagem}<small>views</small></span>
-        </a>
-      `;
-    }).join("");
-  }
-
-  function renderBotoesMaisClicados(eventos){
-    const container = document.getElementById("lista-botoes");
-    const cliques = eventos.filter(e => e.event_type === "button_click" && e.event_name);
-
-    if(cliques.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No clicks recorded yet.</p>';
-      return;
-    }
-
-    const contagens = {};
-    cliques.forEach(e => { contagens[e.event_name] = (contagens[e.event_name] || 0) + 1; });
-    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
-    const maior = ordenado[0][1];
-
-    container.innerHTML = ordenado.map(([nome, contagem]) => {
-      const largura = Math.max(6, Math.round((contagem / maior) * 100));
-      return `
-        <div class="item-barra">
-          <span class="item-barra-nome">${escapeHtml(formatarNomeEvento(nome))}</span>
-          <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
-          <span class="item-barra-contagem">${contagem}</span>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function renderCliquesContato(eventos){
-    const container = document.getElementById("lista-contato");
-    const cliques = eventos.filter(e =>
-      e.event_type === "button_click" && e.event_name && e.event_name.startsWith("contact_")
-    );
-
-    if(cliques.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No contact clicks yet.</p>';
-      return;
-    }
-
-    const contagens = {};
-    cliques.forEach(e => { contagens[e.event_name] = (contagens[e.event_name] || 0) + 1; });
-    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
-
-    container.innerHTML = ordenado.map(([nome, contagem]) => `
-      <div class="item-contato">
-        <span>${escapeHtml(formatarNomeEvento(nome.replace("contact_", "")))}</span>
-        <strong>${contagem}</strong>
-      </div>
-    `).join("");
-  }
-
-  function renderMensagens(leads){
-    const container = document.getElementById("lista-mensagens");
-
-    if(leads.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No messages yet.</p>';
-      return;
-    }
-
-    const ordenado = [...leads].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    container.innerHTML = ordenado.map(lead => {
-      const data = new Date(lead.created_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" });
-      const origem = lead.source === "popup" ? "Popup" : "Contact";
-      const nome = escapeHtml(lead.name || "No name");
-      const email = escapeHtml(lead.email || "");
-      const telefone = lead.phone ? escapeHtml(lead.phone) : "";
-      const marca = lead.brand ? escapeHtml(lead.brand) : "";
-      const orcamento = lead.budget ? escapeHtml(lead.budget) : "";
-      const mensagem = escapeHtml(lead.message || "");
-      const digitosTelefone = (lead.phone || "").replace(/\D/g, "");
-
-      return `
-        <details class="cartao-mensagem">
-          <summary>
-            <span class="selo-origem">${origem}</span>
-            <span class="mensagem-nome">${nome}</span>
-            <span class="mensagem-data">${data}</span>
-          </summary>
-          <div class="mensagem-corpo">
-            <p><strong>Email:</strong> ${email}</p>
-            ${telefone ? `<p><strong>Phone:</strong> ${telefone}</p>` : ""}
-            ${marca ? `<p><strong>Brand:</strong> ${marca}</p>` : ""}
-            ${orcamento ? `<p><strong>Budget:</strong> ${orcamento}</p>` : ""}
-            <p class="mensagem-texto">${mensagem}</p>
-            <div class="mensagem-acoes">
-              <a class="botao-pequeno" href="mailto:${email}">Reply by email</a>
-              ${digitosTelefone ? `<a class="botao-pequeno botao-whatsapp" href="https://wa.me/${digitosTelefone}" target="_blank" rel="noopener">WhatsApp</a>` : ""}
-            </div>
-          </div>
-        </details>
-      `;
-    }).join("");
-  }
-
-  document.addEventListener("DOMContentLoaded", iniciar);
-</script>
-
-</body>
-</html>
+      container.innerHTML = 
