@@ -724,6 +724,7 @@
   <p id="rodape-copyright"></p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* =====================================================================
    SITE CONFIGURATION / CONFIGURACAO DO SITE
@@ -1213,6 +1214,7 @@ function abrirModalPortfolio(videoId, titulo, botaoOrigem){
   document.body.style.overflow = "hidden";
   ultimoBotaoDePortfolio = botaoOrigem;
   document.getElementById("portfolio-modal-fechar").focus();
+  registrarEvento("video_view", videoId, { title: titulo });
 }
 
 function fecharModalPortfolio(){
@@ -1297,6 +1299,9 @@ function configurarFormulario(){
     const corpo = encodeURIComponent(`${t.corpoEmailNome}: ${nome}\n${t.corpoEmailEmail}: ${email}\n\n${t.corpoEmailMensagem}:\n${mensagem}`);
     window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
 
+    registrarEvento("button_click", "contact_form_submit");
+    registrarLead({ name: nome, email: email, message: mensagem, source: "contact" });
+
     msg.textContent = t.confirmacaoFormulario;
     form.reset();
   });
@@ -1366,9 +1371,57 @@ function configurarFormularioProposta(){
     const corpo = encodeURIComponent(`${p.corpoEmailNome}: ${nome}\n${p.corpoEmailEmpresa}: ${empresa}\n${p.corpoEmailEmail}: ${email}\n${p.corpoEmailOrcamento}: ${orcamento}\n\n${p.corpoEmailMensagem}:\n${mensagem}`);
     window.location.href = `mailto:${DADOS.email}?subject=${assunto}&body=${corpo}`;
 
+    registrarEvento("button_click", "contact_proposal_submit");
+    registrarLead({ name: nome, email: email, brand: empresa, budget: orcamento, message: mensagem, source: "popup" });
+
     msg.textContent = p.confirmacao;
     form.reset();
   });
+}
+
+// ===================== ANALYTICS (Supabase) =====================
+// Grava visitas, cliques e mensagens no Supabase para aparecerem no seu
+// painel. A chave abaixo e a chave publica "anon": ela so tem permissao
+// para INSERIR eventos e mensagens, nunca para ler, editar ou apagar
+// dados (isso e controlado pelas policies do banco, nao por essa chave).
+const SUPABASE_URL = "https://ozzzhazgslrnuuzxwwez.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96enpoYXpnc2xybnV1enh3d2V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4OTc5NzksImV4cCI6MjEwMDQ3Mzk3OX0.rtGSesuIMZmcDNYFqorUjxiiKZwtgpGP5Zeis8Q3TGI";
+const clienteAnalytics = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+function obterSessionId(){
+  let id = sessionStorage.getItem("nicoly_session_id");
+  if(!id){
+    id = window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    sessionStorage.setItem("nicoly_session_id", id);
+  }
+  return id;
+}
+
+function registrarEvento(eventType, eventName, metadata){
+  if(!clienteAnalytics) return;
+  clienteAnalytics.from("portfolio_events").insert({
+    event_type: eventType,
+    event_name: eventName || null,
+    session_id: obterSessionId(),
+    page_path: window.location.pathname,
+    metadata: metadata || null
+  }).then(({ error }) => { if(error) console.warn("Falha ao registrar evento:", error.message); });
+}
+
+function registrarLead(dados){
+  if(!clienteAnalytics) return;
+  clienteAnalytics.from("portfolio_leads").insert(dados)
+    .then(({ error }) => { if(error) console.warn("Falha ao registrar mensagem:", error.message); });
+}
+
+function configurarAnalytics(){
+  registrarEvento("page_view");
+
+  document.getElementById("link-whatsapp").addEventListener("click", () => registrarEvento("button_click", "contact_whatsapp"));
+  document.getElementById("link-email").addEventListener("click", () => registrarEvento("button_click", "contact_email"));
+  document.getElementById("link-instagram").addEventListener("click", () => registrarEvento("button_click", "contact_instagram"));
+  document.getElementById("hero-cta").addEventListener("click", () => registrarEvento("button_click", "hero_cta"));
+  document.getElementById("hero-cta-secundario").addEventListener("click", () => registrarEvento("button_click", "hero_secondary"));
 }
 
 // ===================== INITIALIZATION =====================
@@ -1380,6 +1433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   configurarModalPortfolio();
   configurarModalProposta();
   configurarFormularioProposta();
+  configurarAnalytics();
 });
 </script>
 
