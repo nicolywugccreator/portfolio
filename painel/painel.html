@@ -197,7 +197,9 @@
     font-size:.88rem;font-weight:600;margin:0 0 .35rem;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
-  .item-video-contagem{font-weight:700;font-size:.9rem;flex-shrink:0;}
+  .item-video-percentual{font-size:.7rem;color:var(--texto-suave);display:block;margin-top:.3rem;}
+  .item-video-contagem{font-weight:700;font-size:.9rem;flex-shrink:0;text-align:right;}
+  .item-video-contagem small{display:block;font-weight:500;font-size:.62rem;color:var(--texto-suave);}
 
   .barra-horizontal{background:var(--papel);border:1px solid var(--preto);border-radius:999px;height:9px;overflow:hidden;}
   .barra-horizontal-preenchida{background:var(--limao);height:100%;border-radius:999px;}
@@ -1885,6 +1887,7 @@
   function renderVideosMaisVistos(eventos){
     const container = document.getElementById("lista-videos");
     const videoViews = eventos.filter(e => e.event_type === "video_view" && e.event_name);
+    const videoProgresso = eventos.filter(e => e.event_type === "video_progress" && e.event_name && e.metadata && typeof e.metadata.percent === "number");
 
     if(videoViews.length === 0){
       container.innerHTML = '<p class="texto-vazio">No videos watched yet.</p>';
@@ -1898,6 +1901,13 @@
       if(e.metadata && e.metadata.title) titulos[e.event_name] = e.metadata.title;
     });
 
+    // Media de quanto (%) do video foi assistido, por video
+    const percentuaisPorVideo = {};
+    videoProgresso.forEach(e => {
+      if(!percentuaisPorVideo[e.event_name]) percentuaisPorVideo[e.event_name] = [];
+      percentuaisPorVideo[e.event_name].push(e.metadata.percent);
+    });
+
     const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
     const maior = ordenado[0][1];
 
@@ -1905,14 +1915,19 @@
       const titulo = escapeHtml(titulos[id] || id);
       const largura = Math.max(6, Math.round((contagem / maior) * 100));
       const idCodificado = encodeURIComponent(id);
+      const listaPercentuais = percentuaisPorVideo[id];
+      const percentualMedio = listaPercentuais && listaPercentuais.length
+        ? Math.round(listaPercentuais.reduce((soma, p) => soma + p, 0) / listaPercentuais.length)
+        : null;
       return `
         <a class="item-video" href="https://www.youtube.com/watch?v=${idCodificado}" target="_blank" rel="noopener">
           <img src="https://i.ytimg.com/vi/${idCodificado}/mqdefault.jpg" alt="" loading="lazy">
           <div class="item-video-info">
             <p class="item-video-titulo">${titulo}</p>
             <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
+            ${percentualMedio !== null ? `<span class="item-video-percentual">${percentualMedio}% avg watched</span>` : ""}
           </div>
-          <span class="item-video-contagem">${contagem}</span>
+          <span class="item-video-contagem">${contagem}<small>views</small></span>
         </a>
       `;
     }).join("");
