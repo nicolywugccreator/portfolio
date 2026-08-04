@@ -472,6 +472,8 @@
     padding:.65rem 1.3rem;cursor:pointer;
   }
   .botao-nova-transacao:hover{background:var(--magenta);}
+  .botao-nova-transacao.laranja{background:var(--laranja);color:var(--preto);border-color:var(--preto);}
+  .botao-nova-transacao.laranja:hover{background:var(--magenta);color:var(--branco);}
 
   .linha-financeiro{
     display:grid;grid-template-columns:70px 1fr 120px 110px 80px;gap:.8rem;align-items:center;
@@ -786,7 +788,7 @@
       <section id="aba-entregas" class="painel-aba" hidden>
         <div class="financeiro-filtros-e-acao">
           <p style="margin:0;color:var(--texto-suave);">Upload finished videos and generate a download link to send to each client.</p>
-          <button type="button" class="botao-nova-transacao" id="botao-nova-entrega">+ New delivery</button>
+          <button type="button" class="botao-nova-transacao laranja" id="botao-nova-entrega">+ New delivery</button>
         </div>
         <div id="lista-entregas"></div>
       </section>
@@ -2173,10 +2175,8 @@
         <div class="estado-vazio">
           <div class="estado-vazio-icone">🎬</div>
           <p>No deliveries uploaded yet.</p>
-          <button type="button" class="btn btn-primario" id="botao-vazio-nova-entrega">New delivery</button>
         </div>
       `;
-      document.getElementById("botao-vazio-nova-entrega").addEventListener("click", () => abrirModalEntrega());
       return;
     }
 
@@ -2294,4 +2294,4 @@
     });
 
     if(contagensPorDia.every(c => c.contagem === 0)){
-      container.innerHTML = 
+      container.innerHTML = '<p class="texto-vazio
