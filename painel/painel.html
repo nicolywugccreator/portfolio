@@ -316,21 +316,51 @@
   }
   .botao-adicionar-agenda:hover{background:var(--magenta);border-color:var(--preto);}
 
-  .form-agenda{margin-top:1rem;display:flex;flex-direction:column;gap:.2rem;}
-  .form-agenda label{font-size:.72rem;font-weight:700;text-transform:uppercase;margin-top:.6rem;}
-  .form-agenda input, .form-agenda select{
-    font-family:'Poppins', sans-serif;padding:.6rem .7rem;border:2px solid var(--preto);
-    border-radius:8px;font-size:.9rem;background:var(--branco);color:var(--preto);
-  }
-  .checkbox-linha{display:flex;align-items:center;gap:.5rem;font-size:.85rem;text-transform:none;font-weight:600;}
-  .checkbox-linha input{width:auto;}
-  .form-agenda-acoes{display:flex;gap:.6rem;margin-top:.9rem;}
-  .form-agenda-acoes .btn{flex:1;padding:.65rem 1rem;font-size:.9rem;}
+  .form-agenda{margin-top:1rem;display:flex;flex-direction:column;}
+  .checkbox-linha{display:flex;align-items:center;gap:.5rem;font-size:.85rem;text-transform:none;font-weight:500;color:var(--preto);margin-bottom:1rem;}
+  .checkbox-linha input{width:auto;margin:0;}
+  .form-agenda-acoes{display:flex;gap:.6rem;margin-top:.4rem;}
+  .form-agenda-acoes .btn{flex:1;padding:.7rem 1rem;font-size:.9rem;}
   .botao-cancelar{
     flex:1;
-    background:var(--branco);border:2px solid var(--preto);border-radius:8px;padding:.65rem 1rem;
-    font-family:'Poppins', sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;
+    background:var(--papel);border:1.5px solid rgba(17,17,17,.15);border-radius:999px;padding:.7rem 1rem;
+    font-family:'Poppins', sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--preto);
+    transition:background .15s ease;
   }
+  .botao-cancelar:hover{background:#ece7da;}
+
+  /* ===================== SOFT FORM FIELDS (all modal forms + schedule form) ===================== */
+  .form-contato label, .form-agenda label{
+    display:block;
+    font-family:'Poppins', sans-serif;
+    font-size:.8rem;
+    font-weight:500;
+    text-transform:none;
+    color:var(--texto-suave);
+    margin:0 0 .35rem;
+  }
+  .form-contato input, .form-contato textarea, .form-contato select,
+  .form-agenda input, .form-agenda select{
+    width:100%;
+    font-family:'Poppins', sans-serif;
+    font-size:.95rem;
+    padding:.7rem .95rem;
+    border:1.5px solid rgba(17,17,17,.12);
+    border-radius:12px;
+    background:var(--papel);
+    color:var(--preto);
+    margin-bottom:1.1rem;
+    transition:border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .form-contato input:focus, .form-contato textarea:focus, .form-contato select:focus,
+  .form-agenda input:focus, .form-agenda select:focus{
+    outline:none;
+    border-color:var(--azul);
+    background:var(--branco);
+    box-shadow:0 0 0 3px rgba(43,111,255,.15);
+  }
+  .form-contato textarea{resize:vertical;min-height:80px;}
+  .form-contato .btn-primario, .form-agenda .btn-primario{border-radius:999px;}
 
   .tabela-agenda{margin-top:.8rem;}
   .linha-agenda{
@@ -428,10 +458,11 @@
   .estado-vazio-icone{font-size:2.2rem;margin-bottom:.6rem;}
   .estado-vazio p{margin:0 0 1rem;font-size:.9rem;}
 
-  .seletor-tipo-transacao{display:flex;gap:.6rem;margin-bottom:1.2rem;}
+  .seletor-tipo-transacao{display:flex;gap:.6rem;margin-bottom:1.3rem;}
   .botao-tipo-transacao{
-    flex:1;padding:.7rem;border:2px solid var(--preto);border-radius:10px;background:var(--branco);
-    font-family:'Poppins', sans-serif;font-weight:700;cursor:pointer;color:var(--preto);
+    flex:1;padding:.7rem;border:1.5px solid rgba(17,17,17,.12);border-radius:999px;background:var(--papel);
+    font-family:'Poppins', sans-serif;font-weight:600;cursor:pointer;color:var(--preto);
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
   }
   .botao-tipo-transacao.receita.ativo{background:var(--sucesso);color:var(--branco);border-color:var(--sucesso);}
   .botao-tipo-transacao.despesa.ativo{background:var(--erro);color:var(--branco);border-color:var(--erro);}
