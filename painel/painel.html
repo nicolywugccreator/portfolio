@@ -2294,4 +2294,176 @@
     });
 
     if(contagensPorDia.every(c => c.contagem === 0)){
-      container.innerHTML = '<p class="texto-vazio
+      container.innerHTML = '<p class="texto-vazio">No visits recorded yet.</p>';
+      return;
+    }
+
+    const maiorValor = Math.max(1, ...contagensPorDia.map(c => c.contagem));
+
+    container.innerHTML = contagensPorDia.map(c => {
+      const altura = Math.max(2, Math.round((c.contagem / maiorValor) * 140));
+      const rotulo = c.data.toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit" });
+      return `
+        <div class="coluna-dia">
+          <div class="barra-dia" style="height:${altura}px" title="${rotulo}: ${c.contagem} visits"></div>
+          <span class="rotulo-dia">${rotulo}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // ===================== TAB: PORTFOLIO =====================
+  function renderPortfolio(eventos, leads){
+    renderVideosMaisVistos(eventos);
+    renderBotoesMaisClicados(eventos);
+    renderCliquesContato(eventos);
+    renderMensagens(leads);
+  }
+
+  function renderVideosMaisVistos(eventos){
+    const container = document.getElementById("lista-videos");
+    const videoViews = eventos.filter(e => e.event_type === "video_view" && e.event_name);
+    const videoProgresso = eventos.filter(e => e.event_type === "video_progress" && e.event_name && e.metadata && typeof e.metadata.percent === "number");
+
+    if(videoViews.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No videos watched yet.</p>';
+      return;
+    }
+
+    const contagens = {};
+    const titulos = {};
+    videoViews.forEach(e => {
+      contagens[e.event_name] = (contagens[e.event_name] || 0) + 1;
+      if(e.metadata && e.metadata.title) titulos[e.event_name] = e.metadata.title;
+    });
+
+    // Media de quanto (%) do video foi assistido, por video
+    const percentuaisPorVideo = {};
+    videoProgresso.forEach(e => {
+      if(!percentuaisPorVideo[e.event_name]) percentuaisPorVideo[e.event_name] = [];
+      percentuaisPorVideo[e.event_name].push(e.metadata.percent);
+    });
+
+    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
+    const maior = ordenado[0][1];
+
+    container.innerHTML = ordenado.map(([id, contagem]) => {
+      const titulo = escapeHtml(titulos[id] || id);
+      const largura = Math.max(6, Math.round((contagem / maior) * 100));
+      const idCodificado = encodeURIComponent(id);
+      const listaPercentuais = percentuaisPorVideo[id];
+      const percentualMedio = listaPercentuais && listaPercentuais.length
+        ? Math.round(listaPercentuais.reduce((soma, p) => soma + p, 0) / listaPercentuais.length)
+        : null;
+      return `
+        <a class="item-video" href="https://www.youtube.com/watch?v=${idCodificado}" target="_blank" rel="noopener">
+          <img src="https://i.ytimg.com/vi/${idCodificado}/mqdefault.jpg" alt="" loading="lazy">
+          <div class="item-video-info">
+            <p class="item-video-titulo">${titulo}</p>
+            <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
+            ${percentualMedio !== null ? `<span class="item-video-percentual">${percentualMedio}% avg watched</span>` : ""}
+          </div>
+          <span class="item-video-contagem">${contagem}<small>views</small></span>
+        </a>
+      `;
+    }).join("");
+  }
+
+  function renderBotoesMaisClicados(eventos){
+    const container = document.getElementById("lista-botoes");
+    const cliques = eventos.filter(e => e.event_type === "button_click" && e.event_name);
+
+    if(cliques.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No clicks recorded yet.</p>';
+      return;
+    }
+
+    const contagens = {};
+    cliques.forEach(e => { contagens[e.event_name] = (contagens[e.event_name] || 0) + 1; });
+    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
+    const maior = ordenado[0][1];
+
+    container.innerHTML = ordenado.map(([nome, contagem]) => {
+      const largura = Math.max(6, Math.round((contagem / maior) * 100));
+      return `
+        <div class="item-barra">
+          <span class="item-barra-nome">${escapeHtml(formatarNomeEvento(nome))}</span>
+          <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
+          <span class="item-barra-contagem">${contagem}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderCliquesContato(eventos){
+    const container = document.getElementById("lista-contato");
+    const cliques = eventos.filter(e =>
+      e.event_type === "button_click" && e.event_name && e.event_name.startsWith("contact_")
+    );
+
+    if(cliques.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No contact clicks yet.</p>';
+      return;
+    }
+
+    const contagens = {};
+    cliques.forEach(e => { contagens[e.event_name] = (contagens[e.event_name] || 0) + 1; });
+    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
+
+    container.innerHTML = ordenado.map(([nome, contagem]) => `
+      <div class="item-contato">
+        <span>${escapeHtml(formatarNomeEvento(nome.replace("contact_", "")))}</span>
+        <strong>${contagem}</strong>
+      </div>
+    `).join("");
+  }
+
+  function renderMensagens(leads){
+    const container = document.getElementById("lista-mensagens");
+
+    if(leads.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No messages yet.</p>';
+      return;
+    }
+
+    const ordenado = [...leads].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    container.innerHTML = ordenado.map(lead => {
+      const data = new Date(lead.created_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" });
+      const origem = lead.source === "popup" ? "Popup" : "Contact";
+      const nome = escapeHtml(lead.name || "No name");
+      const email = escapeHtml(lead.email || "");
+      const telefone = lead.phone ? escapeHtml(lead.phone) : "";
+      const marca = lead.brand ? escapeHtml(lead.brand) : "";
+      const orcamento = lead.budget ? escapeHtml(lead.budget) : "";
+      const mensagem = escapeHtml(lead.message || "");
+      const digitosTelefone = (lead.phone || "").replace(/\D/g, "");
+
+      return `
+        <details class="cartao-mensagem">
+          <summary>
+            <span class="selo-origem">${origem}</span>
+            <span class="mensagem-nome">${nome}</span>
+            <span class="mensagem-data">${data}</span>
+          </summary>
+          <div class="mensagem-corpo">
+            <p><strong>Email:</strong> ${email}</p>
+            ${telefone ? `<p><strong>Phone:</strong> ${telefone}</p>` : ""}
+            ${marca ? `<p><strong>Brand:</strong> ${marca}</p>` : ""}
+            ${orcamento ? `<p><strong>Budget:</strong> ${orcamento}</p>` : ""}
+            <p class="mensagem-texto">${mensagem}</p>
+            <div class="mensagem-acoes">
+              <a class="botao-pequeno" href="mailto:${email}">Reply by email</a>
+              ${digitosTelefone ? `<a class="botao-pequeno botao-whatsapp" href="https://wa.me/${digitosTelefone}" target="_blank" rel="noopener">WhatsApp</a>` : ""}
+            </div>
+          </div>
+        </details>
+      `;
+    }).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", iniciar);
+</script>
+
+</body>
+</html>
