@@ -388,6 +388,19 @@
   .btn:hover{transform:translate(-2px,-2px);}
   .btn:active{transform:translate(0,0);box-shadow:1px 1px 0 var(--preto);}
   .btn-primario{background:var(--laranja);color:var(--preto);}
+  .btn-secundario{background:var(--azul);color:var(--branco);}
+  .btn-pequeno{padding:.5rem .9rem;font-size:.82rem;box-shadow:2px 2px 0 var(--preto);}
+
+  /* ===================== TAB: DELIVERIES ===================== */
+  .cartao-entrega-arquivo{font-size:.82rem;font-weight:600;word-break:break-word;}
+  .entrega-opcoes-link{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0;}
+  .entrega-link-pronto{display:flex;gap:.5rem;margin:.7rem 0;}
+  .entrega-link-pronto input{
+    flex:1;min-width:0;font-family:'Poppins', sans-serif;font-size:.8rem;
+    padding:.55rem .7rem;border:1.5px solid rgba(17,17,17,.12);border-radius:8px;
+    background:var(--papel);color:var(--preto);
+  }
+  .entrega-link-validade{font-size:.75rem;color:var(--texto-suave);margin:.3rem 0 0;}
 
   /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
@@ -535,6 +548,12 @@
         <button type="button" class="nav-item" data-tab="brainstorm">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2Z"/></svg>
           Brainstorm
+        </button>
+      </li>
+      <li>
+        <button type="button" class="nav-item" data-tab="entregas">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Deliveries
         </button>
       </li>
     </ul>
@@ -744,6 +763,15 @@
         </div>
         <div id="lista-ideias" class="grid-clientes"></div>
       </section>
+
+      <!-- ================= TAB: DELIVERIES ================= -->
+      <section id="aba-entregas" class="painel-aba" hidden>
+        <div class="financeiro-filtros-e-acao">
+          <p style="margin:0;color:var(--texto-suave);">Upload finished videos and generate a download link to send to each client.</p>
+          <button type="button" class="botao-nova-transacao" id="botao-nova-entrega">+ New delivery</button>
+        </div>
+        <div id="lista-entregas" class="grid-clientes"></div>
+      </section>
     </div>
   </main>
 </div>
@@ -838,6 +866,29 @@
   </div>
 </div>
 
+<!-- ================= MODAL: NEW DELIVERY ================= -->
+<div class="modal-overlay" id="modal-entrega" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-entrega">&times;</button>
+    <h3>New delivery</h3>
+
+    <form class="form-contato" id="form-entrega" novalidate>
+      <label for="entrega-titulo">Title</label>
+      <input type="text" id="entrega-titulo" required placeholder="e.g. Etude House - final cut">
+
+      <label for="entrega-cliente">Client (optional)</label>
+      <input type="text" id="entrega-cliente" list="lista-clientes-datalist-entrega" placeholder="client name">
+      <datalist id="lista-clientes-datalist-entrega"></datalist>
+
+      <label for="entrega-arquivo">Video file</label>
+      <input type="file" id="entrega-arquivo" accept="video/*" required>
+      <p class="entrega-link-validade">Large files can take a while to upload, keep the tab open until it finishes.</p>
+
+      <button type="submit" class="btn btn-primario" id="botao-salvar-entrega">Upload</button>
+    </form>
+  </div>
+</div>
+
 <!-- ================= TOAST ================= -->
 <div class="toast" id="toast">
   <span id="toast-mensagem"></span>
@@ -854,11 +905,20 @@
     tipoTransacaoSelecionado: "receita",
     valoresOcultos: localStorage.getItem("painel_valores_ocultos") === "1",
     usuarioId: null,
-    ideias: []
+    ideias: [],
+    entregas: []
   };
 
   function formatarMoeda(valor){
     return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(valor || 0);
+  }
+
+  function formatarTamanho(bytes){
+    if(!bytes) return "";
+    const unidades = ["B", "KB", "MB", "GB"];
+    let valor = bytes, i = 0;
+    while(valor >= 1024 && i < unidades.length - 1){ valor /= 1024; i++; }
+    return `${valor.toFixed(i === 0 ? 0 : 1)} ${unidades[i]}`;
   }
 
   function traduzirTipoAgenda(tipo){
@@ -954,6 +1014,13 @@
       estado.ideias = [];
     }
 
+    try {
+      await carregarEntregas();
+    } catch (erro) {
+      console.warn("entregas table not set up yet:", erro);
+      estado.entregas = [];
+    }
+
     configurarAbas();
     configurarFiltroPeriodo();
     configurarSidebarMobile();
@@ -961,6 +1028,7 @@
     configurarFinanceiro();
     configurarClientes();
     configurarIdeias();
+    configurarEntregas();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -970,11 +1038,12 @@
     renderFinanceiro();
     renderClientes();
     renderIdeias();
+    renderEntregas();
   }
 
   // ===================== TABS =====================
   function configurarAbas(){
-    const abasComOcultacao = ["rotina", "financeiro", "clientes", "brainstorm"];
+    const abasComOcultacao = ["rotina", "financeiro", "clientes", "brainstorm", "entregas"];
     document.querySelectorAll(".nav-item").forEach(botao => {
       botao.addEventListener("click", () => {
         const aba = botao.dataset.tab;
@@ -985,10 +1054,12 @@
         document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
         document.getElementById("aba-clientes").hidden = aba !== "clientes";
         document.getElementById("aba-brainstorm").hidden = aba !== "brainstorm";
+        document.getElementById("aba-entregas").hidden = aba !== "entregas";
         document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
         const titulos = {
           principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
-          financeiro: "Finance", clientes: "Clients", brainstorm: "Brainstorm"
+          financeiro: "Finance", clientes: "Clients", brainstorm: "Brainstorm",
+          entregas: "Deliveries"
         };
         document.getElementById("titulo-pagina").textContent = titulos[aba];
         fecharSidebarMobile();
@@ -1809,6 +1880,201 @@
     });
     container.querySelectorAll("[data-excluir-ideia]").forEach(botao => {
       botao.addEventListener("click", () => excluirIdeia(botao.dataset.excluirIdeia));
+    });
+  }
+
+  // ===================== TAB: DELIVERIES =====================
+  const OPCOES_VALIDADE_LINK = [
+    { rotulo: "24h", segundos: 60 * 60 * 24 },
+    { rotulo: "7 days", segundos: 60 * 60 * 24 * 7 },
+    { rotulo: "30 days", segundos: 60 * 60 * 24 * 30 }
+  ];
+
+  async function carregarEntregas(){
+    const { data, error } = await Auth.sb
+      .from("entregas")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if(error) throw error;
+    estado.entregas = data;
+  }
+
+  function configurarEntregas(){
+    document.getElementById("botao-nova-entrega").addEventListener("click", () => abrirModalEntrega());
+    document.getElementById("fechar-modal-entrega").addEventListener("click", fecharModalEntrega);
+    document.getElementById("modal-entrega").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-entrega") fecharModalEntrega();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalEntrega();
+    });
+    document.getElementById("form-entrega").addEventListener("submit", salvarEntrega);
+  }
+
+  function abrirModalEntrega(){
+    const form = document.getElementById("form-entrega");
+    form.reset();
+    document.getElementById("lista-clientes-datalist-entrega").innerHTML =
+      estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
+    document.getElementById("modal-entrega").hidden = false;
+  }
+
+  function fecharModalEntrega(){
+    document.getElementById("modal-entrega").hidden = true;
+  }
+
+  async function salvarEntrega(evento){
+    evento.preventDefault();
+
+    const titulo = document.getElementById("entrega-titulo").value.trim();
+    const arquivo = document.getElementById("entrega-arquivo").files[0];
+    if(!titulo || !arquivo){
+      mostrarToast("Please add a title and choose a video file.");
+      return;
+    }
+
+    const botao = document.getElementById("botao-salvar-entrega");
+    botao.disabled = true;
+    botao.textContent = "Uploading...";
+
+    try {
+      const caminho = `${estado.usuarioId}/${Date.now()}-${arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const { error: erroUpload } = await Auth.sb.storage.from("entregas").upload(caminho, arquivo);
+      if(erroUpload) throw erroUpload;
+
+      const registro = {
+        user_id: estado.usuarioId,
+        titulo,
+        cliente: document.getElementById("entrega-cliente").value.trim() || null,
+        caminho_arquivo: caminho,
+        nome_arquivo: arquivo.name,
+        tamanho: arquivo.size,
+        tipo_arquivo: arquivo.type || null
+      };
+
+      const { data, error } = await Auth.sb.from("entregas").insert(registro).select();
+      if(error) throw error;
+
+      estado.entregas.unshift(data[0]);
+      fecharModalEntrega();
+      renderEntregas();
+      mostrarToast("Delivery uploaded.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not upload. Check that the latest setup.sql has been run on Supabase and the file isn't too large.");
+    }
+
+    botao.disabled = false;
+    botao.textContent = "Upload";
+  }
+
+  async function excluirEntrega(id){
+    if(!confirm("Delete this delivery? The video file will be removed too.")) return;
+    const item = estado.entregas.find(e => String(e.id) === String(id));
+    if(!item) return;
+
+    try {
+      await Auth.sb.storage.from("entregas").remove([item.caminho_arquivo]);
+      const { error } = await Auth.sb.from("entregas").delete().eq("id", id);
+      if(error) throw error;
+      estado.entregas = estado.entregas.filter(e => String(e.id) !== String(id));
+      renderEntregas();
+      mostrarToast("Delivery deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function mostrarOpcoesLink(id){
+    const area = document.getElementById(`link-area-${id}`);
+    area.innerHTML = `
+      <div class="entrega-opcoes-link">
+        ${OPCOES_VALIDADE_LINK.map(o => `<button type="button" class="btn btn-secundario btn-pequeno" data-criar-link="${id}:${o.segundos}">${o.rotulo}</button>`).join("")}
+      </div>
+    `;
+    area.querySelectorAll("[data-criar-link]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const [idEntrega, segundos] = botao.dataset.criarLink.split(":");
+        gerarLinkEntrega(idEntrega, Number(segundos));
+      });
+    });
+  }
+
+  async function gerarLinkEntrega(id, segundos){
+    const item = estado.entregas.find(e => String(e.id) === String(id));
+    const area = document.getElementById(`link-area-${id}`);
+    if(!item || !area) return;
+
+    area.innerHTML = `<p class="entrega-link-validade">Generating link...</p>`;
+
+    try {
+      const { data, error } = await Auth.sb.storage
+        .from("entregas")
+        .createSignedUrl(item.caminho_arquivo, segundos);
+      if(error) throw error;
+
+      const rotuloValidade = OPCOES_VALIDADE_LINK.find(o => o.segundos === segundos)?.rotulo || "";
+      area.innerHTML = `
+        <div class="entrega-link-pronto">
+          <input type="text" readonly value="${escapeHtml(data.signedUrl)}" id="link-input-${id}">
+          <button type="button" class="btn btn-secundario btn-pequeno" data-copiar-link="${id}">Copy</button>
+        </div>
+        <p class="entrega-link-validade">Link valid for ${rotuloValidade}.</p>
+      `;
+      document.getElementById(`link-input-${id}`).addEventListener("click", (evento) => evento.target.select());
+      area.querySelector("[data-copiar-link]").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(data.signedUrl);
+          mostrarToast("Link copied.");
+        } catch (erro) {
+          document.getElementById(`link-input-${id}`).select();
+          mostrarToast("Could not copy automatically, link is selected, press Ctrl+C.");
+        }
+      });
+    } catch (erro) {
+      console.error(erro);
+      area.innerHTML = `<p class="entrega-link-validade">Could not generate the link. Try again.</p>`;
+    }
+  }
+
+  function renderEntregas(){
+    const container = document.getElementById("lista-entregas");
+
+    if(estado.entregas.length === 0){
+      container.innerHTML = `
+        <div class="estado-vazio" style="grid-column:1/-1;">
+          <div class="estado-vazio-icone">🎬</div>
+          <p>No deliveries uploaded yet.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-nova-entrega">New delivery</button>
+        </div>
+      `;
+      document.getElementById("botao-vazio-nova-entrega").addEventListener("click", () => abrirModalEntrega());
+      return;
+    }
+
+    container.innerHTML = estado.entregas.map(e => `
+      <div class="cartao cartao-cliente">
+        <p class="cartao-cliente-nome">${escapeHtml(e.titulo)}</p>
+        ${e.cliente ? `<p class="cartao-cliente-empresa">${escapeHtml(e.cliente)}</p>` : ""}
+        <div class="cartao-cliente-info">
+          <div class="cartao-entrega-arquivo">${escapeHtml(e.nome_arquivo)}</div>
+          <div>${formatarTamanho(e.tamanho)}</div>
+          <div>${new Date(e.created_at).toLocaleDateString("en-IE")}</div>
+        </div>
+        <div class="entrega-link-area" id="link-area-${e.id}"></div>
+        <div class="cartao-cliente-acoes">
+          <button type="button" class="btn btn-secundario btn-pequeno" data-gerar-link="${e.id}">Generate link</button>
+          <button type="button" class="botao-icone excluir" data-excluir-entrega="${e.id}" aria-label="Delete">✕</button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-gerar-link]").forEach(botao => {
+      botao.addEventListener("click", () => mostrarOpcoesLink(botao.dataset.gerarLink));
+    });
+    container.querySelectorAll("[data-excluir-entrega]").forEach(botao => {
+      botao.addEventListener("click", () => excluirEntrega(botao.dataset.excluirEntrega));
     });
   }
 
