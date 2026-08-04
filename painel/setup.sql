@@ -113,10 +113,21 @@ create policy "usuario_gerencia_proprios_clientes"
   with check (auth.uid() = user_id);
 
 -- =====================================================================
--- IMPORTANTE: nao criamos policy de INSERT para o papel "anon" aqui de
--- proposito. A escrita desses eventos (quando alguem visita o site ou
--- envia um formulario) deve ser feita pelo lado do servidor do seu
--- portfolio, usando a chave de servico (service_role), nunca pela chave
--- anon exposta no navegador. Isso evita que qualquer pessoa consiga
--- inserir ou forjar dados direto pelo navegador dela.
+-- O site do portfolio (paginas publicas) precisa conseguir GRAVAR visitas,
+-- cliques, visualizacoes de video e mensagens, usando a chave publica
+-- "anon". Por isso o papel anon so ganha permissao de INSERT aqui, nunca
+-- de leitura, edicao ou exclusao: assim, mesmo alguem vendo essa chave no
+-- codigo do site, so consegue adicionar linhas novas, nunca ler, alterar
+-- ou apagar o que ja existe.
+create policy "permitir insercao publica de eventos"
+  on portfolio_events
+  for insert
+  to anon
+  with check (true);
+
+create policy "permitir insercao publica de leads"
+  on portfolio_leads
+  for insert
+  to anon
+  with check (true);
 -- =====================================================================
