@@ -70,12 +70,24 @@ create table if not exists public.clientes (
   updated_at timestamptz not null default now()
 );
 
+-- Tabela de ideias (aba "Brainstorm" do painel): notas rapidas de ideias
+-- de conteudo. Tambem e por usuario.
+create table if not exists public.brainstorm (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  description text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 -- Ativa o Row Level Security em todas as tabelas
 alter table portfolio_events enable row level security;
 alter table portfolio_leads enable row level security;
 alter table painel_agenda enable row level security;
 alter table public.financeiro enable row level security;
 alter table public.clientes enable row level security;
+alter table public.brainstorm enable row level security;
 
 -- Permite que usuarios autenticados (voce, logada no painel) leiam os dados
 create policy "Permitir leitura para usuarios autenticados"
@@ -109,6 +121,11 @@ create policy "usuario_gerencia_proprio_financeiro"
 
 create policy "usuario_gerencia_proprios_clientes"
   on public.clientes for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "usuario_gerencia_propria_brainstorm"
+  on public.brainstorm for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
