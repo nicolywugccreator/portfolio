@@ -497,7 +497,7 @@
   .cliente-linha-cor{width:8px;flex-shrink:0;background:var(--cor-cliente,var(--azul));}
   .cliente-linha-corpo{
     padding:.85rem 1.2rem;flex:1;min-width:0;
-    display:grid;grid-template-columns:1.4fr 1.3fr 1.3fr auto auto;align-items:center;gap:1rem;
+    display:grid;grid-template-columns:1.4fr 1.3fr 1.3fr 160px 20px;align-items:center;gap:1rem;
   }
   .cliente-avatar{
     width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;
@@ -512,12 +512,13 @@
     font-size:.82rem;color:var(--texto-suave);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .cliente-linha-estagio{
-    display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;color:var(--texto-suave);white-space:nowrap;
+    display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;color:var(--texto-suave);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
   }
   .cliente-linha-estagio::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cor-cliente,var(--azul));flex-shrink:0;}
   .cliente-linha-seta{color:var(--texto-suave);flex-shrink:0;}
   @media (max-width:760px){
-    .cliente-linha-corpo{grid-template-columns:1fr auto;}
+    .cliente-linha-corpo{grid-template-columns:1fr auto auto;}
     .cliente-linha-contato,.cliente-linha-email{display:none;}
   }
 
