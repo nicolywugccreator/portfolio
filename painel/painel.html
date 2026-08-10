@@ -599,7 +599,11 @@
   }
   .botao-conectar-gmail:hover{background:var(--limao);}
 
-  .email-linha{display:flex;gap:.7rem;align-items:flex-start;padding:.7rem 0;border-bottom:1.5px solid var(--papel);}
+  .email-linha{
+    display:flex;gap:.7rem;align-items:flex-start;padding:.7rem .4rem;border-bottom:1.5px solid var(--papel);
+    text-decoration:none;color:inherit;border-radius:8px;transition:background .12s ease;
+  }
+  .email-linha:hover{background:var(--papel);}
   .email-linha:last-child{border-bottom:none;}
   .email-avatar{
     width:30px;height:30px;border-radius:50%;background:var(--azul);color:var(--branco);flex-shrink:0;
@@ -1140,8 +1144,7 @@
       <input type="text" id="projeto-titulo" required placeholder="e.g. Etude House - UGC video">
 
       <label for="projeto-cliente">Client (optional)</label>
-      <input type="text" id="projeto-cliente" list="lista-clientes-datalist-projeto" placeholder="client name">
-      <datalist id="lista-clientes-datalist-projeto"></datalist>
+      <select id="projeto-cliente"></select>
 
       <label for="projeto-coluna">Stage</label>
       <select id="projeto-coluna"></select>
@@ -2039,9 +2042,16 @@
     }
   }
 
-  // Most recently updated project linked to this client (matched by name), if any.
-  function estagioClienteInfo(nomeCliente){
-    const projetosCliente = estado.projetos.filter(p => p.cliente === nomeCliente);
+  // A column counts as a "delivered" stage if its name contains "deliver" (matches the
+  // default "Final Delivery" column). Columns are fully renamable, so this is a best-effort
+  // heuristic, not a hard rule.
+  function colunaEhEntrega(coluna){
+    return !!coluna && coluna.nome.toLowerCase().includes("deliver");
+  }
+
+  // Most recently updated project linked to this client (by cliente_id), if any.
+  function estagioClienteInfo(clienteId){
+    const projetosCliente = estado.projetos.filter(p => p.cliente_id === clienteId);
     if(projetosCliente.length === 0) return null;
     const maisRecente = [...projetosCliente].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0];
     const coluna = estado.colunas.find(c => c.id === maisRecente.coluna_id);
@@ -2078,7 +2088,7 @@
 
     container.innerHTML = filtrados.map(c => {
       const cor = corPorIndiceCriacao(estado.clientes, c.id);
-      const estagio = estagioClienteInfo(c.nome);
+      const estagio = estagioClienteInfo(c.id);
       const avatar = c.logo_url ? `<img src="${c.logo_url}" alt="">` : iniciaisNome(c.nome);
       return `
         <a class="cliente-linha" href="?cliente=${c.id}" target="_blank" rel="noopener" style="--cor-cliente:${cor}">
@@ -2118,7 +2128,7 @@
     document.getElementById("perfil-cliente-nome").textContent = item.nome;
     document.getElementById("perfil-cliente-sub").textContent = [item.empresa, item.email].filter(Boolean).join(" · ") || "No contact info yet";
 
-    const estagio = estagioClienteInfo(item.nome);
+    const estagio = estagioClienteInfo(item.id);
     document.getElementById("perfil-cliente-estagio").textContent = estagio ? estagio.texto : "No project";
 
     document.getElementById("perfil-info-grid").innerHTML = `
@@ -2128,8 +2138,8 @@
       <div><dt>Notes</dt><dd>${item.observacoes ? escapeHtml(item.observacoes) : "—"}</dd></div>
     `;
 
-    renderEstagioPerfil(item.nome);
-    renderEntregasPerfil(item.nome);
+    renderEstagioPerfil(item.id);
+    renderEntregasPerfil(item);
     renderEmailPerfil(item);
 
     await carregarRoteiros(item.id);
@@ -2139,9 +2149,9 @@
     document.querySelectorAll("[data-conteudo-perfil]").forEach(c => c.classList.toggle("ativa", c.dataset.conteudoPerfil === "overview"));
   }
 
-  function renderEstagioPerfil(nomeCliente){
+  function renderEstagioPerfil(clienteId){
     const colunasOrdenadas = [...estado.colunas].sort((a, b) => a.ordem - b.ordem);
-    const estagio = estagioClienteInfo(nomeCliente);
+    const estagio = estagioClienteInfo(clienteId);
     const indiceAtual = estagio ? colunasOrdenadas.findIndex(c => c.id === estagio.colunaId) : -1;
 
     document.getElementById("perfil-progresso-estagios").innerHTML = colunasOrdenadas.map((c, i) => {
@@ -2149,10 +2159,10 @@
       return `<span class="pilula-estagio ${classe}">${escapeHtml(c.nome)}</span>`;
     }).join("");
 
-    const projetosCliente = estado.projetos.filter(p => p.cliente === nomeCliente);
+    const projetosCliente = estado.projetos.filter(p => p.cliente_id === clienteId);
     const lista = document.getElementById("perfil-projetos-lista");
     if(projetosCliente.length === 0){
-      lista.innerHTML = '<p class="texto-vazio">No project linked yet — set this client\'s name on a Projects card to link it here.</p>';
+      lista.innerHTML = '<p class="texto-vazio">No project linked yet — open a Projects card and set this client on it to link it here.</p>';
       return;
     }
     lista.innerHTML = projetosCliente.map(p => {
@@ -2169,18 +2179,40 @@
     }).join("");
   }
 
-  function renderEntregasPerfil(nomeCliente){
+  function renderEntregasPerfil(item){
     const container = document.getElementById("perfil-entregas-lista");
-    const entregas = estado.agenda
-      .filter(a => a.tipo === "entrega" && a.cliente === nomeCliente)
+
+    // Projects on a "delivered"-looking stage (e.g. Final Delivery), regardless of date.
+    const projetosEntregues = estado.projetos.filter(p => {
+      if(p.cliente_id !== item.id) return false;
+      const coluna = estado.colunas.find(c => c.id === p.coluna_id);
+      return colunaEhEntrega(coluna);
+    }).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+    // Upcoming/scheduled delivery dates from My Routine (matched by client name).
+    const entregasAgendadas = estado.agenda
+      .filter(a => a.tipo === "entrega" && a.cliente === item.nome)
       .sort((a, b) => a.data.localeCompare(b.data));
 
-    if(entregas.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No deliveries scheduled for this client yet — add one from My Routine with this client set.</p>';
+    if(projetosEntregues.length === 0 && entregasAgendadas.length === 0){
+      container.innerHTML = '<p class="texto-vazio">Nothing delivered or scheduled for this client yet.</p>';
       return;
     }
 
-    container.innerHTML = entregas.map(e => {
+    const htmlEntregues = projetosEntregues.map(p => {
+      const coluna = estado.colunas.find(c => c.id === p.coluna_id);
+      return `
+        <div class="card-item">
+          <div class="card-item-topo">
+            <span class="card-item-titulo">${escapeHtml(p.titulo)}</span>
+            <span class="card-item-tag" style="background:var(--limao)">${coluna ? escapeHtml(coluna.nome) : "Delivered"}</span>
+          </div>
+          <p class="card-item-texto">${new Date(p.updated_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" })}</p>
+        </div>
+      `;
+    }).join("");
+
+    const htmlAgendadas = entregasAgendadas.map(e => {
       const [ano, mes, dia] = e.data.split("-");
       return `
         <div class="card-item">
@@ -2191,6 +2223,8 @@
         </div>
       `;
     }).join("");
+
+    container.innerHTML = htmlEntregues + htmlAgendadas;
   }
 
   // ===================== TAB: CLIENTS — SCRIPTS & IDEAS =====================
@@ -2386,7 +2420,8 @@
         assunto: cabecalhos.Subject || "(no subject)",
         de: cabecalhos.From || "",
         data: cabecalhos.Date ? new Date(cabecalhos.Date) : new Date(Number(msg.internalDate)),
-        trecho: msg.snippet || ""
+        trecho: msg.snippet || "",
+        threadId: msg.threadId
       };
     }).sort((a, b) => b.data - a.data);
   }
@@ -2418,14 +2453,14 @@
         return;
       }
       container.innerHTML = emails.map(e => `
-        <div class="email-linha">
+        <a class="email-linha" href="https://mail.google.com/mail/u/0/#all/${e.threadId}" target="_blank" rel="noopener">
           <div class="email-avatar">${iniciaisNome(e.de.replace(/<.*>/, "") || "?")}</div>
           <div class="email-corpo">
             <p class="email-assunto">${escapeHtml(e.assunto)}</p>
             <p class="email-trecho">${escapeHtml(e.trecho)}</p>
           </div>
           <span class="email-data">${e.data.toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit" })}</span>
-        </div>
+        </a>
       `).join("");
     } catch (erro) {
       console.error(erro);
@@ -2488,10 +2523,12 @@
     document.getElementById("titulo-modal-projeto").textContent = item.titulo;
     document.getElementById("projeto-id").value = item.id;
     document.getElementById("projeto-titulo").value = item.titulo;
-    document.getElementById("projeto-cliente").value = item.cliente || "";
     document.getElementById("projeto-notas").value = item.notas || "";
-    document.getElementById("lista-clientes-datalist-projeto").innerHTML =
-      estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
+
+    const selectCliente = document.getElementById("projeto-cliente");
+    selectCliente.innerHTML = '<option value="">No client</option>' +
+      estado.clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
+    selectCliente.value = item.cliente_id || "";
 
     const select = document.getElementById("projeto-coluna");
     select.innerHTML = estado.colunas.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
@@ -2516,7 +2553,7 @@
 
     const registro = {
       titulo,
-      cliente: document.getElementById("projeto-cliente").value.trim() || null,
+      cliente_id: document.getElementById("projeto-cliente").value || null,
       coluna_id: document.getElementById("projeto-coluna").value,
       notas: document.getElementById("projeto-notas").value.trim() || null,
       updated_at: new Date().toISOString()
@@ -2712,17 +2749,21 @@
             </div>
           </div>
           <div class="kanban-coluna-corpo" data-coluna-corpo="${coluna.id}">
-            ${cartoesColuna.map(p => `
+            ${cartoesColuna.map(p => {
+              const clienteVinculado = p.cliente_id ? estado.clientes.find(c => c.id === p.cliente_id) : null;
+              const nomeClienteExibido = clienteVinculado ? clienteVinculado.nome : "";
+              return `
               <div class="kanban-cartao" draggable="true" data-cartao="${p.id}" style="--cor-cartao:${p.cor || CORES_ROTACAO[0]}">
                 <p class="kanban-cartao-titulo">${escapeHtml(p.titulo)}</p>
                 <div class="kanban-cartao-rodape">
-                  ${p.cliente ? `<span class="kanban-cartao-cliente">${escapeHtml(p.cliente)}</span>` : "<span></span>"}
+                  ${nomeClienteExibido ? `<span class="kanban-cartao-cliente">${escapeHtml(nomeClienteExibido)}</span>` : "<span></span>"}
                   <div class="kanban-pontos-cor" data-pontos-cartao="${p.id}">
                     ${CORES_ROTACAO.map(cor => `<button type="button" class="kanban-ponto-cor${(p.cor || CORES_ROTACAO[0]) === cor ? " selecionado" : ""}" style="background:${cor}" data-cor-cartao="${p.id}:${cor}" aria-label="Set card color"></button>`).join("")}
                   </div>
                 </div>
               </div>
-            `).join("")}
+            `;
+            }).join("")}
           </div>
           <div class="kanban-coluna-rodape">
             ${formularioAberto ? `
