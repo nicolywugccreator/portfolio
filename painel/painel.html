@@ -391,34 +391,100 @@
   .btn-secundario{background:var(--azul);color:var(--branco);}
   .btn-pequeno{padding:.5rem .9rem;font-size:.82rem;box-shadow:2px 2px 0 var(--preto);}
 
-  /* ===================== TAB: DELIVERIES ===================== */
-  .cartao-entrega-arquivo{font-size:.82rem;font-weight:600;word-break:break-word;}
-  .entrega-opcoes-link{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0;}
-  .entrega-link-pronto{display:flex;gap:.5rem;margin:.7rem 0;}
-  .entrega-link-pronto input{
-    flex:1;min-width:0;font-family:'Poppins', sans-serif;font-size:.8rem;
-    padding:.55rem .7rem;border:1.5px solid rgba(17,17,17,.12);border-radius:8px;
-    background:var(--papel);color:var(--preto);
+  /* ===================== TAB: PROJECTS (KANBAN) ===================== */
+  .kanban-barra{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem;}
+  .kanban-quadro{display:flex;gap:1rem;align-items:flex-start;overflow-x:auto;padding-bottom:1rem;}
+  .kanban-coluna{
+    flex:0 0 270px;width:270px;
+    background:var(--branco);border:3px solid var(--preto);border-radius:14px;
+    box-shadow:var(--sombra-dura);display:flex;flex-direction:column;max-height:calc(100vh - 220px);
   }
-  .entrega-link-validade{font-size:.75rem;color:var(--texto-suave);margin:.3rem 0 0;}
+  .kanban-coluna-cabecalho{
+    display:flex;align-items:center;gap:.4rem;padding:.9rem .9rem .6rem;border-bottom:2px solid var(--papel);
+  }
+  .kanban-coluna-titulo{
+    flex:1;min-width:0;font-family:'Archivo Black', sans-serif;font-size:.85rem;text-transform:uppercase;
+    background:none;border:none;padding:.2rem;color:var(--preto);width:100%;
+  }
+  .kanban-coluna-titulo:focus{outline:2px solid var(--azul);border-radius:4px;background:var(--papel);}
+  .kanban-coluna-contagem{
+    font-size:.72rem;font-weight:700;color:var(--texto-suave);background:var(--papel);
+    border-radius:999px;padding:.15rem .5rem;flex-shrink:0;
+  }
+  .kanban-coluna-acoes{display:flex;align-items:center;gap:.15rem;flex-shrink:0;}
+  .kanban-coluna-acoes .botao-icone{width:24px;height:24px;font-size:.7rem;border-width:1.5px;}
+  .kanban-coluna-corpo{
+    flex:1;overflow-y:auto;padding:.7rem;display:flex;flex-direction:column;gap:.6rem;min-height:60px;
+    transition:background .12s ease;
+  }
+  .kanban-coluna-corpo.sobre-arraste{background:var(--papel);}
+  .kanban-cartao{
+    background:var(--papel);border:2px solid var(--preto);border-radius:10px;padding:.7rem .8rem;
+    cursor:grab;box-shadow:2px 2px 0 var(--preto);transition:transform .12s ease, opacity .12s ease;
+  }
+  .kanban-cartao:hover{transform:translate(-1px,-1px);}
+  .kanban-cartao.arrastando{opacity:.35;}
+  .kanban-cartao-titulo{font-size:.86rem;font-weight:700;margin:0 0 .3rem;word-break:break-word;}
+  .kanban-cartao-cliente{
+    display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+    background:var(--azul);color:var(--branco);border-radius:999px;padding:.15rem .55rem;
+  }
+  .kanban-coluna-rodape{padding:.6rem .9rem .9rem;}
+  .kanban-add-cartao{
+    width:100%;background:none;border:2px dashed rgba(17,17,17,.25);border-radius:10px;
+    padding:.5rem;font-family:'Poppins', sans-serif;font-weight:600;font-size:.82rem;
+    color:var(--texto-suave);cursor:pointer;
+  }
+  .kanban-add-cartao:hover{border-color:var(--preto);color:var(--preto);}
+  .kanban-form-cartao{padding:.6rem .9rem .9rem;display:flex;flex-direction:column;gap:.5rem;}
+  .kanban-form-cartao input{
+    font-family:'Poppins', sans-serif;font-size:.85rem;padding:.55rem .7rem;
+    border:1.5px solid rgba(17,17,17,.15);border-radius:8px;background:var(--papel);color:var(--preto);
+  }
+  .kanban-form-cartao-acoes{display:flex;gap:.5rem;}
+  .kanban-form-cartao-acoes .btn{flex:1;padding:.5rem;font-size:.82rem;text-align:center;}
+  .kanban-coluna-nova{
+    flex:0 0 220px;width:220px;align-self:flex-start;
+  }
+  .botao-nova-coluna{
+    width:100%;background:var(--branco);border:2.5px dashed var(--preto);border-radius:14px;
+    padding:1.1rem;font-family:'Poppins', sans-serif;font-weight:700;font-size:.88rem;color:var(--preto);
+    cursor:pointer;
+  }
+  .botao-nova-coluna:hover{background:var(--limao);}
+  .form-nova-coluna{background:var(--branco);border:3px solid var(--preto);border-radius:14px;padding:1rem;box-shadow:var(--sombra-dura);display:flex;flex-direction:column;gap:.6rem;}
+  .form-nova-coluna input{
+    font-family:'Poppins', sans-serif;font-size:.9rem;padding:.6rem .8rem;
+    border:1.5px solid rgba(17,17,17,.15);border-radius:8px;background:var(--papel);color:var(--preto);
+  }
+  .form-nova-coluna-acoes{display:flex;gap:.5rem;}
+  .form-nova-coluna-acoes .btn{flex:1;padding:.55rem;font-size:.85rem;text-align:center;}
 
-  .lista-entregas-solta{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:1.2rem;}
-  .pasta-entrega{border:2px solid var(--preto);border-radius:14px;background:var(--branco);margin-bottom:1.2rem;overflow:hidden;}
-  .pasta-cabecalho{
-    display:flex;align-items:center;justify-content:space-between;gap:1rem;
-    padding:1rem 1.2rem;cursor:pointer;flex-wrap:wrap;
+  /* ===================== TAB: CLIENTS (CRM) ===================== */
+  .modal-caixa-larga{max-width:580px;}
+  .cartao-cliente{cursor:pointer;}
+  .crm-secao{margin-top:1.3rem;padding-top:1.1rem;border-top:2px solid var(--papel);}
+  .crm-secao h4{font-family:'Archivo Black', sans-serif;font-size:.85rem;text-transform:uppercase;margin-bottom:.7rem;}
+  .form-atividade{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .form-atividade select{
+    flex:0 0 120px;font-family:'Poppins', sans-serif;font-size:.85rem;padding:.6rem .5rem;
+    border:1.5px solid rgba(17,17,17,.12);border-radius:8px;background:var(--papel);color:var(--preto);
   }
-  .pasta-info{display:flex;align-items:center;gap:.6rem;}
-  .pasta-nome{font-family:'Archivo Black', sans-serif;font-size:1rem;margin:0;}
-  .pasta-contagem{font-size:.78rem;color:var(--texto-suave);font-weight:600;}
-  .pasta-acoes{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
-  .pasta-seta{transition:transform .15s ease;font-size:.9rem;}
-  .pasta-entrega.aberta .pasta-seta{transform:rotate(180deg);}
-  .pasta-link-area{padding:0 1.2rem;}
-  .pasta-link-area:not(:empty){padding-bottom:1rem;}
-  .pasta-corpo{padding:0 1.2rem 1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;border-top:1.5px solid rgba(17,17,17,.1);}
-  .pasta-corpo[hidden]{display:none;}
-  .pasta-corpo{padding-top:1.2rem;}
+  .form-atividade textarea{
+    flex:1 1 160px;font-family:'Poppins', sans-serif;font-size:.85rem;padding:.6rem .8rem;min-height:42px;
+    border:1.5px solid rgba(17,17,17,.12);border-radius:8px;background:var(--papel);color:var(--preto);resize:vertical;
+  }
+  .form-atividade button{flex-shrink:0;}
+  .lista-atividades{display:flex;flex-direction:column;gap:.6rem;max-height:260px;overflow-y:auto;}
+  .atividade-item{border:1.5px solid rgba(17,17,17,.12);border-radius:10px;padding:.6rem .8rem;}
+  .atividade-cabecalho{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
+  .atividade-tipo{
+    font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+    background:var(--laranja);color:var(--preto);border-radius:999px;padding:.15rem .5rem;
+  }
+  .atividade-data{font-size:.72rem;color:var(--texto-suave);margin-left:auto;}
+  .atividade-texto{font-size:.85rem;line-height:1.5;margin:0;word-break:break-word;}
+  .atividade-excluir{margin-left:.4rem;}
 
   /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
@@ -565,15 +631,9 @@
         </button>
       </li>
       <li>
-        <button type="button" class="nav-item" data-tab="brainstorm">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2Z"/></svg>
-          Brainstorm
-        </button>
-      </li>
-      <li>
-        <button type="button" class="nav-item" data-tab="entregas">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Deliveries
+        <button type="button" class="nav-item" data-tab="projetos">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/></svg>
+          Projects
         </button>
       </li>
     </ul>
@@ -766,31 +826,21 @@
         </div>
       </section>
 
-      <!-- ================= TAB: CLIENTS ================= -->
+      <!-- ================= TAB: CLIENTS (CRM) ================= -->
       <section id="aba-clientes" class="painel-aba" hidden>
         <div class="financeiro-filtros-e-acao">
-          <p style="margin:0;color:var(--texto-suave);">Add and organize your clients.</p>
+          <p style="margin:0;color:var(--texto-suave);">Add clients, keep notes and log every call, email or message. Click a client to open it.</p>
           <button type="button" class="botao-nova-transacao" id="botao-novo-cliente">+ New client</button>
         </div>
         <div id="lista-clientes" class="grid-clientes"></div>
       </section>
 
-      <!-- ================= TAB: BRAINSTORM ================= -->
-      <section id="aba-brainstorm" class="painel-aba" hidden>
-        <div class="financeiro-filtros-e-acao">
-          <p style="margin:0;color:var(--texto-suave);">Capture your content ideas before you forget them.</p>
-          <button type="button" class="botao-nova-transacao" id="botao-nova-ideia">+ New idea</button>
+      <!-- ================= TAB: PROJECTS (KANBAN) ================= -->
+      <section id="aba-projetos" class="painel-aba" hidden>
+        <div class="kanban-barra">
+          <p style="margin:0;color:var(--texto-suave);">Track each project's stage. Drag cards between columns, and rename, reorder, add or delete columns freely.</p>
         </div>
-        <div id="lista-ideias" class="grid-clientes"></div>
-      </section>
-
-      <!-- ================= TAB: DELIVERIES ================= -->
-      <section id="aba-entregas" class="painel-aba" hidden>
-        <div class="financeiro-filtros-e-acao">
-          <p style="margin:0;color:var(--texto-suave);">Upload finished videos and generate a download link to send to each client.</p>
-          <button type="button" class="botao-nova-transacao laranja" id="botao-nova-entrega">+ New delivery</button>
-        </div>
-        <div id="lista-entregas"></div>
+        <div class="kanban-quadro" id="kanban-quadro"></div>
       </section>
     </div>
   </main>
@@ -834,9 +884,9 @@
   </div>
 </div>
 
-<!-- ================= MODAL: NEW/EDIT CLIENT ================= -->
+<!-- ================= MODAL: CLIENT (CRM DETAIL) ================= -->
 <div class="modal-overlay" id="modal-cliente" role="dialog" aria-modal="true" hidden>
-  <div class="modal-caixa">
+  <div class="modal-caixa modal-caixa-larga">
     <button type="button" class="modal-fechar" id="fechar-modal-cliente">&times;</button>
     <h3 id="titulo-modal-cliente">New client</h3>
 
@@ -858,53 +908,57 @@
       <label for="cliente-instagram">Instagram (optional)</label>
       <input type="text" id="cliente-instagram" placeholder="@brand">
 
-      <label for="cliente-observacoes">Notes (optional)</label>
-      <textarea id="cliente-observacoes" rows="3"></textarea>
+      <label for="cliente-observacoes">General notes (optional)</label>
+      <textarea id="cliente-observacoes" rows="2"></textarea>
 
       <button type="submit" class="btn btn-primario" id="botao-salvar-cliente">Save</button>
     </form>
+
+    <div class="crm-secao" id="crm-secao-atividades" hidden>
+      <h4>Activity</h4>
+      <div class="form-atividade">
+        <select id="atividade-tipo">
+          <option value="nota">Note</option>
+          <option value="ligacao">Call</option>
+          <option value="email">Email</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="reuniao">Meeting</option>
+          <option value="outro">Other</option>
+        </select>
+        <textarea id="atividade-texto" placeholder="What happened / what was said..." rows="1"></textarea>
+        <button type="button" class="btn btn-secundario btn-pequeno" id="botao-add-atividade">Add</button>
+      </div>
+      <div class="lista-atividades" id="lista-atividades"></div>
+    </div>
   </div>
 </div>
 
-<!-- ================= MODAL: NEW/EDIT IDEA ================= -->
-<div class="modal-overlay" id="modal-ideia" role="dialog" aria-modal="true" hidden>
+<!-- ================= MODAL: PROJECT CARD ================= -->
+<div class="modal-overlay" id="modal-projeto" role="dialog" aria-modal="true" hidden>
   <div class="modal-caixa">
-    <button type="button" class="modal-fechar" id="fechar-modal-ideia">&times;</button>
-    <h3 id="titulo-modal-ideia">New idea</h3>
+    <button type="button" class="modal-fechar" id="fechar-modal-projeto">&times;</button>
+    <h3 id="titulo-modal-projeto">Project</h3>
 
-    <form class="form-contato" id="form-ideia" novalidate>
-      <input type="hidden" id="ideia-id">
+    <form class="form-contato" id="form-projeto" novalidate>
+      <input type="hidden" id="projeto-id">
 
-      <label for="ideia-titulo">Title</label>
-      <input type="text" id="ideia-titulo" required placeholder="e.g. Skincare routine video">
+      <label for="projeto-titulo">Title</label>
+      <input type="text" id="projeto-titulo" required placeholder="e.g. Etude House - UGC video">
 
-      <label for="ideia-descricao">Description (optional)</label>
-      <textarea id="ideia-descricao" rows="4" placeholder="details, references, notes..."></textarea>
+      <label for="projeto-cliente">Client (optional)</label>
+      <input type="text" id="projeto-cliente" list="lista-clientes-datalist-projeto" placeholder="client name">
+      <datalist id="lista-clientes-datalist-projeto"></datalist>
 
-      <button type="submit" class="btn btn-primario" id="botao-salvar-ideia">Save</button>
-    </form>
-  </div>
-</div>
+      <label for="projeto-coluna">Stage</label>
+      <select id="projeto-coluna"></select>
 
-<!-- ================= MODAL: NEW DELIVERY ================= -->
-<div class="modal-overlay" id="modal-entrega" role="dialog" aria-modal="true" hidden>
-  <div class="modal-caixa">
-    <button type="button" class="modal-fechar" id="fechar-modal-entrega">&times;</button>
-    <h3>New delivery</h3>
+      <label for="projeto-notas">Notes (optional)</label>
+      <textarea id="projeto-notas" rows="3"></textarea>
 
-    <form class="form-contato" id="form-entrega" novalidate>
-      <label for="entrega-titulo">Title</label>
-      <input type="text" id="entrega-titulo" required placeholder="e.g. Etude House - final cut">
-
-      <label for="entrega-cliente">Client (optional)</label>
-      <input type="text" id="entrega-cliente" list="lista-clientes-datalist-entrega" placeholder="client name">
-      <datalist id="lista-clientes-datalist-entrega"></datalist>
-
-      <label for="entrega-arquivo">File (video or photo)</label>
-      <input type="file" id="entrega-arquivo" accept="video/*,image/*" required>
-      <p class="entrega-link-validade">Large files can take a while to upload, keep the tab open until it finishes.</p>
-
-      <button type="submit" class="btn btn-primario" id="botao-salvar-entrega">Upload</button>
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-projeto">Delete</button>
+      </div>
     </form>
   </div>
 </div>
@@ -925,20 +979,20 @@
     tipoTransacaoSelecionado: "receita",
     valoresOcultos: localStorage.getItem("painel_valores_ocultos") === "1",
     usuarioId: null,
-    ideias: [],
-    entregas: []
+    colunas: [],
+    projetos: [],
+    atividades: [],
+    cartaoArrastado: null,
+    suprimirCliqueCartao: false
   };
+
+  const NOMES_COLUNAS_PADRAO = [
+    "Negotiating", "Contract", "Awaiting Product", "Filming", "Editing",
+    "Sent for Approval", "Revision", "Final Delivery", "Awaiting Payment"
+  ];
 
   function formatarMoeda(valor){
     return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(valor || 0);
-  }
-
-  function formatarTamanho(bytes){
-    if(!bytes) return "";
-    const unidades = ["B", "KB", "MB", "GB"];
-    let valor = bytes, i = 0;
-    while(valor >= 1024 && i < unidades.length - 1){ valor /= 1024; i++; }
-    return `${valor.toFixed(i === 0 ? 0 : 1)} ${unidades[i]}`;
   }
 
   function traduzirTipoAgenda(tipo){
@@ -1028,17 +1082,12 @@
     }
 
     try {
-      await carregarIdeias();
+      await carregarColunas();
+      await carregarProjetos();
     } catch (erro) {
-      console.warn("brainstorm table not set up yet:", erro);
-      estado.ideias = [];
-    }
-
-    try {
-      await carregarEntregas();
-    } catch (erro) {
-      console.warn("entregas table not set up yet:", erro);
-      estado.entregas = [];
+      console.warn("painel_colunas/painel_projetos tables not set up yet:", erro);
+      estado.colunas = [];
+      estado.projetos = [];
     }
 
     configurarAbas();
@@ -1047,8 +1096,7 @@
     configurarRotina();
     configurarFinanceiro();
     configurarClientes();
-    configurarIdeias();
-    configurarEntregas();
+    configurarProjetos();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -1057,13 +1105,12 @@
     renderTudoMarcado();
     renderFinanceiro();
     renderClientes();
-    renderIdeias();
-    renderEntregas();
+    renderProjetos();
   }
 
   // ===================== TABS =====================
   function configurarAbas(){
-    const abasComOcultacao = ["rotina", "financeiro", "clientes", "brainstorm", "entregas"];
+    const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos"];
     document.querySelectorAll(".nav-item").forEach(botao => {
       botao.addEventListener("click", () => {
         const aba = botao.dataset.tab;
@@ -1073,13 +1120,11 @@
         document.getElementById("aba-rotina").hidden = aba !== "rotina";
         document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
         document.getElementById("aba-clientes").hidden = aba !== "clientes";
-        document.getElementById("aba-brainstorm").hidden = aba !== "brainstorm";
-        document.getElementById("aba-entregas").hidden = aba !== "entregas";
+        document.getElementById("aba-projetos").hidden = aba !== "projetos";
         document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
         const titulos = {
           principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
-          financeiro: "Finance", clientes: "Clients", brainstorm: "Brainstorm",
-          entregas: "Deliveries"
+          financeiro: "Finance", clientes: "Clients", projetos: "Projects"
         };
         document.getElementById("titulo-pagina").textContent = titulos[aba];
         fecharSidebarMobile();
@@ -1643,14 +1688,16 @@
       if(evento.key === "Escape") fecharModalCliente();
     });
     document.getElementById("form-cliente").addEventListener("submit", salvarCliente);
+    document.getElementById("botao-add-atividade").addEventListener("click", salvarAtividade);
   }
 
-  function abrirModalCliente(item = null){
+  async function abrirModalCliente(item = null){
     const form = document.getElementById("form-cliente");
     form.reset();
+    const secaoAtividades = document.getElementById("crm-secao-atividades");
 
     if(item){
-      document.getElementById("titulo-modal-cliente").textContent = "Edit client";
+      document.getElementById("titulo-modal-cliente").textContent = item.nome;
       document.getElementById("cliente-id").value = item.id;
       document.getElementById("cliente-nome").value = item.nome;
       document.getElementById("cliente-empresa").value = item.empresa || "";
@@ -1658,12 +1705,17 @@
       document.getElementById("cliente-telefone").value = item.telefone || "";
       document.getElementById("cliente-instagram").value = item.instagram || "";
       document.getElementById("cliente-observacoes").value = item.observacoes || "";
+      secaoAtividades.hidden = false;
+      document.getElementById("lista-atividades").innerHTML = '<p class="texto-vazio">Loading...</p>';
+      document.getElementById("modal-cliente").hidden = false;
+      await carregarAtividades(item.id);
+      renderAtividades();
     } else {
       document.getElementById("titulo-modal-cliente").textContent = "New client";
       document.getElementById("cliente-id").value = "";
+      secaoAtividades.hidden = true;
+      document.getElementById("modal-cliente").hidden = false;
     }
-
-    document.getElementById("modal-cliente").hidden = false;
   }
 
   function fecharModalCliente(){
@@ -1744,7 +1796,7 @@
     }
 
     container.innerHTML = estado.clientes.map(c => `
-      <div class="cartao cartao-cliente">
+      <div class="cartao cartao-cliente" data-abrir-cliente="${c.id}">
         <p class="cartao-cliente-nome">${escapeHtml(c.nome)}</p>
         ${c.empresa ? `<p class="cartao-cliente-empresa">${escapeHtml(c.empresa)}</p>` : ""}
         <div class="cartao-cliente-info">
@@ -1753,440 +1805,517 @@
           ${c.instagram ? `<div>${escapeHtml(c.instagram)}</div>` : ""}
         </div>
         <div class="cartao-cliente-acoes">
-          <button type="button" class="botao-icone" data-editar-cliente="${c.id}" aria-label="Edit">✎</button>
           <button type="button" class="botao-icone excluir" data-excluir-cliente="${c.id}" aria-label="Delete">✕</button>
         </div>
       </div>
     `).join("");
 
-    container.querySelectorAll("[data-editar-cliente]").forEach(botao => {
-      botao.addEventListener("click", () => {
-        const item = estado.clientes.find(c => String(c.id) === botao.dataset.editarCliente);
+    container.querySelectorAll("[data-abrir-cliente]").forEach(cartao => {
+      cartao.addEventListener("click", () => {
+        const item = estado.clientes.find(c => String(c.id) === cartao.dataset.abrirCliente);
         if(item) abrirModalCliente(item);
       });
     });
     container.querySelectorAll("[data-excluir-cliente]").forEach(botao => {
-      botao.addEventListener("click", () => excluirCliente(botao.dataset.excluirCliente));
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        excluirCliente(botao.dataset.excluirCliente);
+      });
     });
   }
 
-  // ===================== TAB: BRAINSTORM =====================
-  async function carregarIdeias(){
-    const { data, error } = await Auth.sb
-      .from("brainstorm")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if(error) throw error;
-    estado.ideias = data;
+  // ===================== TAB: CLIENTS — CRM ACTIVITY LOG =====================
+  async function carregarAtividades(clienteId){
+    try {
+      const { data, error } = await Auth.sb
+        .from("painel_cliente_atividades")
+        .select("*")
+        .eq("cliente_id", clienteId)
+        .order("created_at", { ascending: false });
+      if(error) throw error;
+      estado.atividades = data;
+    } catch (erro) {
+      console.warn("painel_cliente_atividades table not set up yet:", erro);
+      estado.atividades = [];
+    }
   }
 
-  function configurarIdeias(){
-    document.getElementById("botao-nova-ideia").addEventListener("click", () => abrirModalIdeia());
-    document.getElementById("fechar-modal-ideia").addEventListener("click", fecharModalIdeia);
-    document.getElementById("modal-ideia").addEventListener("click", (evento) => {
-      if(evento.target.id === "modal-ideia") fecharModalIdeia();
-    });
-    document.addEventListener("keydown", (evento) => {
-      if(evento.key === "Escape") fecharModalIdeia();
-    });
-    document.getElementById("form-ideia").addEventListener("submit", salvarIdeia);
+  function traduzirTipoAtividade(tipo){
+    return { nota: "Note", ligacao: "Call", email: "Email", whatsapp: "WhatsApp", reuniao: "Meeting", outro: "Other" }[tipo] || tipo;
   }
 
-  function abrirModalIdeia(item = null){
-    const form = document.getElementById("form-ideia");
-    form.reset();
-
-    if(item){
-      document.getElementById("titulo-modal-ideia").textContent = "Edit idea";
-      document.getElementById("ideia-id").value = item.id;
-      document.getElementById("ideia-titulo").value = item.title;
-      document.getElementById("ideia-descricao").value = item.description || "";
-    } else {
-      document.getElementById("titulo-modal-ideia").textContent = "New idea";
-      document.getElementById("ideia-id").value = "";
+  async function salvarAtividade(){
+    const clienteId = document.getElementById("cliente-id").value;
+    const texto = document.getElementById("atividade-texto").value.trim();
+    if(!clienteId || !texto){
+      mostrarToast("Write something before adding it to the activity log.");
+      return;
     }
 
-    document.getElementById("modal-ideia").hidden = false;
+    const registro = {
+      user_id: estado.usuarioId,
+      cliente_id: clienteId,
+      tipo: document.getElementById("atividade-tipo").value,
+      texto
+    };
+
+    try {
+      const { data, error } = await Auth.sb.from("painel_cliente_atividades").insert(registro).select();
+      if(error) throw error;
+      estado.atividades.unshift(data[0]);
+      document.getElementById("atividade-texto").value = "";
+      renderAtividades();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the CRM setup SQL has been run on Supabase.");
+    }
   }
 
-  function fecharModalIdeia(){
-    document.getElementById("modal-ideia").hidden = true;
+  async function excluirAtividade(id){
+    try {
+      const { error } = await Auth.sb.from("painel_cliente_atividades").delete().eq("id", id);
+      if(error) throw error;
+      estado.atividades = estado.atividades.filter(a => String(a.id) !== String(id));
+      renderAtividades();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
   }
 
-  async function salvarIdeia(evento){
+  function renderAtividades(){
+    const container = document.getElementById("lista-atividades");
+
+    if(estado.atividades.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No activity logged yet.</p>';
+      return;
+    }
+
+    container.innerHTML = estado.atividades.map(a => `
+      <div class="atividade-item">
+        <div class="atividade-cabecalho">
+          <span class="atividade-tipo">${traduzirTipoAtividade(a.tipo)}</span>
+          <span class="atividade-data">${new Date(a.created_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" })}</span>
+          <button type="button" class="botao-icone excluir atividade-excluir" data-excluir-atividade="${a.id}" aria-label="Delete">✕</button>
+        </div>
+        <p class="atividade-texto">${escapeHtml(a.texto)}</p>
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-excluir-atividade]").forEach(botao => {
+      botao.addEventListener("click", () => excluirAtividade(botao.dataset.excluirAtividade));
+    });
+  }
+
+  // ===================== TAB: PROJECTS (KANBAN) =====================
+  let colunaComFormularioAberto = null;
+  let mostrandoFormNovaColuna = false;
+
+  async function carregarColunas(){
+    const { data, error } = await Auth.sb
+      .from("painel_colunas")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+
+    if(data.length === 0){
+      const registros = NOMES_COLUNAS_PADRAO.map((nome, indice) => ({
+        user_id: estado.usuarioId, nome, ordem: indice
+      }));
+      const { data: criadas, error: erroCriar } = await Auth.sb.from("painel_colunas").insert(registros).select();
+      if(erroCriar) throw erroCriar;
+      estado.colunas = criadas.sort((a, b) => a.ordem - b.ordem);
+    } else {
+      estado.colunas = data;
+    }
+  }
+
+  async function carregarProjetos(){
+    const { data, error } = await Auth.sb
+      .from("painel_projetos")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+    estado.projetos = data;
+  }
+
+  function configurarProjetos(){
+    document.getElementById("fechar-modal-projeto").addEventListener("click", fecharModalProjeto);
+    document.getElementById("modal-projeto").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-projeto") fecharModalProjeto();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalProjeto();
+    });
+    document.getElementById("form-projeto").addEventListener("submit", salvarProjeto);
+    document.getElementById("botao-excluir-projeto").addEventListener("click", excluirProjetoAtual);
+  }
+
+  function abrirModalProjeto(item){
+    document.getElementById("titulo-modal-projeto").textContent = item.titulo;
+    document.getElementById("projeto-id").value = item.id;
+    document.getElementById("projeto-titulo").value = item.titulo;
+    document.getElementById("projeto-cliente").value = item.cliente || "";
+    document.getElementById("projeto-notas").value = item.notas || "";
+    document.getElementById("lista-clientes-datalist-projeto").innerHTML =
+      estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
+
+    const select = document.getElementById("projeto-coluna");
+    select.innerHTML = estado.colunas.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
+    select.value = item.coluna_id;
+
+    document.getElementById("modal-projeto").hidden = false;
+  }
+
+  function fecharModalProjeto(){
+    document.getElementById("modal-projeto").hidden = true;
+  }
+
+  async function salvarProjeto(evento){
     evento.preventDefault();
 
-    const id = document.getElementById("ideia-id").value;
-    const titulo = document.getElementById("ideia-titulo").value.trim();
+    const id = document.getElementById("projeto-id").value;
+    const titulo = document.getElementById("projeto-titulo").value.trim();
     if(!titulo){
       mostrarToast("Please enter a title.");
       return;
     }
 
     const registro = {
-      title: titulo,
-      description: document.getElementById("ideia-descricao").value.trim() || null,
+      titulo,
+      cliente: document.getElementById("projeto-cliente").value.trim() || null,
+      coluna_id: document.getElementById("projeto-coluna").value,
+      notas: document.getElementById("projeto-notas").value.trim() || null,
       updated_at: new Date().toISOString()
     };
 
     try {
-      if(id){
-        const { data, error } = await Auth.sb.from("brainstorm").update(registro).eq("id", id).select();
-        if(error) throw error;
-        const indice = estado.ideias.findIndex(i => String(i.id) === String(id));
-        if(indice > -1) estado.ideias[indice] = data[0];
-        mostrarToast("Idea updated.");
-      } else {
-        registro.user_id = estado.usuarioId;
-        const { data, error } = await Auth.sb.from("brainstorm").insert(registro).select();
-        if(error) throw error;
-        estado.ideias.unshift(data[0]);
-        mostrarToast("Idea added.");
-      }
-
-      fecharModalIdeia();
-      renderIdeias();
+      const { data, error } = await Auth.sb.from("painel_projetos").update(registro).eq("id", id).select();
+      if(error) throw error;
+      const indice = estado.projetos.findIndex(p => String(p.id) === String(id));
+      if(indice > -1) estado.projetos[indice] = data[0];
+      fecharModalProjeto();
+      renderProjetos();
+      mostrarToast("Project updated.");
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Could not save. Check that the latest setup.sql has been run on Supabase.");
+      mostrarToast("Could not save. Check that the CRM setup SQL has been run on Supabase.");
     }
   }
 
-  async function excluirIdeia(id){
-    if(!confirm("Delete this idea?")) return;
+  async function excluirProjetoAtual(){
+    const id = document.getElementById("projeto-id").value;
+    if(!id || !confirm("Delete this project?")) return;
     try {
-      const { error } = await Auth.sb.from("brainstorm").delete().eq("id", id);
+      const { error } = await Auth.sb.from("painel_projetos").delete().eq("id", id);
       if(error) throw error;
-      estado.ideias = estado.ideias.filter(i => String(i.id) !== String(id));
-      renderIdeias();
-      mostrarToast("Idea deleted.");
+      estado.projetos = estado.projetos.filter(p => String(p.id) !== String(id));
+      fecharModalProjeto();
+      renderProjetos();
+      mostrarToast("Project deleted.");
     } catch (erro) {
       console.error(erro);
       mostrarToast("Could not delete. Try again.");
     }
   }
 
-  function renderIdeias(){
-    const container = document.getElementById("lista-ideias");
-
-    if(estado.ideias.length === 0){
-      container.innerHTML = `
-        <div class="estado-vazio" style="grid-column:1/-1;">
-          <div class="estado-vazio-icone">💡</div>
-          <p>No ideas yet. Jot down your next content ideas here.</p>
-          <button type="button" class="btn btn-primario" id="botao-vazio-nova-ideia">New idea</button>
-        </div>
-      `;
-      document.getElementById("botao-vazio-nova-ideia").addEventListener("click", () => abrirModalIdeia());
-      return;
-    }
-
-    container.innerHTML = estado.ideias.map(i => `
-      <div class="cartao cartao-cliente">
-        <p class="cartao-cliente-nome">${escapeHtml(i.title)}</p>
-        ${i.description ? `<div class="cartao-cliente-info">${escapeHtml(i.description)}</div>` : ""}
-        <div class="cartao-cliente-acoes">
-          <button type="button" class="botao-icone" data-editar-ideia="${i.id}" aria-label="Edit">✎</button>
-          <button type="button" class="botao-icone excluir" data-excluir-ideia="${i.id}" aria-label="Delete">✕</button>
-        </div>
-      </div>
-    `).join("");
-
-    container.querySelectorAll("[data-editar-ideia]").forEach(botao => {
-      botao.addEventListener("click", () => {
-        const item = estado.ideias.find(i => String(i.id) === botao.dataset.editarIdeia);
-        if(item) abrirModalIdeia(item);
-      });
-    });
-    container.querySelectorAll("[data-excluir-ideia]").forEach(botao => {
-      botao.addEventListener("click", () => excluirIdeia(botao.dataset.excluirIdeia));
-    });
+  function proximaOrdem(lista){
+    return lista.length === 0 ? 0 : Math.max(...lista.map(i => i.ordem)) + 1;
   }
 
-  // ===================== TAB: DELIVERIES =====================
-  const OPCOES_VALIDADE_LINK = [
-    { rotulo: "24h", segundos: 60 * 60 * 24 },
-    { rotulo: "7 days", segundos: 60 * 60 * 24 * 7 },
-    { rotulo: "30 days", segundos: 60 * 60 * 24 * 30 }
-  ];
-
-  async function carregarEntregas(){
-    const { data, error } = await Auth.sb
-      .from("entregas")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if(error) throw error;
-    estado.entregas = data;
-  }
-
-  function configurarEntregas(){
-    document.getElementById("botao-nova-entrega").addEventListener("click", () => abrirModalEntrega());
-    document.getElementById("fechar-modal-entrega").addEventListener("click", fecharModalEntrega);
-    document.getElementById("modal-entrega").addEventListener("click", (evento) => {
-      if(evento.target.id === "modal-entrega") fecharModalEntrega();
-    });
-    document.addEventListener("keydown", (evento) => {
-      if(evento.key === "Escape") fecharModalEntrega();
-    });
-    document.getElementById("form-entrega").addEventListener("submit", salvarEntrega);
-  }
-
-  function abrirModalEntrega(clientePreenchido = ""){
-    const form = document.getElementById("form-entrega");
-    form.reset();
-    document.getElementById("lista-clientes-datalist-entrega").innerHTML =
-      estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
-    document.getElementById("entrega-cliente").value = clientePreenchido;
-    document.getElementById("modal-entrega").hidden = false;
-  }
-
-  function fecharModalEntrega(){
-    document.getElementById("modal-entrega").hidden = true;
-  }
-
-  async function salvarEntrega(evento){
-    evento.preventDefault();
-
-    const titulo = document.getElementById("entrega-titulo").value.trim();
-    const arquivo = document.getElementById("entrega-arquivo").files[0];
-    if(!titulo || !arquivo){
-      mostrarToast("Please add a title and choose a video file.");
-      return;
-    }
-
-    const botao = document.getElementById("botao-salvar-entrega");
-    botao.disabled = true;
-    botao.textContent = "Uploading...";
-
-    try {
-      const caminho = `${estado.usuarioId}/${Date.now()}-${arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const { error: erroUpload } = await Auth.sb.storage.from("entregas").upload(caminho, arquivo);
-      if(erroUpload) throw erroUpload;
-
-      const registro = {
-        user_id: estado.usuarioId,
-        titulo,
-        cliente: document.getElementById("entrega-cliente").value.trim() || null,
-        caminho_arquivo: caminho,
-        nome_arquivo: arquivo.name,
-        tamanho: arquivo.size,
-        tipo_arquivo: arquivo.type || null
-      };
-
-      const { data, error } = await Auth.sb.from("entregas").insert(registro).select();
-      if(error) throw error;
-
-      estado.entregas.unshift(data[0]);
-      fecharModalEntrega();
-      renderEntregas();
-      mostrarToast("Delivery uploaded.");
-    } catch (erro) {
-      console.error(erro);
-      mostrarToast("Could not upload. Check that the latest setup.sql has been run on Supabase and the file isn't too large.");
-    }
-
-    botao.disabled = false;
-    botao.textContent = "Upload";
-  }
-
-  async function excluirEntrega(id){
-    if(!confirm("Delete this delivery? The video file will be removed too.")) return;
-    const item = estado.entregas.find(e => String(e.id) === String(id));
-    if(!item) return;
-
-    try {
-      await Auth.sb.storage.from("entregas").remove([item.caminho_arquivo]);
-      const { error } = await Auth.sb.from("entregas").delete().eq("id", id);
-      if(error) throw error;
-      estado.entregas = estado.entregas.filter(e => String(e.id) !== String(id));
-      renderEntregas();
-      mostrarToast("Delivery deleted.");
-    } catch (erro) {
-      console.error(erro);
-      mostrarToast("Could not delete. Try again.");
-    }
-  }
-
-  const URL_BASE_ENTREGA = "https://nicolyugccreator.com/entrega/";
-
-  function agruparEntregasPorCliente(lista){
-    const mapa = new Map();
-    const semCliente = [];
-    lista.forEach(item => {
-      if(item.cliente){
-        if(!mapa.has(item.cliente)) mapa.set(item.cliente, []);
-        mapa.get(item.cliente).push(item);
-      } else {
-        semCliente.push(item);
-      }
-    });
-    return {
-      grupos: Array.from(mapa.entries()).map(([cliente, itens]) => ({ cliente, itens })),
-      semCliente
+  async function adicionarCartaoRapido(colunaId, titulo){
+    const registro = {
+      user_id: estado.usuarioId,
+      coluna_id: colunaId,
+      titulo,
+      ordem: proximaOrdem(estado.projetos.filter(p => p.coluna_id === colunaId))
     };
-  }
-
-  function cartaoEntregaHtml(e){
-    return `
-      <div class="cartao cartao-cliente">
-        <p class="cartao-cliente-nome">${escapeHtml(e.titulo)}</p>
-        <div class="cartao-cliente-info">
-          <div class="cartao-entrega-arquivo">${escapeHtml(e.nome_arquivo)}</div>
-          <div>${formatarTamanho(e.tamanho)}</div>
-          <div>${new Date(e.created_at).toLocaleDateString("en-IE")}</div>
-        </div>
-        <div class="cartao-cliente-acoes">
-          <button type="button" class="botao-icone excluir" data-excluir-entrega="${e.id}" aria-label="Delete">✕</button>
-        </div>
-      </div>
-    `;
-  }
-
-  function mostrarOpcoesLinkPasta(indice, cliente){
-    const area = document.getElementById(`pasta-link-area-${indice}`);
-    area.innerHTML = `
-      <div class="entrega-opcoes-link">
-        ${OPCOES_VALIDADE_LINK.map(o => `<button type="button" class="btn btn-secundario btn-pequeno" data-criar-link-pasta="${indice}:${o.segundos}">${o.rotulo}</button>`).join("")}
-      </div>
-    `;
-    area.querySelectorAll("[data-criar-link-pasta]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        const [idx, segundos] = botao.dataset.criarLinkPasta.split(":");
-        gerarLinkPasta(cliente, Number(segundos), Number(idx));
-      });
-    });
-  }
-
-  async function gerarLinkPasta(cliente, segundos, indice){
-    const itens = estado.entregas.filter(e => e.cliente === cliente);
-    const area = document.getElementById(`pasta-link-area-${indice}`);
-    if(!itens.length || !area) return;
-
-    area.innerHTML = `<p class="entrega-link-validade">Generating link...</p>`;
-
     try {
-      const caminhos = itens.map(e => e.caminho_arquivo);
-      const { data, error } = await Auth.sb.storage.from("entregas").createSignedUrls(caminhos, segundos);
+      const { data, error } = await Auth.sb.from("painel_projetos").insert(registro).select();
       if(error) throw error;
-
-      const arquivos = itens.map((item, i) => ({
-        titulo: item.titulo,
-        nome_arquivo: item.nome_arquivo,
-        tipo_arquivo: item.tipo_arquivo,
-        url: data[i].signedUrl
-      }));
-
-      const shareToken = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + segundos * 1000).toISOString();
-
-      const { error: erroLink } = await Auth.sb.from("entregas_links").insert({
-        user_id: estado.usuarioId,
-        cliente,
-        share_token: shareToken,
-        expires_at: expiresAt,
-        arquivos
-      });
-      if(erroLink) throw erroLink;
-
-      const link = `${URL_BASE_ENTREGA}?t=${shareToken}`;
-      const rotuloValidade = OPCOES_VALIDADE_LINK.find(o => o.segundos === segundos)?.rotulo || "";
-      area.innerHTML = `
-        <div class="entrega-link-pronto">
-          <input type="text" readonly value="${escapeHtml(link)}" id="pasta-link-input-${indice}">
-          <button type="button" class="btn btn-secundario btn-pequeno" id="pasta-copiar-link-${indice}">Copy</button>
-        </div>
-        <p class="entrega-link-validade">Link valid for ${rotuloValidade}, gives access to all ${itens.length} video${itens.length > 1 ? "s" : ""}.</p>
-      `;
-      document.getElementById(`pasta-link-input-${indice}`).addEventListener("click", (evento) => evento.target.select());
-      document.getElementById(`pasta-copiar-link-${indice}`).addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(link);
-          mostrarToast("Link copied.");
-        } catch (erro) {
-          document.getElementById(`pasta-link-input-${indice}`).select();
-          mostrarToast("Could not copy automatically, link is selected, press Ctrl+C.");
-        }
-      });
+      estado.projetos.push(data[0]);
+      colunaComFormularioAberto = null;
+      renderProjetos();
     } catch (erro) {
       console.error(erro);
-      area.innerHTML = `<p class="entrega-link-validade">Could not generate the link. Check that the latest setup.sql has been run on Supabase.</p>`;
+      mostrarToast("Could not save. Check that the CRM setup SQL has been run on Supabase.");
     }
   }
 
-  function renderEntregas(){
-    const container = document.getElementById("lista-entregas");
+  async function moverCartaoParaColuna(cartaoId, colunaId){
+    const cartao = estado.projetos.find(p => String(p.id) === String(cartaoId));
+    if(!cartao || cartao.coluna_id === colunaId) return;
 
-    if(estado.entregas.length === 0){
-      container.innerHTML = `
-        <div class="estado-vazio">
-          <div class="estado-vazio-icone">🎬</div>
-          <p>No deliveries uploaded yet.</p>
-        </div>
-      `;
+    const novaOrdem = proximaOrdem(estado.projetos.filter(p => p.coluna_id === colunaId));
+    try {
+      const { error } = await Auth.sb.from("painel_projetos")
+        .update({ coluna_id: colunaId, ordem: novaOrdem })
+        .eq("id", cartaoId);
+      if(error) throw error;
+      cartao.coluna_id = colunaId;
+      cartao.ordem = novaOrdem;
+      renderProjetos();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not move the project. Try again.");
+    }
+  }
+
+  async function adicionarColuna(nome){
+    const registro = { user_id: estado.usuarioId, nome, ordem: proximaOrdem(estado.colunas) };
+    try {
+      const { data, error } = await Auth.sb.from("painel_colunas").insert(registro).select();
+      if(error) throw error;
+      estado.colunas.push(data[0]);
+      mostrandoFormNovaColuna = false;
+      renderProjetos();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the CRM setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function renomearColuna(id, nome){
+    const coluna = estado.colunas.find(c => String(c.id) === String(id));
+    if(!coluna || !nome || coluna.nome === nome) return;
+    try {
+      const { error } = await Auth.sb.from("painel_colunas").update({ nome }).eq("id", id);
+      if(error) throw error;
+      coluna.nome = nome;
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not rename the column. Try again.");
+      renderProjetos();
+    }
+  }
+
+  async function moverColuna(id, direcao){
+    const ordenadas = [...estado.colunas].sort((a, b) => a.ordem - b.ordem);
+    const indice = ordenadas.findIndex(c => String(c.id) === String(id));
+    const alvo = indice + direcao;
+    if(indice === -1 || alvo < 0 || alvo >= ordenadas.length) return;
+
+    const colunaA = ordenadas[indice];
+    const colunaB = ordenadas[alvo];
+    const ordemA = colunaA.ordem;
+    const ordemB = colunaB.ordem;
+
+    try {
+      const [{ error: erroA }, { error: erroB }] = await Promise.all([
+        Auth.sb.from("painel_colunas").update({ ordem: ordemB }).eq("id", colunaA.id),
+        Auth.sb.from("painel_colunas").update({ ordem: ordemA }).eq("id", colunaB.id)
+      ]);
+      if(erroA || erroB) throw erroA || erroB;
+      colunaA.ordem = ordemB;
+      colunaB.ordem = ordemA;
+      renderProjetos();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not reorder columns. Try again.");
+    }
+  }
+
+  async function excluirColuna(id){
+    const coluna = estado.colunas.find(c => String(c.id) === String(id));
+    if(!coluna) return;
+    const quantosCartoes = estado.projetos.filter(p => p.coluna_id === id).length;
+    const aviso = quantosCartoes > 0
+      ? `Delete the column "${coluna.nome}"? Its ${quantosCartoes} project${quantosCartoes > 1 ? "s" : ""} will be deleted too.`
+      : `Delete the column "${coluna.nome}"?`;
+    if(!confirm(aviso)) return;
+
+    try {
+      const { error } = await Auth.sb.from("painel_colunas").delete().eq("id", id);
+      if(error) throw error;
+      estado.colunas = estado.colunas.filter(c => String(c.id) !== String(id));
+      estado.projetos = estado.projetos.filter(p => p.coluna_id !== id);
+      renderProjetos();
+      mostrarToast("Column deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function renderProjetos(){
+    const container = document.getElementById("kanban-quadro");
+    const colunasOrdenadas = [...estado.colunas].sort((a, b) => a.ordem - b.ordem);
+
+    if(colunasOrdenadas.length === 0){
+      container.innerHTML = '<p class="texto-vazio">Could not load your board. Check that the CRM setup SQL has been run on Supabase.</p>';
       return;
     }
 
-    const { grupos, semCliente } = agruparEntregasPorCliente(estado.entregas);
+    const htmlColunas = colunasOrdenadas.map((coluna, indice) => {
+      const cartoesColuna = estado.projetos.filter(p => p.coluna_id === coluna.id).sort((a, b) => a.ordem - b.ordem);
+      const formularioAberto = colunaComFormularioAberto === coluna.id;
 
-    const htmlPastas = grupos.map((grupo, indice) => `
-      <div class="pasta-entrega" data-pasta="${indice}">
-        <div class="pasta-cabecalho" data-toggle-pasta="${indice}">
-          <div class="pasta-info">
-            <div>
-              <p class="pasta-nome">${escapeHtml(grupo.cliente)}</p>
-              <p class="pasta-contagem">${grupo.itens.length} video${grupo.itens.length > 1 ? "s" : ""}</p>
+      return `
+        <div class="kanban-coluna">
+          <div class="kanban-coluna-cabecalho">
+            <input type="text" class="kanban-coluna-titulo" value="${escapeHtml(coluna.nome)}" data-renomear-coluna="${coluna.id}" aria-label="Column name">
+            <span class="kanban-coluna-contagem">${cartoesColuna.length}</span>
+            <div class="kanban-coluna-acoes">
+              <button type="button" class="botao-icone" data-mover-coluna="${coluna.id}:-1" aria-label="Move column left" ${indice === 0 ? "disabled" : ""}>◀</button>
+              <button type="button" class="botao-icone" data-mover-coluna="${coluna.id}:1" aria-label="Move column right" ${indice === colunasOrdenadas.length - 1 ? "disabled" : ""}>▶</button>
+              <button type="button" class="botao-icone excluir" data-excluir-coluna="${coluna.id}" aria-label="Delete column">✕</button>
             </div>
           </div>
-          <div class="pasta-acoes">
-            <button type="button" class="btn btn-secundario btn-pequeno" data-add-video-pasta="${escapeHtml(grupo.cliente)}">+ Add video</button>
-            <button type="button" class="btn btn-secundario btn-pequeno" data-gerar-link-pasta="${indice}">Generate link for all</button>
-            <span class="pasta-seta">▾</span>
+          <div class="kanban-coluna-corpo" data-coluna-corpo="${coluna.id}">
+            ${cartoesColuna.map(p => `
+              <div class="kanban-cartao" draggable="true" data-cartao="${p.id}">
+                <p class="kanban-cartao-titulo">${escapeHtml(p.titulo)}</p>
+                ${p.cliente ? `<span class="kanban-cartao-cliente">${escapeHtml(p.cliente)}</span>` : ""}
+              </div>
+            `).join("")}
+          </div>
+          <div class="kanban-coluna-rodape">
+            ${formularioAberto ? `
+              <form class="kanban-form-cartao" data-form-cartao="${coluna.id}">
+                <input type="text" placeholder="Project title" data-input-cartao="${coluna.id}" required autofocus>
+                <div class="kanban-form-cartao-acoes">
+                  <button type="submit" class="btn btn-primario btn-pequeno">Add</button>
+                  <button type="button" class="botao-cancelar" data-cancelar-cartao="${coluna.id}">Cancel</button>
+                </div>
+              </form>
+            ` : `
+              <button type="button" class="kanban-add-cartao" data-abrir-form-cartao="${coluna.id}">+ Add project</button>
+            `}
           </div>
         </div>
-        <div class="pasta-link-area" id="pasta-link-area-${indice}"></div>
-        <div class="pasta-corpo" id="pasta-corpo-${indice}" hidden>
-          ${grupo.itens.map(cartaoEntregaHtml).join("")}
-        </div>
+      `;
+    }).join("");
+
+    const htmlNovaColuna = `
+      <div class="kanban-coluna-nova">
+        ${mostrandoFormNovaColuna ? `
+          <form class="form-nova-coluna" id="form-nova-coluna">
+            <input type="text" id="input-nova-coluna" placeholder="Column name" required autofocus>
+            <div class="form-nova-coluna-acoes">
+              <button type="submit" class="btn btn-primario btn-pequeno">Add column</button>
+              <button type="button" class="botao-cancelar" id="cancelar-nova-coluna">Cancel</button>
+            </div>
+          </form>
+        ` : `
+          <button type="button" class="botao-nova-coluna" id="botao-nova-coluna">+ New column</button>
+        `}
       </div>
-    `).join("");
+    `;
 
-    const htmlSoltas = semCliente.length
-      ? `<div class="lista-entregas-solta">${semCliente.map(cartaoEntregaHtml).join("")}</div>`
-      : "";
+    container.innerHTML = htmlColunas + htmlNovaColuna;
 
-    container.innerHTML = htmlPastas + htmlSoltas;
+    if(colunaComFormularioAberto){
+      const inputCartao = container.querySelector(`[data-input-cartao="${colunaComFormularioAberto}"]`);
+      if(inputCartao) inputCartao.focus();
+    }
+    if(mostrandoFormNovaColuna){
+      const inputColuna = document.getElementById("input-nova-coluna");
+      if(inputColuna) inputColuna.focus();
+    }
 
-    container.querySelectorAll("[data-toggle-pasta]").forEach(cabecalho => {
-      cabecalho.addEventListener("click", () => {
-        const pasta = cabecalho.closest(".pasta-entrega");
-        const corpo = document.getElementById(`pasta-corpo-${cabecalho.dataset.togglePasta}`);
-        const aberta = pasta.classList.toggle("aberta");
-        corpo.hidden = !aberta;
+    // Rename column (on blur or Enter)
+    container.querySelectorAll("[data-renomear-coluna]").forEach(input => {
+      input.addEventListener("blur", () => renomearColuna(input.dataset.renomearColuna, input.value.trim()));
+      input.addEventListener("keydown", (evento) => {
+        if(evento.key === "Enter"){ evento.preventDefault(); input.blur(); }
       });
     });
 
-    container.querySelectorAll("[data-add-video-pasta]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        abrirModalEntrega(botao.dataset.addVideoPasta);
+    // Reorder / delete columns
+    container.querySelectorAll("[data-mover-coluna]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const [id, direcao] = botao.dataset.moverColuna.split(":");
+        moverColuna(id, Number(direcao));
+      });
+    });
+    container.querySelectorAll("[data-excluir-coluna]").forEach(botao => {
+      botao.addEventListener("click", () => excluirColuna(botao.dataset.excluirColuna));
+    });
+
+    // Quick-add card
+    container.querySelectorAll("[data-abrir-form-cartao]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        colunaComFormularioAberto = botao.dataset.abrirFormCartao;
+        renderProjetos();
+      });
+    });
+    container.querySelectorAll("[data-cancelar-cartao]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        colunaComFormularioAberto = null;
+        renderProjetos();
+      });
+    });
+    container.querySelectorAll("[data-form-cartao]").forEach(form => {
+      form.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        const colunaId = form.dataset.formCartao;
+        const input = form.querySelector(`[data-input-cartao="${colunaId}"]`);
+        const titulo = input.value.trim();
+        if(titulo) adicionarCartaoRapido(colunaId, titulo);
       });
     });
 
-    container.querySelectorAll("[data-gerar-link-pasta]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        const indice = Number(botao.dataset.gerarLinkPasta);
-        mostrarOpcoesLinkPasta(indice, grupos[indice].cliente);
+    // Open card modal
+    container.querySelectorAll("[data-cartao]").forEach(cartaoEl => {
+      cartaoEl.addEventListener("click", () => {
+        if(estado.suprimirCliqueCartao) return;
+        const item = estado.projetos.find(p => String(p.id) === cartaoEl.dataset.cartao);
+        if(item) abrirModalProjeto(item);
+      });
+      cartaoEl.addEventListener("dragstart", (evento) => {
+        estado.cartaoArrastado = cartaoEl.dataset.cartao;
+        cartaoEl.classList.add("arrastando");
+        evento.dataTransfer.effectAllowed = "move";
+        evento.dataTransfer.setData("text/plain", cartaoEl.dataset.cartao);
+      });
+      cartaoEl.addEventListener("dragend", () => {
+        cartaoEl.classList.remove("arrastando");
+        estado.suprimirCliqueCartao = true;
+        setTimeout(() => { estado.suprimirCliqueCartao = false; }, 150);
       });
     });
 
-    container.querySelectorAll("[data-excluir-entrega]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        excluirEntrega(botao.dataset.excluirEntrega);
+    // Drop targets (column bodies)
+    container.querySelectorAll("[data-coluna-corpo]").forEach(corpo => {
+      corpo.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        evento.dataTransfer.dropEffect = "move";
+        corpo.classList.add("sobre-arraste");
+      });
+      corpo.addEventListener("dragleave", () => corpo.classList.remove("sobre-arraste"));
+      corpo.addEventListener("drop", (evento) => {
+        evento.preventDefault();
+        corpo.classList.remove("sobre-arraste");
+        const cartaoId = evento.dataTransfer.getData("text/plain") || estado.cartaoArrastado;
+        if(cartaoId) moverCartaoParaColuna(cartaoId, corpo.dataset.colunaCorpo);
+        estado.cartaoArrastado = null;
       });
     });
+
+    // New column
+    const botaoNovaColuna = document.getElementById("botao-nova-coluna");
+    if(botaoNovaColuna){
+      botaoNovaColuna.addEventListener("click", () => {
+        mostrandoFormNovaColuna = true;
+        renderProjetos();
+      });
+    }
+    const cancelarNovaColuna = document.getElementById("cancelar-nova-coluna");
+    if(cancelarNovaColuna){
+      cancelarNovaColuna.addEventListener("click", () => {
+        mostrandoFormNovaColuna = false;
+        renderProjetos();
+      });
+    }
+    const formNovaColuna = document.getElementById("form-nova-coluna");
+    if(formNovaColuna){
+      formNovaColuna.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        const input = document.getElementById("input-nova-coluna");
+        const nome = input.value.trim();
+        if(nome) adicionarColuna(nome);
+      });
+    }
   }
 
   // ===================== REDRAW =====================
