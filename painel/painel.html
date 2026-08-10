@@ -595,8 +595,20 @@
   .botao-conectar-gmail{
     flex-shrink:0;font-family:'Poppins', sans-serif;font-weight:700;font-size:.82rem;
     background:var(--branco);border:2px solid var(--preto);border-radius:999px;padding:.5rem 1rem;
-    cursor:not-allowed;opacity:.6;
+    cursor:pointer;box-shadow:2px 2px 0 var(--preto);
   }
+  .botao-conectar-gmail:hover{background:var(--limao);}
+
+  .email-linha{display:flex;gap:.7rem;align-items:flex-start;padding:.7rem 0;border-bottom:1.5px solid var(--papel);}
+  .email-linha:last-child{border-bottom:none;}
+  .email-avatar{
+    width:30px;height:30px;border-radius:50%;background:var(--azul);color:var(--branco);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;
+  }
+  .email-corpo{flex:1;min-width:0;}
+  .email-assunto{font-weight:700;font-size:.85rem;margin:0 0 .15rem;}
+  .email-trecho{font-size:.8rem;color:var(--texto-suave);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .email-data{font-size:.7rem;color:var(--texto-suave);flex-shrink:0;}
 
   /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
@@ -994,10 +1006,7 @@
             </div>
 
             <div class="aba-perfil-conteudo" data-conteudo-perfil="email">
-              <div class="conectar-gmail">
-                📧 <span><strong>Gmail isn't connected yet.</strong> Once it is, emails exchanged with this client's address will show up here automatically.</span>
-                <button type="button" class="botao-conectar-gmail" disabled title="Coming soon">Connect Gmail</button>
-              </div>
+              <div id="perfil-email-conteudo"></div>
             </div>
           </div>
         </div>
@@ -1156,7 +1165,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="js/auth.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
+  const GOOGLE_CLIENT_ID = "550209626694-6svgbmejouib8lqkrtqsh35f114d1hkd.apps.googleusercontent.com";
+  const GOOGLE_SCOPE_GMAIL = "https://www.googleapis.com/auth/gmail.readonly";
+
   const estado = {
     eventos: [], leads: [], periodo: "tudo",
     agenda: [], mesVisivel: new Date(), diaSelecionado: new Date(),
@@ -1169,6 +1182,7 @@
     roteiros: [],
     buscaClientes: "",
     clienteAbertoId: null,
+    googleAccessToken: null,
     cartaoArrastado: null,
     suprimirCliqueCartao: false
   };
@@ -1247,6 +1261,7 @@
     if(!usuario) return;
 
     estado.usuarioId = usuario.id;
+    estado.googleAccessToken = obterTokenGoogleSalvo();
     document.getElementById("rodape-email").textContent = usuario.email;
     document.getElementById("botao-sair").addEventListener("click", () => Auth.logout());
 
@@ -2115,6 +2130,7 @@
 
     renderEstagioPerfil(item.nome);
     renderEntregasPerfil(item.nome);
+    renderEmailPerfil(item);
 
     await carregarRoteiros(item.id);
     renderRoteiros();
@@ -2305,6 +2321,123 @@
         if(item) abrirModalRoteiro(item);
       });
     });
+  }
+
+  // ===================== TAB: CLIENTS — GMAIL =====================
+  // Uses Google Identity Services (client-side OAuth, no backend/secret
+  // needed). The access token is short-lived (~1h) and stored in
+  // localStorage so it's shared across client-profile tabs, which each
+  // load as a separate page.
+  function obterTokenGoogleSalvo(){
+    const token = localStorage.getItem("painel_google_token");
+    const expira = Number(localStorage.getItem("painel_google_token_exp") || 0);
+    return (token && Date.now() < expira) ? token : null;
+  }
+
+  function salvarTokenGoogle(token, expiraEmSegundos){
+    localStorage.setItem("painel_google_token", token);
+    localStorage.setItem("painel_google_token_exp", String(Date.now() + (expiraEmSegundos * 1000) - 60000));
+  }
+
+  function conectarGmail(){
+    if(!window.google || !google.accounts || !google.accounts.oauth2){
+      mostrarToast("Google sign-in is still loading, try again in a moment.");
+      return;
+    }
+    const clienteToken = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: GOOGLE_SCOPE_GMAIL,
+      callback: (resposta) => {
+        if(resposta.error){
+          mostrarToast("Could not connect Gmail.");
+          return;
+        }
+        estado.googleAccessToken = resposta.access_token;
+        salvarTokenGoogle(resposta.access_token, resposta.expires_in);
+        const item = estado.clientes.find(c => String(c.id) === String(estado.clienteAbertoId));
+        if(item) renderEmailPerfil(item);
+      }
+    });
+    clienteToken.requestAccessToken();
+  }
+
+  async function buscarEmailsGmail(email){
+    const token = estado.googleAccessToken;
+    const consulta = encodeURIComponent(`from:${email} OR to:${email}`);
+    const respLista = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${consulta}&maxResults=8`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if(!respLista.ok) throw new Error("gmail list failed: " + respLista.status);
+    const dadosLista = await respLista.json();
+    const mensagens = dadosLista.messages || [];
+
+    const detalhes = await Promise.all(mensagens.map(async (m) => {
+      const resp = await fetch(
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return resp.ok ? resp.json() : null;
+    }));
+
+    return detalhes.filter(Boolean).map(msg => {
+      const cabecalhos = {};
+      (msg.payload && msg.payload.headers || []).forEach(h => { cabecalhos[h.name] = h.value; });
+      return {
+        assunto: cabecalhos.Subject || "(no subject)",
+        de: cabecalhos.From || "",
+        data: cabecalhos.Date ? new Date(cabecalhos.Date) : new Date(Number(msg.internalDate)),
+        trecho: msg.snippet || ""
+      };
+    }).sort((a, b) => b.data - a.data);
+  }
+
+  async function renderEmailPerfil(item){
+    const container = document.getElementById("perfil-email-conteudo");
+
+    if(!item.email){
+      container.innerHTML = '<p class="texto-vazio">Add this client\'s email address first (Edit info) to see messages here.</p>';
+      return;
+    }
+
+    if(!estado.googleAccessToken){
+      container.innerHTML = `
+        <div class="conectar-gmail">
+          📧 <span><strong>Gmail isn't connected yet.</strong> Connect it once, then emails exchanged with this client's address will show up here automatically.</span>
+          <button type="button" class="botao-conectar-gmail" id="botao-conectar-gmail-real">Connect Gmail</button>
+        </div>
+      `;
+      document.getElementById("botao-conectar-gmail-real").addEventListener("click", conectarGmail);
+      return;
+    }
+
+    container.innerHTML = '<p class="texto-vazio">Loading emails...</p>';
+    try {
+      const emails = await buscarEmailsGmail(item.email);
+      if(emails.length === 0){
+        container.innerHTML = '<p class="texto-vazio">No emails found with this address.</p>';
+        return;
+      }
+      container.innerHTML = emails.map(e => `
+        <div class="email-linha">
+          <div class="email-avatar">${iniciaisNome(e.de.replace(/<.*>/, "") || "?")}</div>
+          <div class="email-corpo">
+            <p class="email-assunto">${escapeHtml(e.assunto)}</p>
+            <p class="email-trecho">${escapeHtml(e.trecho)}</p>
+          </div>
+          <span class="email-data">${e.data.toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit" })}</span>
+        </div>
+      `).join("");
+    } catch (erro) {
+      console.error(erro);
+      estado.googleAccessToken = null;
+      container.innerHTML = `
+        <div class="conectar-gmail">
+          📧 <span>Could not load emails — the connection may have expired.</span>
+          <button type="button" class="botao-conectar-gmail" id="botao-conectar-gmail-real">Reconnect Gmail</button>
+        </div>
+      `;
+      document.getElementById("botao-conectar-gmail-real").addEventListener("click", conectarGmail);
+    }
   }
 
   // ===================== TAB: PROJECTS (KANBAN) =====================
