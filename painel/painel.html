@@ -887,8 +887,7 @@
               </select>
 
               <label for="agenda-cliente">Client (optional)</label>
-              <input type="text" id="agenda-cliente" list="lista-clientes-datalist-agenda" placeholder="client name">
-              <datalist id="lista-clientes-datalist-agenda"></datalist>
+              <select id="agenda-cliente"><option value="">No client</option></select>
 
               <label class="checkbox-linha"><input type="checkbox" id="agenda-dia-todo" checked> All day</label>
 
@@ -1424,8 +1423,8 @@
 
     document.getElementById("botao-adicionar-agenda").addEventListener("click", () => {
       formAgenda.hidden = !formAgenda.hidden;
-      document.getElementById("lista-clientes-datalist-agenda").innerHTML =
-        estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
+      document.getElementById("agenda-cliente").innerHTML = '<option value="">No client</option>' +
+        estado.clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
     });
     document.getElementById("agenda-cancelar").addEventListener("click", () => {
       formAgenda.reset();
@@ -1448,7 +1447,7 @@
       const novoItem = {
         titulo,
         tipo: document.getElementById("agenda-tipo").value,
-        cliente: document.getElementById("agenda-cliente").value.trim() || null,
+        cliente_id: document.getElementById("agenda-cliente").value || null,
         data: dataParaChave(estado.diaSelecionado),
         dia_todo: diaTodo,
         horario: diaTodo ? null : (document.getElementById("agenda-horario").value || null),
@@ -2042,13 +2041,6 @@
     }
   }
 
-  // A column counts as a "delivered" stage if its name contains "deliver" (matches the
-  // default "Final Delivery" column). Columns are fully renamable, so this is a best-effort
-  // heuristic, not a hard rule.
-  function colunaEhEntrega(coluna){
-    return !!coluna && coluna.nome.toLowerCase().includes("deliver");
-  }
-
   // Most recently updated project linked to this client (by cliente_id), if any.
   function estagioClienteInfo(clienteId){
     const projetosCliente = estado.projetos.filter(p => p.cliente_id === clienteId);
@@ -2182,49 +2174,27 @@
   function renderEntregasPerfil(item){
     const container = document.getElementById("perfil-entregas-lista");
 
-    // Projects on a "delivered"-looking stage (e.g. Final Delivery), regardless of date.
-    const projetosEntregues = estado.projetos.filter(p => {
-      if(p.cliente_id !== item.id) return false;
-      const coluna = estado.colunas.find(c => c.id === p.coluna_id);
-      return colunaEhEntrega(coluna);
-    }).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    // All My Routine items of type "Delivery" linked to this client — past and upcoming.
+    const entregas = estado.agenda
+      .filter(a => a.tipo === "entrega" && a.cliente_id === item.id)
+      .sort((a, b) => b.data.localeCompare(a.data));
 
-    // Upcoming/scheduled delivery dates from My Routine (matched by client name).
-    const entregasAgendadas = estado.agenda
-      .filter(a => a.tipo === "entrega" && a.cliente === item.nome)
-      .sort((a, b) => a.data.localeCompare(b.data));
-
-    if(projetosEntregues.length === 0 && entregasAgendadas.length === 0){
-      container.innerHTML = '<p class="texto-vazio">Nothing delivered or scheduled for this client yet.</p>';
+    if(entregas.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No deliveries linked yet — add one from My Routine and set this client on it.</p>';
       return;
     }
 
-    const htmlEntregues = projetosEntregues.map(p => {
-      const coluna = estado.colunas.find(c => c.id === p.coluna_id);
-      return `
-        <div class="card-item">
-          <div class="card-item-topo">
-            <span class="card-item-titulo">${escapeHtml(p.titulo)}</span>
-            <span class="card-item-tag" style="background:var(--limao)">${coluna ? escapeHtml(coluna.nome) : "Delivered"}</span>
-          </div>
-          <p class="card-item-texto">${new Date(p.updated_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" })}</p>
-        </div>
-      `;
-    }).join("");
-
-    const htmlAgendadas = entregasAgendadas.map(e => {
+    container.innerHTML = entregas.map(e => {
       const [ano, mes, dia] = e.data.split("-");
       return `
         <div class="card-item">
           <div class="card-item-topo">
             <span class="card-item-titulo">${escapeHtml(e.titulo)}</span>
-            <span class="card-item-tag" style="background:${e.concluido ? "var(--limao)" : "var(--laranja)"}">${e.concluido ? "Done" : `${dia}/${mes}`}</span>
+            <span class="card-item-tag" style="background:${e.concluido ? "var(--limao)" : "var(--laranja)"}">${e.concluido ? "Done" : `${dia}/${mes}/${ano}`}</span>
           </div>
         </div>
       `;
     }).join("");
-
-    container.innerHTML = htmlEntregues + htmlAgendadas;
   }
 
   // ===================== TAB: CLIENTS — SCRIPTS & IDEAS =====================
