@@ -419,16 +419,28 @@
   }
   .kanban-coluna-corpo.sobre-arraste{background:var(--papel);}
   .kanban-cartao{
-    background:var(--papel);border:2px solid var(--preto);border-radius:10px;padding:.7rem .8rem;
+    background:var(--papel);border:2px solid var(--preto);border-radius:10px;padding:.7rem .8rem .7rem 1rem;
     cursor:grab;box-shadow:2px 2px 0 var(--preto);transition:transform .12s ease, opacity .12s ease;
+    position:relative;overflow:hidden;
+  }
+  .kanban-cartao::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--cor-cartao,var(--azul));
   }
   .kanban-cartao:hover{transform:translate(-1px,-1px);}
   .kanban-cartao.arrastando{opacity:.35;}
   .kanban-cartao-titulo{font-size:.86rem;font-weight:700;margin:0 0 .3rem;word-break:break-word;}
   .kanban-cartao-cliente{
     display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
-    background:var(--azul);color:var(--branco);border-radius:999px;padding:.15rem .55rem;
+    background:var(--papel);color:var(--preto);border:1.5px solid rgba(17,17,17,.15);border-radius:999px;padding:.15rem .55rem;
   }
+  .kanban-cartao-rodape{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.5rem;}
+  .kanban-pontos-cor{display:flex;gap:.3rem;}
+  .kanban-ponto-cor{
+    width:13px;height:13px;border-radius:50%;border:2px solid var(--preto);cursor:pointer;padding:0;
+    transition:transform .1s ease;
+  }
+  .kanban-ponto-cor:hover{transform:scale(1.2);}
+  .kanban-ponto-cor.selecionado{outline:2px solid var(--preto);outline-offset:1.5px;}
   .kanban-coluna-rodape{padding:.6rem .9rem .9rem;}
   .kanban-add-cartao{
     width:100%;background:none;border:2px dashed rgba(17,17,17,.25);border-radius:10px;
@@ -460,31 +472,131 @@
   .form-nova-coluna-acoes{display:flex;gap:.5rem;}
   .form-nova-coluna-acoes .btn{flex:1;padding:.55rem;font-size:.85rem;text-align:center;}
 
-  /* ===================== TAB: CLIENTS (CRM) ===================== */
+  /* ===================== TAB: CLIENTS ===================== */
   .modal-caixa-larga{max-width:580px;}
-  .cartao-cliente{cursor:pointer;}
-  .crm-secao{margin-top:1.3rem;padding-top:1.1rem;border-top:2px solid var(--papel);}
-  .crm-secao h4{font-family:'Archivo Black', sans-serif;font-size:.85rem;text-transform:uppercase;margin-bottom:.7rem;}
-  .form-atividade{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
-  .form-atividade select{
-    flex:0 0 120px;font-family:'Poppins', sans-serif;font-size:.85rem;padding:.6rem .5rem;
-    border:1.5px solid rgba(17,17,17,.12);border-radius:8px;background:var(--papel);color:var(--preto);
+
+  .busca-clientes{
+    display:flex;align-items:center;gap:.6rem;
+    background:var(--branco);border:2.5px solid var(--preto);border-radius:999px;
+    padding:.55rem 1rem;max-width:360px;margin-bottom:1.2rem;box-shadow:2px 2px 0 var(--preto);
+    color:var(--texto-suave);
   }
-  .form-atividade textarea{
-    flex:1 1 160px;font-family:'Poppins', sans-serif;font-size:.85rem;padding:.6rem .8rem;min-height:42px;
-    border:1.5px solid rgba(17,17,17,.12);border-radius:8px;background:var(--papel);color:var(--preto);resize:vertical;
+  .busca-clientes svg{flex-shrink:0;}
+  .busca-clientes input{
+    border:none;background:none;outline:none;font-size:.9rem;flex:1;
+    font-family:'Poppins', sans-serif;color:var(--preto);
   }
-  .form-atividade button{flex-shrink:0;}
-  .lista-atividades{display:flex;flex-direction:column;gap:.6rem;max-height:260px;overflow-y:auto;}
-  .atividade-item{border:1.5px solid rgba(17,17,17,.12);border-radius:10px;padding:.6rem .8rem;}
-  .atividade-cabecalho{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
-  .atividade-tipo{
-    font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
-    background:var(--laranja);color:var(--preto);border-radius:999px;padding:.15rem .5rem;
+
+  .lista-clientes{display:flex;flex-direction:column;gap:.6rem;}
+  .cliente-linha{
+    display:flex;align-items:stretch;background:var(--branco);border:3px solid var(--preto);border-radius:12px;
+    box-shadow:var(--sombra-dura);overflow:hidden;color:inherit;text-decoration:none;cursor:pointer;
+    transition:transform .12s ease;
   }
-  .atividade-data{font-size:.72rem;color:var(--texto-suave);margin-left:auto;}
-  .atividade-texto{font-size:.85rem;line-height:1.5;margin:0;word-break:break-word;}
-  .atividade-excluir{margin-left:.4rem;}
+  .cliente-linha:hover{transform:translate(-2px,-2px);box-shadow:var(--sombra-dura-lg);}
+  .cliente-linha-cor{width:8px;flex-shrink:0;background:var(--cor-cliente,var(--azul));}
+  .cliente-linha-corpo{
+    padding:.85rem 1.2rem;flex:1;min-width:0;
+    display:grid;grid-template-columns:1.4fr 1.3fr 1.3fr auto auto;align-items:center;gap:1rem;
+  }
+  .cliente-avatar{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;
+    background:var(--cor-cliente,var(--azul));color:var(--branco);border:2px solid var(--preto);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo Black', sans-serif;font-size:.72rem;
+  }
+  .cliente-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cliente-linha-nomewrap{display:flex;align-items:center;gap:.7rem;min-width:0;}
+  .cliente-linha-nome{font-weight:700;font-size:.92rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cliente-linha-contato,.cliente-linha-email{
+    font-size:.82rem;color:var(--texto-suave);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .cliente-linha-estagio{
+    display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;color:var(--texto-suave);white-space:nowrap;
+  }
+  .cliente-linha-estagio::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cor-cliente,var(--azul));flex-shrink:0;}
+  .cliente-linha-seta{color:var(--texto-suave);flex-shrink:0;}
+  @media (max-width:760px){
+    .cliente-linha-corpo{grid-template-columns:1fr auto;}
+    .cliente-linha-contato,.cliente-linha-email{display:none;}
+  }
+
+  /* ---- Client profile page ---- */
+  .link-voltar{
+    display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:700;color:var(--preto);
+    margin-bottom:1rem;text-decoration:none;border-bottom:2px solid var(--preto);width:fit-content;
+  }
+  .perfil-cliente{
+    background:var(--branco);border:3px solid var(--preto);border-radius:18px;
+    box-shadow:var(--sombra-dura-lg);overflow:hidden;
+  }
+  .perfil-cliente-topo{
+    padding:1.5rem 1.6rem 1.2rem;background:var(--cor-cliente,var(--azul));
+    color:var(--branco);display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;
+  }
+  .perfil-cliente-avatar{
+    width:58px;height:58px;border-radius:50%;background:var(--branco);color:var(--preto);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo Black', sans-serif;font-size:1.3rem;
+    border:3px solid var(--preto);flex-shrink:0;
+  }
+  .perfil-cliente-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .perfil-cliente-nome{font-size:1.35rem;color:var(--branco);margin-bottom:.2rem;text-transform:none;}
+  .perfil-cliente-sub{font-size:.85rem;opacity:.92;}
+  .perfil-cliente-estagio{
+    margin-left:auto;background:var(--branco);color:var(--preto);
+    border:2.5px solid var(--preto);border-radius:999px;padding:.4rem 1rem;
+    font-weight:800;font-size:.78rem;text-transform:uppercase;box-shadow:2px 2px 0 var(--preto);
+  }
+  .abas-perfil-cliente{display:flex;gap:.4rem;padding:.9rem 1.3rem 0;flex-wrap:wrap;border-bottom:2px solid var(--papel);}
+  .aba-perfil-btn{
+    font-family:'Poppins', sans-serif;font-weight:700;font-size:.85rem;
+    background:none;border:none;border-bottom:3px solid transparent;
+    padding:.6rem .25rem;margin-right:1.1rem;cursor:pointer;color:var(--texto-suave);
+  }
+  .aba-perfil-btn.ativa{color:var(--preto);border-color:var(--cor-cliente,var(--magenta));}
+  .aba-perfil-conteudo{padding:1.3rem 1.6rem 1.7rem;display:none;}
+  .aba-perfil-conteudo.ativa{display:block;}
+
+  .perfil-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1.4rem;font-size:.87rem;margin-bottom:1.2rem;}
+  .perfil-info-grid dt{font-size:.68rem;text-transform:uppercase;font-weight:700;color:var(--texto-suave);margin-bottom:.15rem;}
+  .perfil-info-grid dd{margin:0;font-weight:600;}
+  @media (max-width:520px){.perfil-info-grid{grid-template-columns:1fr;}}
+  .link-editar-cliente, .link-excluir-cliente{
+    background:none;border:none;font-family:'Poppins', sans-serif;font-weight:700;font-size:.82rem;
+    cursor:pointer;padding:0;margin-right:1.3rem;color:var(--azul);
+  }
+  .link-excluir-cliente{color:var(--erro);}
+
+  .card-item{border:1.5px solid rgba(17,17,17,.14);border-radius:12px;padding:.85rem 1rem;margin-bottom:.7rem;background:var(--papel);}
+  .card-item:last-child{margin-bottom:0;}
+  .card-item-topo{display:flex;justify-content:space-between;gap:.6rem;align-items:center;margin-bottom:.3rem;}
+  .card-item-titulo{font-weight:700;font-size:.88rem;}
+  .card-item-tag{
+    font-size:.65rem;font-weight:700;text-transform:uppercase;border-radius:999px;
+    padding:.15rem .55rem;flex-shrink:0;background:var(--limao);color:var(--preto);
+  }
+  .card-item-texto{font-size:.82rem;color:var(--texto-suave);margin:0;line-height:1.55;white-space:pre-wrap;}
+  .card-item-acoes{display:flex;gap:.4rem;margin-top:.5rem;}
+
+  .progresso-estagios{display:flex;gap:.3rem;margin:.4rem 0 .3rem;flex-wrap:wrap;}
+  .pilula-estagio{
+    font-size:.68rem;font-weight:700;padding:.3rem .6rem;border-radius:999px;
+    border:2px solid var(--preto);background:var(--branco);color:var(--texto-suave);
+  }
+  .pilula-estagio.feita{background:var(--preto);color:var(--papel);}
+  .pilula-estagio.atual{background:var(--laranja);color:var(--preto);}
+
+  .conectar-gmail{
+    display:flex;align-items:center;gap:.7rem;background:var(--papel);border:2px dashed rgba(17,17,17,.2);
+    border-radius:12px;padding:1rem 1.1rem;font-size:.85rem;color:var(--texto-suave);
+  }
+  .conectar-gmail strong{color:var(--preto);}
+  .botao-conectar-gmail{
+    flex-shrink:0;font-family:'Poppins', sans-serif;font-weight:700;font-size:.82rem;
+    background:var(--branco);border:2px solid var(--preto);border-radius:999px;padding:.5rem 1rem;
+    cursor:not-allowed;opacity:.6;
+  }
 
   /* ===================== GENERIC MODAL ===================== */
   .modal-overlay{
@@ -583,12 +695,6 @@
     padding:.4rem .8rem;font-weight:700;cursor:pointer;font-family:'Poppins', sans-serif;flex-shrink:0;
   }
 
-  /* ===================== TAB: CLIENTS ===================== */
-  .grid-clientes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
-  .cartao-cliente-nome{font-family:'Archivo Black', sans-serif;font-size:1rem;text-transform:none;margin-bottom:.2rem;}
-  .cartao-cliente-empresa{font-size:.8rem;color:var(--texto-suave);margin-bottom:.7rem;}
-  .cartao-cliente-info{font-size:.82rem;line-height:1.7;margin-bottom:.8rem;}
-  .cartao-cliente-acoes{display:flex;gap:.5rem;}
 </style>
 </head>
 <body>
@@ -764,6 +870,10 @@
                 <option value="pendencia">Pending</option>
               </select>
 
+              <label for="agenda-cliente">Client (optional)</label>
+              <input type="text" id="agenda-cliente" list="lista-clientes-datalist-agenda" placeholder="client name">
+              <datalist id="lista-clientes-datalist-agenda"></datalist>
+
               <label class="checkbox-linha"><input type="checkbox" id="agenda-dia-todo" checked> All day</label>
 
               <label for="agenda-horario" id="rotulo-agenda-horario" hidden>Time</label>
@@ -826,13 +936,72 @@
         </div>
       </section>
 
-      <!-- ================= TAB: CLIENTS (CRM) ================= -->
+      <!-- ================= TAB: CLIENTS ================= -->
       <section id="aba-clientes" class="painel-aba" hidden>
-        <div class="financeiro-filtros-e-acao">
-          <p style="margin:0;color:var(--texto-suave);">Add clients, keep notes and log every call, email or message. Click a client to open it.</p>
-          <button type="button" class="botao-nova-transacao" id="botao-novo-cliente">+ New client</button>
+
+        <div id="clientes-vista-lista">
+          <div class="financeiro-filtros-e-acao">
+            <p style="margin:0;color:var(--texto-suave);">Click a client to open their profile in a new tab.</p>
+            <button type="button" class="botao-nova-transacao" id="botao-novo-cliente">+ New client</button>
+          </div>
+          <div class="busca-clientes">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="busca-clientes-input" placeholder="Search clients...">
+          </div>
+          <div id="lista-clientes" class="lista-clientes"></div>
         </div>
-        <div id="lista-clientes" class="grid-clientes"></div>
+
+        <div id="clientes-vista-perfil" hidden>
+          <a href="painel.html" class="link-voltar">← Back to clients</a>
+
+          <div class="perfil-cliente" id="perfil-cliente">
+            <div class="perfil-cliente-topo">
+              <div class="perfil-cliente-avatar" id="perfil-cliente-avatar">?</div>
+              <div>
+                <p class="perfil-cliente-nome" id="perfil-cliente-nome">Client</p>
+                <p class="perfil-cliente-sub" id="perfil-cliente-sub"></p>
+              </div>
+              <span class="perfil-cliente-estagio" id="perfil-cliente-estagio">—</span>
+            </div>
+
+            <div class="abas-perfil-cliente">
+              <button type="button" class="aba-perfil-btn ativa" data-aba-perfil="overview">Overview</button>
+              <button type="button" class="aba-perfil-btn" data-aba-perfil="roteiros">Scripts &amp; Ideas</button>
+              <button type="button" class="aba-perfil-btn" data-aba-perfil="estagio">Stage</button>
+              <button type="button" class="aba-perfil-btn" data-aba-perfil="entregas">Deliveries</button>
+              <button type="button" class="aba-perfil-btn" data-aba-perfil="email">Email</button>
+            </div>
+
+            <div class="aba-perfil-conteudo ativa" data-conteudo-perfil="overview">
+              <dl class="perfil-info-grid" id="perfil-info-grid"></dl>
+              <button type="button" class="link-editar-cliente" id="botao-editar-cliente">Edit info</button>
+              <button type="button" class="link-excluir-cliente" id="botao-excluir-cliente-perfil">Delete client</button>
+            </div>
+
+            <div class="aba-perfil-conteudo" data-conteudo-perfil="roteiros">
+              <button type="button" class="botao-nova-transacao" id="botao-novo-roteiro" style="margin-bottom:1rem;">+ New idea / script</button>
+              <div id="lista-roteiros"></div>
+            </div>
+
+            <div class="aba-perfil-conteudo" data-conteudo-perfil="estagio">
+              <p style="font-size:.85rem;color:var(--texto-suave);margin:0 0 .5rem;">Pulled straight from the Projects board — updates automatically when you move the card.</p>
+              <div class="progresso-estagios" id="perfil-progresso-estagios"></div>
+              <div id="perfil-projetos-lista"></div>
+            </div>
+
+            <div class="aba-perfil-conteudo" data-conteudo-perfil="entregas">
+              <div id="perfil-entregas-lista"></div>
+            </div>
+
+            <div class="aba-perfil-conteudo" data-conteudo-perfil="email">
+              <div class="conectar-gmail">
+                📧 <span><strong>Gmail isn't connected yet.</strong> Once it is, emails exchanged with this client's address will show up here automatically.</span>
+                <button type="button" class="botao-conectar-gmail" disabled title="Coming soon">Connect Gmail</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ================= TAB: PROJECTS (KANBAN) ================= -->
@@ -884,9 +1053,9 @@
   </div>
 </div>
 
-<!-- ================= MODAL: CLIENT (CRM DETAIL) ================= -->
+<!-- ================= MODAL: NEW/EDIT CLIENT ================= -->
 <div class="modal-overlay" id="modal-cliente" role="dialog" aria-modal="true" hidden>
-  <div class="modal-caixa modal-caixa-larga">
+  <div class="modal-caixa">
     <button type="button" class="modal-fechar" id="fechar-modal-cliente">&times;</button>
     <h3 id="titulo-modal-cliente">New client</h3>
 
@@ -896,7 +1065,7 @@
       <label for="cliente-nome">Company Name</label>
       <input type="text" id="cliente-nome" required>
 
-      <label for="cliente-empresa">Client Name (optional)</label>
+      <label for="cliente-empresa">Contact Name (optional)</label>
       <input type="text" id="cliente-empresa">
 
       <label for="cliente-email">Email (optional)</label>
@@ -911,25 +1080,41 @@
       <label for="cliente-observacoes">General notes (optional)</label>
       <textarea id="cliente-observacoes" rows="2"></textarea>
 
+      <label for="cliente-logo">Logo (optional)</label>
+      <input type="file" id="cliente-logo" accept="image/*">
+
       <button type="submit" class="btn btn-primario" id="botao-salvar-cliente">Save</button>
     </form>
+  </div>
+</div>
 
-    <div class="crm-secao" id="crm-secao-atividades" hidden>
-      <h4>Activity</h4>
-      <div class="form-atividade">
-        <select id="atividade-tipo">
-          <option value="nota">Note</option>
-          <option value="ligacao">Call</option>
-          <option value="email">Email</option>
-          <option value="whatsapp">WhatsApp</option>
-          <option value="reuniao">Meeting</option>
-          <option value="outro">Other</option>
-        </select>
-        <textarea id="atividade-texto" placeholder="What happened / what was said..." rows="1"></textarea>
-        <button type="button" class="btn btn-secundario btn-pequeno" id="botao-add-atividade">Add</button>
+<!-- ================= MODAL: NEW/EDIT SCRIPT OR IDEA ================= -->
+<div class="modal-overlay" id="modal-roteiro" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-roteiro">&times;</button>
+    <h3 id="titulo-modal-roteiro">New idea / script</h3>
+
+    <form class="form-contato" id="form-roteiro" novalidate>
+      <input type="hidden" id="roteiro-id">
+
+      <label for="roteiro-titulo">Title</label>
+      <input type="text" id="roteiro-titulo" required placeholder="e.g. Unboxing hook">
+
+      <label for="roteiro-tag">Status</label>
+      <select id="roteiro-tag">
+        <option value="Idea">Idea</option>
+        <option value="Script ready">Script ready</option>
+        <option value="Filmed">Filmed</option>
+      </select>
+
+      <label for="roteiro-texto">Script / notes</label>
+      <textarea id="roteiro-texto" rows="5" placeholder="hook, shots, call to action..."></textarea>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-roteiro">Delete</button>
       </div>
-      <div class="lista-atividades" id="lista-atividades"></div>
-    </div>
+    </form>
   </div>
 </div>
 
@@ -981,7 +1166,9 @@
     usuarioId: null,
     colunas: [],
     projetos: [],
-    atividades: [],
+    roteiros: [],
+    buscaClientes: "",
+    clienteAbertoId: null,
     cartaoArrastado: null,
     suprimirCliqueCartao: false
   };
@@ -990,6 +1177,18 @@
     "Negotiating", "Contract", "Awaiting Product", "Filming", "Editing",
     "Sent for Approval", "Revision", "Final Delivery", "Awaiting Payment"
   ];
+
+  const CORES_ROTACAO = ["#2b6fff", "#ff6a2b", "#c3f53a", "#ff3da6"];
+
+  function corPorIndiceCriacao(lista, id){
+    const ordenadaPorCriacao = [...lista].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const indice = ordenadaPorCriacao.findIndex(i => String(i.id) === String(id));
+    return CORES_ROTACAO[(indice < 0 ? 0 : indice) % CORES_ROTACAO.length];
+  }
+
+  function iniciaisNome(nome){
+    return (nome || "").trim().split(/\s+/).slice(0, 2).map(p => p[0]).join("").toUpperCase();
+  }
 
   function formatarMoeda(valor){
     return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(valor || 0);
@@ -1106,29 +1305,36 @@
     renderFinanceiro();
     renderClientes();
     renderProjetos();
+
+    const parametroCliente = new URLSearchParams(location.search).get("cliente");
+    if(parametroCliente){
+      ativarAba("clientes");
+      abrirPerfilCliente(parametroCliente);
+    }
   }
 
   // ===================== TABS =====================
-  function configurarAbas(){
+  function ativarAba(aba){
     const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos"];
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("ativo", b.dataset.tab === aba));
+    document.getElementById("aba-principal").hidden = aba !== "principal";
+    document.getElementById("aba-portfolio").hidden = aba !== "portfolio";
+    document.getElementById("aba-rotina").hidden = aba !== "rotina";
+    document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
+    document.getElementById("aba-clientes").hidden = aba !== "clientes";
+    document.getElementById("aba-projetos").hidden = aba !== "projetos";
+    document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
+    const titulos = {
+      principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
+      financeiro: "Finance", clientes: "Clients", projetos: "Projects"
+    };
+    document.getElementById("titulo-pagina").textContent = titulos[aba];
+    fecharSidebarMobile();
+  }
+
+  function configurarAbas(){
     document.querySelectorAll(".nav-item").forEach(botao => {
-      botao.addEventListener("click", () => {
-        const aba = botao.dataset.tab;
-        document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("ativo", b === botao));
-        document.getElementById("aba-principal").hidden = aba !== "principal";
-        document.getElementById("aba-portfolio").hidden = aba !== "portfolio";
-        document.getElementById("aba-rotina").hidden = aba !== "rotina";
-        document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
-        document.getElementById("aba-clientes").hidden = aba !== "clientes";
-        document.getElementById("aba-projetos").hidden = aba !== "projetos";
-        document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
-        const titulos = {
-          principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
-          financeiro: "Finance", clientes: "Clients", projetos: "Projects"
-        };
-        document.getElementById("titulo-pagina").textContent = titulos[aba];
-        fecharSidebarMobile();
-      });
+      botao.addEventListener("click", () => ativarAba(botao.dataset.tab));
     });
   }
 
@@ -1200,6 +1406,8 @@
 
     document.getElementById("botao-adicionar-agenda").addEventListener("click", () => {
       formAgenda.hidden = !formAgenda.hidden;
+      document.getElementById("lista-clientes-datalist-agenda").innerHTML =
+        estado.clientes.map(c => `<option value="${escapeHtml(c.nome)}"></option>`).join("");
     });
     document.getElementById("agenda-cancelar").addEventListener("click", () => {
       formAgenda.reset();
@@ -1222,6 +1430,7 @@
       const novoItem = {
         titulo,
         tipo: document.getElementById("agenda-tipo").value,
+        cliente: document.getElementById("agenda-cliente").value.trim() || null,
         data: dataParaChave(estado.diaSelecionado),
         dia_todo: diaTodo,
         horario: diaTodo ? null : (document.getElementById("agenda-horario").value || null),
@@ -1685,19 +1894,41 @@
       if(evento.target.id === "modal-cliente") fecharModalCliente();
     });
     document.addEventListener("keydown", (evento) => {
-      if(evento.key === "Escape") fecharModalCliente();
+      if(evento.key === "Escape"){ fecharModalCliente(); fecharModalRoteiro(); }
     });
     document.getElementById("form-cliente").addEventListener("submit", salvarCliente);
-    document.getElementById("botao-add-atividade").addEventListener("click", salvarAtividade);
+
+    document.getElementById("busca-clientes-input").addEventListener("input", (evento) => {
+      estado.buscaClientes = evento.target.value;
+      renderClientes();
+    });
+
+    document.getElementById("botao-editar-cliente").addEventListener("click", () => {
+      const item = estado.clientes.find(c => String(c.id) === String(estado.clienteAbertoId));
+      if(item) abrirModalCliente(item);
+    });
+    document.getElementById("botao-excluir-cliente-perfil").addEventListener("click", () => {
+      excluirCliente(estado.clienteAbertoId, true);
+    });
+
+    document.querySelectorAll("[data-aba-perfil]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        document.querySelectorAll("[data-aba-perfil]").forEach(b => b.classList.remove("ativa"));
+        botao.classList.add("ativa");
+        document.querySelectorAll("[data-conteudo-perfil]").forEach(c => c.classList.remove("ativa"));
+        document.querySelector(`[data-conteudo-perfil="${botao.dataset.abaPerfil}"]`).classList.add("ativa");
+      });
+    });
+
+    configurarRoteiros();
   }
 
-  async function abrirModalCliente(item = null){
+  function abrirModalCliente(item = null){
     const form = document.getElementById("form-cliente");
     form.reset();
-    const secaoAtividades = document.getElementById("crm-secao-atividades");
 
     if(item){
-      document.getElementById("titulo-modal-cliente").textContent = item.nome;
+      document.getElementById("titulo-modal-cliente").textContent = "Edit client";
       document.getElementById("cliente-id").value = item.id;
       document.getElementById("cliente-nome").value = item.nome;
       document.getElementById("cliente-empresa").value = item.empresa || "";
@@ -1705,17 +1936,12 @@
       document.getElementById("cliente-telefone").value = item.telefone || "";
       document.getElementById("cliente-instagram").value = item.instagram || "";
       document.getElementById("cliente-observacoes").value = item.observacoes || "";
-      secaoAtividades.hidden = false;
-      document.getElementById("lista-atividades").innerHTML = '<p class="texto-vazio">Loading...</p>';
-      document.getElementById("modal-cliente").hidden = false;
-      await carregarAtividades(item.id);
-      renderAtividades();
     } else {
       document.getElementById("titulo-modal-cliente").textContent = "New client";
       document.getElementById("cliente-id").value = "";
-      secaoAtividades.hidden = true;
-      document.getElementById("modal-cliente").hidden = false;
     }
+
+    document.getElementById("modal-cliente").hidden = false;
   }
 
   function fecharModalCliente(){
@@ -1732,6 +1958,9 @@
       return;
     }
 
+    const botao = document.getElementById("botao-salvar-cliente");
+    botao.disabled = true;
+
     const registro = {
       nome,
       empresa: document.getElementById("cliente-empresa").value.trim() || null,
@@ -1743,6 +1972,14 @@
     };
 
     try {
+      const arquivoLogo = document.getElementById("cliente-logo").files[0];
+      if(arquivoLogo){
+        const caminho = `${estado.usuarioId}/${Date.now()}-${arquivoLogo.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { error: erroUpload } = await Auth.sb.storage.from("clientes-logos").upload(caminho, arquivoLogo);
+        if(erroUpload) throw erroUpload;
+        registro.logo_url = Auth.sb.storage.from("clientes-logos").getPublicUrl(caminho).data.publicUrl;
+      }
+
       if(id){
         const { data, error } = await Auth.sb.from("clientes").update(registro).eq("id", id).select();
         if(error) throw error;
@@ -1760,18 +1997,25 @@
       estado.clientes.sort((a, b) => a.nome.localeCompare(b.nome));
       fecharModalCliente();
       renderClientes();
+      if(id && estado.clienteAbertoId === id) abrirPerfilCliente(id);
     } catch (erro) {
       console.error(erro);
-      mostrarToast("Could not save. Check that the latest setup.sql has been run on Supabase.");
+      mostrarToast("Could not save. Check that the latest setup SQL has been run on Supabase.");
     }
+
+    botao.disabled = false;
   }
 
-  async function excluirCliente(id){
-    if(!confirm("Delete this client?")) return;
+  async function excluirCliente(id, voltarParaLista = false){
+    if(!id || !confirm("Delete this client? This also removes their Scripts & Ideas.")) return;
     try {
       const { error } = await Auth.sb.from("clientes").delete().eq("id", id);
       if(error) throw error;
       estado.clientes = estado.clientes.filter(c => String(c.id) !== String(id));
+      if(voltarParaLista){
+        window.location.href = "painel.html";
+        return;
+      }
       renderClientes();
       mostrarToast("Client deleted.");
     } catch (erro) {
@@ -1780,12 +2024,21 @@
     }
   }
 
+  // Most recently updated project linked to this client (matched by name), if any.
+  function estagioClienteInfo(nomeCliente){
+    const projetosCliente = estado.projetos.filter(p => p.cliente === nomeCliente);
+    if(projetosCliente.length === 0) return null;
+    const maisRecente = [...projetosCliente].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0];
+    const coluna = estado.colunas.find(c => c.id === maisRecente.coluna_id);
+    return coluna ? { texto: coluna.nome, colunaId: coluna.id } : null;
+  }
+
   function renderClientes(){
     const container = document.getElementById("lista-clientes");
 
     if(estado.clientes.length === 0){
       container.innerHTML = `
-        <div class="estado-vazio" style="grid-column:1/-1;">
+        <div class="estado-vazio">
           <div class="estado-vazio-icone">🧑‍💼</div>
           <p>No clients added yet.</p>
           <button type="button" class="btn btn-primario" id="botao-vazio-novo-cliente">New client</button>
@@ -1795,115 +2048,262 @@
       return;
     }
 
-    container.innerHTML = estado.clientes.map(c => `
-      <div class="cartao cartao-cliente" data-abrir-cliente="${c.id}">
-        <p class="cartao-cliente-nome">${escapeHtml(c.nome)}</p>
-        ${c.empresa ? `<p class="cartao-cliente-empresa">${escapeHtml(c.empresa)}</p>` : ""}
-        <div class="cartao-cliente-info">
-          ${c.email ? `<div>${escapeHtml(c.email)}</div>` : ""}
-          ${c.telefone ? `<div>${escapeHtml(c.telefone)}</div>` : ""}
-          ${c.instagram ? `<div>${escapeHtml(c.instagram)}</div>` : ""}
-        </div>
-        <div class="cartao-cliente-acoes">
-          <button type="button" class="botao-icone excluir" data-excluir-cliente="${c.id}" aria-label="Delete">✕</button>
-        </div>
-      </div>
-    `).join("");
+    const termo = estado.buscaClientes.trim().toLowerCase();
+    const filtrados = estado.clientes.filter(c =>
+      !termo ||
+      c.nome.toLowerCase().includes(termo) ||
+      (c.empresa || "").toLowerCase().includes(termo) ||
+      (c.email || "").toLowerCase().includes(termo)
+    );
 
-    container.querySelectorAll("[data-abrir-cliente]").forEach(cartao => {
-      cartao.addEventListener("click", () => {
-        const item = estado.clientes.find(c => String(c.id) === cartao.dataset.abrirCliente);
-        if(item) abrirModalCliente(item);
-      });
-    });
-    container.querySelectorAll("[data-excluir-cliente]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        excluirCliente(botao.dataset.excluirCliente);
-      });
-    });
+    if(filtrados.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No clients match your search.</p>';
+      return;
+    }
+
+    container.innerHTML = filtrados.map(c => {
+      const cor = corPorIndiceCriacao(estado.clientes, c.id);
+      const estagio = estagioClienteInfo(c.nome);
+      const avatar = c.logo_url ? `<img src="${c.logo_url}" alt="">` : iniciaisNome(c.nome);
+      return `
+        <a class="cliente-linha" href="?cliente=${c.id}" target="_blank" rel="noopener" style="--cor-cliente:${cor}">
+          <div class="cliente-linha-cor"></div>
+          <div class="cliente-linha-corpo">
+            <div class="cliente-linha-nomewrap">
+              <span class="cliente-avatar">${avatar}</span>
+              <p class="cliente-linha-nome">${escapeHtml(c.nome)}</p>
+            </div>
+            <p class="cliente-linha-contato">${c.empresa ? escapeHtml(c.empresa) : "—"}</p>
+            <p class="cliente-linha-email">${c.email ? escapeHtml(c.email) : "—"}</p>
+            <span class="cliente-linha-estagio">${estagio ? escapeHtml(estagio.texto) : "No project"}</span>
+            <span class="cliente-linha-seta">→</span>
+          </div>
+        </a>
+      `;
+    }).join("");
   }
 
-  // ===================== TAB: CLIENTS — CRM ACTIVITY LOG =====================
-  async function carregarAtividades(clienteId){
+  // ===================== TAB: CLIENTS — PROFILE PAGE =====================
+  async function abrirPerfilCliente(id){
+    const item = estado.clientes.find(c => String(c.id) === String(id));
+    if(!item){
+      document.getElementById("clientes-vista-lista").hidden = true;
+      document.getElementById("clientes-vista-perfil").hidden = false;
+      document.getElementById("perfil-cliente").innerHTML = '<div class="cartao-erro">Client not found.</div>';
+      return;
+    }
+
+    estado.clienteAbertoId = item.id;
+    document.getElementById("clientes-vista-lista").hidden = true;
+    document.getElementById("clientes-vista-perfil").hidden = false;
+
+    const cor = corPorIndiceCriacao(estado.clientes, item.id);
+    document.getElementById("perfil-cliente").style.setProperty("--cor-cliente", cor);
+    document.getElementById("perfil-cliente-avatar").innerHTML = item.logo_url ? `<img src="${item.logo_url}" alt="">` : iniciaisNome(item.nome);
+    document.getElementById("perfil-cliente-nome").textContent = item.nome;
+    document.getElementById("perfil-cliente-sub").textContent = [item.empresa, item.email].filter(Boolean).join(" · ") || "No contact info yet";
+
+    const estagio = estagioClienteInfo(item.nome);
+    document.getElementById("perfil-cliente-estagio").textContent = estagio ? estagio.texto : "No project";
+
+    document.getElementById("perfil-info-grid").innerHTML = `
+      <div><dt>Email</dt><dd>${item.email ? escapeHtml(item.email) : "—"}</dd></div>
+      <div><dt>Instagram</dt><dd>${item.instagram ? escapeHtml(item.instagram) : "—"}</dd></div>
+      <div><dt>Phone</dt><dd>${item.telefone ? escapeHtml(item.telefone) : "—"}</dd></div>
+      <div><dt>Notes</dt><dd>${item.observacoes ? escapeHtml(item.observacoes) : "—"}</dd></div>
+    `;
+
+    renderEstagioPerfil(item.nome);
+    renderEntregasPerfil(item.nome);
+
+    await carregarRoteiros(item.id);
+    renderRoteiros();
+
+    document.querySelectorAll("[data-aba-perfil]").forEach(b => b.classList.toggle("ativa", b.dataset.abaPerfil === "overview"));
+    document.querySelectorAll("[data-conteudo-perfil]").forEach(c => c.classList.toggle("ativa", c.dataset.conteudoPerfil === "overview"));
+  }
+
+  function renderEstagioPerfil(nomeCliente){
+    const colunasOrdenadas = [...estado.colunas].sort((a, b) => a.ordem - b.ordem);
+    const estagio = estagioClienteInfo(nomeCliente);
+    const indiceAtual = estagio ? colunasOrdenadas.findIndex(c => c.id === estagio.colunaId) : -1;
+
+    document.getElementById("perfil-progresso-estagios").innerHTML = colunasOrdenadas.map((c, i) => {
+      const classe = i === indiceAtual ? "atual" : (indiceAtual > -1 && i < indiceAtual ? "feita" : "");
+      return `<span class="pilula-estagio ${classe}">${escapeHtml(c.nome)}</span>`;
+    }).join("");
+
+    const projetosCliente = estado.projetos.filter(p => p.cliente === nomeCliente);
+    const lista = document.getElementById("perfil-projetos-lista");
+    if(projetosCliente.length === 0){
+      lista.innerHTML = '<p class="texto-vazio">No project linked yet — set this client\'s name on a Projects card to link it here.</p>';
+      return;
+    }
+    lista.innerHTML = projetosCliente.map(p => {
+      const coluna = estado.colunas.find(c => c.id === p.coluna_id);
+      return `
+        <div class="card-item">
+          <div class="card-item-topo">
+            <span class="card-item-titulo">${escapeHtml(p.titulo)}</span>
+            <span class="card-item-tag">${coluna ? escapeHtml(coluna.nome) : ""}</span>
+          </div>
+          ${p.notas ? `<p class="card-item-texto">${escapeHtml(p.notas)}</p>` : ""}
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderEntregasPerfil(nomeCliente){
+    const container = document.getElementById("perfil-entregas-lista");
+    const entregas = estado.agenda
+      .filter(a => a.tipo === "entrega" && a.cliente === nomeCliente)
+      .sort((a, b) => a.data.localeCompare(b.data));
+
+    if(entregas.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No deliveries scheduled for this client yet — add one from My Routine with this client set.</p>';
+      return;
+    }
+
+    container.innerHTML = entregas.map(e => {
+      const [ano, mes, dia] = e.data.split("-");
+      return `
+        <div class="card-item">
+          <div class="card-item-topo">
+            <span class="card-item-titulo">${escapeHtml(e.titulo)}</span>
+            <span class="card-item-tag" style="background:${e.concluido ? "var(--limao)" : "var(--laranja)"}">${e.concluido ? "Done" : `${dia}/${mes}`}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // ===================== TAB: CLIENTS — SCRIPTS & IDEAS =====================
+  async function carregarRoteiros(clienteId){
     try {
       const { data, error } = await Auth.sb
-        .from("painel_cliente_atividades")
+        .from("painel_cliente_roteiros")
         .select("*")
         .eq("cliente_id", clienteId)
         .order("created_at", { ascending: false });
       if(error) throw error;
-      estado.atividades = data;
+      estado.roteiros = data;
     } catch (erro) {
-      console.warn("painel_cliente_atividades table not set up yet:", erro);
-      estado.atividades = [];
+      console.warn("painel_cliente_roteiros table not set up yet:", erro);
+      estado.roteiros = [];
     }
   }
 
-  function traduzirTipoAtividade(tipo){
-    return { nota: "Note", ligacao: "Call", email: "Email", whatsapp: "WhatsApp", reuniao: "Meeting", outro: "Other" }[tipo] || tipo;
+  function configurarRoteiros(){
+    document.getElementById("botao-novo-roteiro").addEventListener("click", () => abrirModalRoteiro());
+    document.getElementById("fechar-modal-roteiro").addEventListener("click", fecharModalRoteiro);
+    document.getElementById("modal-roteiro").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-roteiro") fecharModalRoteiro();
+    });
+    document.getElementById("form-roteiro").addEventListener("submit", salvarRoteiro);
+    document.getElementById("botao-excluir-roteiro").addEventListener("click", excluirRoteiroAtual);
   }
 
-  async function salvarAtividade(){
-    const clienteId = document.getElementById("cliente-id").value;
-    const texto = document.getElementById("atividade-texto").value.trim();
-    if(!clienteId || !texto){
-      mostrarToast("Write something before adding it to the activity log.");
+  function abrirModalRoteiro(item = null){
+    const form = document.getElementById("form-roteiro");
+    form.reset();
+
+    if(item){
+      document.getElementById("titulo-modal-roteiro").textContent = "Edit idea / script";
+      document.getElementById("roteiro-id").value = item.id;
+      document.getElementById("roteiro-titulo").value = item.titulo;
+      document.getElementById("roteiro-tag").value = item.tag || "Idea";
+      document.getElementById("roteiro-texto").value = item.texto || "";
+    } else {
+      document.getElementById("titulo-modal-roteiro").textContent = "New idea / script";
+      document.getElementById("roteiro-id").value = "";
+    }
+
+    document.getElementById("modal-roteiro").hidden = false;
+  }
+
+  function fecharModalRoteiro(){
+    document.getElementById("modal-roteiro").hidden = true;
+  }
+
+  async function salvarRoteiro(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("roteiro-id").value;
+    const titulo = document.getElementById("roteiro-titulo").value.trim();
+    if(!titulo){
+      mostrarToast("Please enter a title.");
       return;
     }
 
     const registro = {
-      user_id: estado.usuarioId,
-      cliente_id: clienteId,
-      tipo: document.getElementById("atividade-tipo").value,
-      texto
+      titulo,
+      tag: document.getElementById("roteiro-tag").value,
+      texto: document.getElementById("roteiro-texto").value.trim() || null,
+      updated_at: new Date().toISOString()
     };
 
     try {
-      const { data, error } = await Auth.sb.from("painel_cliente_atividades").insert(registro).select();
-      if(error) throw error;
-      estado.atividades.unshift(data[0]);
-      document.getElementById("atividade-texto").value = "";
-      renderAtividades();
+      if(id){
+        const { data, error } = await Auth.sb.from("painel_cliente_roteiros").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const indice = estado.roteiros.findIndex(r => String(r.id) === String(id));
+        if(indice > -1) estado.roteiros[indice] = data[0];
+        mostrarToast("Saved.");
+      } else {
+        registro.user_id = estado.usuarioId;
+        registro.cliente_id = estado.clienteAbertoId;
+        const { data, error } = await Auth.sb.from("painel_cliente_roteiros").insert(registro).select();
+        if(error) throw error;
+        estado.roteiros.unshift(data[0]);
+        mostrarToast("Added.");
+      }
+      fecharModalRoteiro();
+      renderRoteiros();
     } catch (erro) {
       console.error(erro);
       mostrarToast("Could not save. Check that the CRM setup SQL has been run on Supabase.");
     }
   }
 
-  async function excluirAtividade(id){
+  async function excluirRoteiroAtual(){
+    const id = document.getElementById("roteiro-id").value;
+    if(!id || !confirm("Delete this idea/script?")) return;
     try {
-      const { error } = await Auth.sb.from("painel_cliente_atividades").delete().eq("id", id);
+      const { error } = await Auth.sb.from("painel_cliente_roteiros").delete().eq("id", id);
       if(error) throw error;
-      estado.atividades = estado.atividades.filter(a => String(a.id) !== String(id));
-      renderAtividades();
+      estado.roteiros = estado.roteiros.filter(r => String(r.id) !== String(id));
+      fecharModalRoteiro();
+      renderRoteiros();
+      mostrarToast("Deleted.");
     } catch (erro) {
       console.error(erro);
       mostrarToast("Could not delete. Try again.");
     }
   }
 
-  function renderAtividades(){
-    const container = document.getElementById("lista-atividades");
+  function renderRoteiros(){
+    const container = document.getElementById("lista-roteiros");
 
-    if(estado.atividades.length === 0){
-      container.innerHTML = '<p class="texto-vazio">No activity logged yet.</p>';
+    if(estado.roteiros.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No ideas or scripts yet.</p>';
       return;
     }
 
-    container.innerHTML = estado.atividades.map(a => `
-      <div class="atividade-item">
-        <div class="atividade-cabecalho">
-          <span class="atividade-tipo">${traduzirTipoAtividade(a.tipo)}</span>
-          <span class="atividade-data">${new Date(a.created_at).toLocaleDateString("en-IE", { day: "2-digit", month: "2-digit", year: "numeric" })}</span>
-          <button type="button" class="botao-icone excluir atividade-excluir" data-excluir-atividade="${a.id}" aria-label="Delete">✕</button>
+    container.innerHTML = estado.roteiros.map(r => `
+      <div class="card-item" data-abrir-roteiro="${r.id}" style="cursor:pointer;">
+        <div class="card-item-topo">
+          <span class="card-item-titulo">${escapeHtml(r.titulo)}</span>
+          <span class="card-item-tag">${escapeHtml(r.tag || "Idea")}</span>
         </div>
-        <p class="atividade-texto">${escapeHtml(a.texto)}</p>
+        ${r.texto ? `<p class="card-item-texto">${escapeHtml(r.texto)}</p>` : ""}
       </div>
     `).join("");
 
-    container.querySelectorAll("[data-excluir-atividade]").forEach(botao => {
-      botao.addEventListener("click", () => excluirAtividade(botao.dataset.excluirAtividade));
+    container.querySelectorAll("[data-abrir-roteiro]").forEach(el => {
+      el.addEventListener("click", () => {
+        const item = estado.roteiros.find(r => String(r.id) === el.dataset.abrirRoteiro);
+        if(item) abrirModalRoteiro(item);
+      });
     });
   }
 
@@ -2042,6 +2442,23 @@
     }
   }
 
+  async function mudarCorCartao(cartaoId, cor){
+    const cartao = estado.projetos.find(p => String(p.id) === String(cartaoId));
+    if(!cartao) return;
+    const corAnterior = cartao.cor;
+    cartao.cor = cor;
+    renderProjetos();
+    try {
+      const { error } = await Auth.sb.from("painel_projetos").update({ cor }).eq("id", cartaoId);
+      if(error) throw error;
+    } catch (erro) {
+      console.error(erro);
+      cartao.cor = corAnterior;
+      renderProjetos();
+      mostrarToast("Could not save the color. Try again.");
+    }
+  }
+
   async function moverCartaoParaColuna(cartaoId, colunaId){
     const cartao = estado.projetos.find(p => String(p.id) === String(cartaoId));
     if(!cartao || cartao.coluna_id === colunaId) return;
@@ -2163,9 +2580,14 @@
           </div>
           <div class="kanban-coluna-corpo" data-coluna-corpo="${coluna.id}">
             ${cartoesColuna.map(p => `
-              <div class="kanban-cartao" draggable="true" data-cartao="${p.id}">
+              <div class="kanban-cartao" draggable="true" data-cartao="${p.id}" style="--cor-cartao:${p.cor || CORES_ROTACAO[0]}">
                 <p class="kanban-cartao-titulo">${escapeHtml(p.titulo)}</p>
-                ${p.cliente ? `<span class="kanban-cartao-cliente">${escapeHtml(p.cliente)}</span>` : ""}
+                <div class="kanban-cartao-rodape">
+                  ${p.cliente ? `<span class="kanban-cartao-cliente">${escapeHtml(p.cliente)}</span>` : "<span></span>"}
+                  <div class="kanban-pontos-cor" data-pontos-cartao="${p.id}">
+                    ${CORES_ROTACAO.map(cor => `<button type="button" class="kanban-ponto-cor${(p.cor || CORES_ROTACAO[0]) === cor ? " selecionado" : ""}" style="background:${cor}" data-cor-cartao="${p.id}:${cor}" aria-label="Set card color"></button>`).join("")}
+                  </div>
+                </div>
               </div>
             `).join("")}
           </div>
@@ -2252,6 +2674,15 @@
         const input = form.querySelector(`[data-input-cartao="${colunaId}"]`);
         const titulo = input.value.trim();
         if(titulo) adicionarCartaoRapido(colunaId, titulo);
+      });
+    });
+
+    // Card color dots
+    container.querySelectorAll("[data-cor-cartao]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        const [id, cor] = botao.dataset.corCartao.split(":");
+        mudarCorCartao(id, cor);
       });
     });
 
