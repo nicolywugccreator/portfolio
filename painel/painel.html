@@ -2176,8 +2176,10 @@
     const container = document.getElementById("perfil-entregas-lista");
 
     // All My Routine items of type "Delivery" linked to this client — past and upcoming.
+    // Matches the new cliente_id link, and falls back to the old free-text client name
+    // for items created before that link existed.
     const entregas = estado.agenda
-      .filter(a => a.tipo === "entrega" && a.cliente_id === item.id)
+      .filter(a => a.tipo === "entrega" && (a.cliente_id === item.id || a.cliente === item.nome))
       .sort((a, b) => b.data.localeCompare(a.data));
 
     if(entregas.length === 0){
