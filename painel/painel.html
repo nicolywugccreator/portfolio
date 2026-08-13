@@ -826,6 +826,18 @@
           <p class="grafico-subtitulo">Hover over a bar to see the day and count.</p>
           <div class="grafico-barras" id="grafico-barras"></div>
         </div>
+
+        <div class="pilha-blocos" style="margin-top:1.2rem;">
+          <div class="cartao bloco-cartao">
+            <h3>Traffic sources</h3>
+            <p class="grafico-subtitulo">Based on the ?from= link tag — untagged visits show as "Direct".</p>
+            <div id="lista-origens"></div>
+          </div>
+          <div class="cartao bloco-cartao">
+            <h3>Visitors by country</h3>
+            <div id="lista-paises"></div>
+          </div>
+        </div>
       </section>
 
       <!-- ================= TAB: PORTFOLIO ================= -->
@@ -3714,6 +3726,61 @@
     document.getElementById("num-contato").textContent = contatoCliques;
 
     renderGrafico14Dias();
+    renderOrigens(pageViews);
+    renderPaises(pageViews);
+  }
+
+  function renderOrigens(pageViews){
+    const container = document.getElementById("lista-origens");
+    if(pageViews.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No visits recorded yet.</p>';
+      return;
+    }
+
+    const contagens = {};
+    pageViews.forEach(e => {
+      const origem = (e.metadata && e.metadata.origem) || "direto";
+      contagens[origem] = (contagens[origem] || 0) + 1;
+    });
+    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
+    const maior = ordenado[0][1];
+
+    container.innerHTML = ordenado.map(([origem, contagem]) => {
+      const largura = Math.max(6, Math.round((contagem / maior) * 100));
+      const rotulo = origem === "direto" ? "Direct / untagged" : formatarNomeEvento(origem);
+      return `
+        <div class="item-barra">
+          <span class="item-barra-nome">${escapeHtml(rotulo)}</span>
+          <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
+          <span class="item-barra-contagem">${contagem}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderPaises(pageViews){
+    const container = document.getElementById("lista-paises");
+    const comPais = pageViews.filter(e => e.metadata && e.metadata.pais);
+    if(comPais.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No country data yet.</p>';
+      return;
+    }
+
+    const contagens = {};
+    comPais.forEach(e => { contagens[e.metadata.pais] = (contagens[e.metadata.pais] || 0) + 1; });
+    const ordenado = Object.entries(contagens).sort((a, b) => b[1] - a[1]);
+    const maior = ordenado[0][1];
+
+    container.innerHTML = ordenado.map(([pais, contagem]) => {
+      const largura = Math.max(6, Math.round((contagem / maior) * 100));
+      return `
+        <div class="item-barra">
+          <span class="item-barra-nome">${escapeHtml(pais)}</span>
+          <div class="barra-horizontal"><div class="barra-horizontal-preenchida" style="width:${largura}%"></div></div>
+          <span class="item-barra-contagem">${contagem}</span>
+        </div>
+      `;
+    }).join("");
   }
 
   function renderGrafico14Dias(){
