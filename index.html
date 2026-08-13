@@ -1534,8 +1534,35 @@ function registrarLead(dados){
     .then(({ error }) => { if(error) console.warn("Falha ao registrar mensagem:", error.message); });
 }
 
-function configurarAnalytics(){
-  registrarEvento("page_view");
+// Reads a "where did this visitor come from" hint off the URL, so links you
+// share can be tagged (e.g. nicolyugccreator.com/?from=instagram in your bio,
+// ?from=email in emails you send). Falls back to the standard ?utm_source=
+// param if that's what's used instead.
+function obterOrigemVisita(){
+  const parametros = new URLSearchParams(window.location.search);
+  return parametros.get("from") || parametros.get("utm_source") || null;
+}
+
+// Country by IP, via a free no-key-required lookup. Best-effort: if it fails
+// or is slow, the visit is still logged, just without a country.
+async function obterPaisVisitante(){
+  try {
+    const resposta = await fetch("https://ipapi.co/json/");
+    if(!resposta.ok) return null;
+    const dados = await resposta.json();
+    return dados.country_name || null;
+  } catch (erro) {
+    return null;
+  }
+}
+
+async function configurarAnalytics(){
+  const pais = await obterPaisVisitante();
+  registrarEvento("page_view", null, {
+    origem: obterOrigemVisita() || "direto",
+    referrer: document.referrer || null,
+    pais
+  });
 
   document.getElementById("link-whatsapp").addEventListener("click", () => registrarEvento("button_click", "contact_whatsapp"));
   document.getElementById("link-email").addEventListener("click", () => registrarEvento("button_click", "contact_email"));
@@ -1559,3 +1586,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
