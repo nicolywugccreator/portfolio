@@ -790,7 +790,10 @@
 
       <!-- ================= TAB: HOME ================= -->
       <section id="aba-principal" class="painel-aba">
-        <p style="margin:0 0 1.2rem;color:var(--texto-suave);">Hi! Here are your portfolio numbers.</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem;">
+          <p style="margin:0;color:var(--texto-suave);">Hi! Here are your portfolio numbers.</p>
+          <button type="button" class="botao-icone" id="botao-zerar-contadores" style="width:auto;padding:.5rem .9rem;font-size:.78rem;font-weight:700;" title="Old visits stay saved, they just stop counting from today">↺ Reset counters</button>
+        </div>
 
         <div class="grid-cartoes">
           <div class="cartao-numero destaque">
@@ -1285,6 +1288,7 @@
     erroClientes: null,
     clienteAbertoId: null,
     googleAccessToken: null,
+    eventosZeradosEm: null,
     cartaoArrastado: null,
     itemPlanejamentoArrastado: null,
     suprimirCliqueCartao: false
@@ -1371,6 +1375,13 @@
     estado.googleAccessToken = obterTokenGoogleSalvo();
     document.getElementById("rodape-email").textContent = usuario.email;
     document.getElementById("botao-sair").addEventListener("click", () => Auth.logout());
+
+    try {
+      const { data: config } = await Auth.sb.from("painel_config").select("eventos_zerados_em").eq("user_id", usuario.id).maybeSingle();
+      estado.eventosZeradosEm = config ? config.eventos_zerados_em : null;
+    } catch (erro) {
+      console.warn("painel_config table not set up yet:", erro);
+    }
 
     try {
       const [eventos, leads] = await Promise.all([
@@ -1491,6 +1502,21 @@
         document.querySelectorAll("#filtro-periodo .botao-periodo").forEach(b => b.classList.toggle("ativo", b === botao));
         redesenharTudo();
       });
+    });
+
+    document.getElementById("botao-zerar-contadores").addEventListener("click", async () => {
+      if(!confirm("Start counting visits and videos from today? Older data stays saved, it just won't be counted anymore.")) return;
+      const agora = new Date().toISOString();
+      try {
+        const { error } = await Auth.sb.from("painel_config").upsert({ user_id: estado.usuarioId, eventos_zerados_em: agora });
+        if(error) throw error;
+        estado.eventosZeradosEm = agora;
+        redesenharTudo();
+        mostrarToast("Counters reset. Counting from today.");
+      } catch (erro) {
+        console.error(erro);
+        mostrarToast("Could not reset. Check that the latest setup SQL has been run on Supabase.");
+      }
     });
   }
 
@@ -3703,7 +3729,9 @@
 
   // ===================== REDRAW =====================
   function redesenharTudo(){
-    const eventosFiltrados = estado.eventos.filter(e => dentroDoPeriodo(e.created_at, estado.periodo));
+    const eventosFiltrados = estado.eventos
+      .filter(e => !estado.eventosZeradosEm || new Date(e.created_at) >= new Date(estado.eventosZeradosEm))
+      .filter(e => dentroDoPeriodo(e.created_at, estado.periodo));
     const leadsFiltrados = estado.leads.filter(l => dentroDoPeriodo(l.created_at, estado.periodo));
 
     renderPrincipal(eventosFiltrados, leadsFiltrados);
