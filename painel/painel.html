@@ -759,6 +759,12 @@
           Projects
         </button>
       </li>
+      <li>
+        <button type="button" class="nav-item" data-tab="planejamento">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2Z"/></svg>
+          Planning
+        </button>
+      </li>
     </ul>
     <div class="sidebar-rodape">
       <p class="sidebar-email" id="rodape-email">loading...</p>
@@ -877,6 +883,7 @@
             <button type="button" class="botao-adicionar-agenda" id="botao-adicionar-agenda">+ Add to schedule</button>
 
             <form class="form-agenda" id="form-agenda" hidden novalidate>
+              <input type="hidden" id="agenda-id">
               <label for="agenda-titulo">What is it</label>
               <input type="text" id="agenda-titulo" required placeholder="e.g. Filming for brand X">
 
@@ -1024,6 +1031,14 @@
         </div>
         <div class="kanban-quadro" id="kanban-quadro"></div>
       </section>
+
+      <!-- ================= TAB: CONTENT PLANNING (KANBAN) ================= -->
+      <section id="aba-planejamento" class="painel-aba" hidden>
+        <div class="kanban-barra">
+          <p style="margin:0;color:var(--texto-suave);">Plan your content ideas. Drag cards between columns, and rename, reorder, add or delete columns freely.</p>
+        </div>
+        <div class="kanban-quadro" id="planejamento-quadro"></div>
+      </section>
     </div>
   </main>
 </div>
@@ -1160,6 +1175,32 @@
   </div>
 </div>
 
+<!-- ================= MODAL: CONTENT PLANNING ITEM ================= -->
+<div class="modal-overlay" id="modal-planejamento" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-planejamento">&times;</button>
+    <h3 id="titulo-modal-planejamento">Content idea</h3>
+
+    <form class="form-contato" id="form-planejamento" novalidate>
+      <input type="hidden" id="planejamento-id">
+
+      <label for="planejamento-titulo">Title</label>
+      <input type="text" id="planejamento-titulo" required placeholder="e.g. Get ready with me + product">
+
+      <label for="planejamento-coluna">Stage</label>
+      <select id="planejamento-coluna"></select>
+
+      <label for="planejamento-notas">Notes (optional)</label>
+      <textarea id="planejamento-notas" rows="3" placeholder="hook, references, format..."></textarea>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-planejamento">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ================= TOAST ================= -->
 <div class="toast" id="toast">
   <span id="toast-mensagem"></span>
@@ -1182,17 +1223,25 @@
     usuarioId: null,
     colunas: [],
     projetos: [],
+    colunasPlanejamento: [],
+    itensPlanejamento: [],
     roteiros: [],
     buscaClientes: "",
+    erroClientes: null,
     clienteAbertoId: null,
     googleAccessToken: null,
     cartaoArrastado: null,
+    itemPlanejamentoArrastado: null,
     suprimirCliqueCartao: false
   };
 
   const NOMES_COLUNAS_PADRAO = [
     "Negotiating", "Contract", "Awaiting Product", "Filming", "Editing",
     "Sent for Approval", "Revision", "Final Delivery", "Awaiting Payment"
+  ];
+
+  const NOMES_COLUNAS_PLANEJAMENTO_PADRAO = [
+    "Ideas", "Scripting", "Filming", "Editing", "Scheduled", "Posted"
   ];
 
   const CORES_ROTACAO = ["#2b6fff", "#ff6a2b", "#c3f53a", "#ff3da6"];
@@ -1291,11 +1340,19 @@
     }
 
     try {
-      await Promise.all([carregarFinanceiro(), carregarClientes()]);
+      await carregarFinanceiro();
     } catch (erro) {
-      console.warn("financeiro/clientes tables not set up yet:", erro);
+      console.warn("financeiro table not set up yet:", erro);
       estado.financeiro = [];
+    }
+
+    try {
+      await carregarClientes();
+      console.log(`[painel] loaded ${estado.clientes.length} clients for user ${estado.usuarioId}`);
+    } catch (erro) {
+      console.warn("clientes table not set up yet:", erro);
       estado.clientes = [];
+      estado.erroClientes = erro.message || String(erro);
     }
 
     try {
@@ -1307,6 +1364,15 @@
       estado.projetos = [];
     }
 
+    try {
+      await carregarColunasPlanejamento();
+      await carregarItensPlanejamento();
+    } catch (erro) {
+      console.warn("painel_planejamento_colunas/painel_planejamento_itens tables not set up yet:", erro);
+      estado.colunasPlanejamento = [];
+      estado.itensPlanejamento = [];
+    }
+
     configurarAbas();
     configurarFiltroPeriodo();
     configurarSidebarMobile();
@@ -1314,6 +1380,7 @@
     configurarFinanceiro();
     configurarClientes();
     configurarProjetos();
+    configurarPlanejamento();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -1323,6 +1390,7 @@
     renderFinanceiro();
     renderClientes();
     renderProjetos();
+    renderPlanejamento();
 
     const parametroCliente = new URLSearchParams(location.search).get("cliente");
     if(parametroCliente){
@@ -1333,7 +1401,7 @@
 
   // ===================== TABS =====================
   function ativarAba(aba){
-    const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos"];
+    const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos", "planejamento"];
     document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("ativo", b.dataset.tab === aba));
     document.getElementById("aba-principal").hidden = aba !== "principal";
     document.getElementById("aba-portfolio").hidden = aba !== "portfolio";
@@ -1341,10 +1409,11 @@
     document.getElementById("aba-financeiro").hidden = aba !== "financeiro";
     document.getElementById("aba-clientes").hidden = aba !== "clientes";
     document.getElementById("aba-projetos").hidden = aba !== "projetos";
+    document.getElementById("aba-planejamento").hidden = aba !== "planejamento";
     document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
     const titulos = {
       principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
-      financeiro: "Finance", clientes: "Clients", projetos: "Projects"
+      financeiro: "Finance", clientes: "Clients", projetos: "Projects", planejamento: "Planning"
     };
     document.getElementById("titulo-pagina").textContent = titulos[aba];
     fecharSidebarMobile();
@@ -1539,12 +1608,19 @@
           <p class="item-agenda-titulo">${escapeHtml(item.titulo)}</p>
         </div>
         <div class="item-agenda-acoes">
+          <button type="button" class="botao-icone editar-agenda" data-id="${item.id}" aria-label="Edit">✎</button>
           <button type="button" class="botao-icone botao-concluir" data-id="${item.id}" aria-label="Mark as done">✓</button>
           <button type="button" class="botao-icone excluir" data-id="${item.id}" aria-label="Delete">✕</button>
         </div>
       </div>
     `).join("");
 
+    lista.querySelectorAll(".editar-agenda").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.agenda.find(i => String(i.id) === botao.dataset.id);
+        if(item) abrirFormAgendaParaEditar(item);
+      });
+    });
     lista.querySelectorAll(".botao-concluir").forEach(botao => {
       botao.addEventListener("click", () => alternarConcluido(botao.dataset.id));
     });
@@ -2053,6 +2129,11 @@
 
   function renderClientes(){
     const container = document.getElementById("lista-clientes");
+
+    if(estado.erroClientes){
+      container.innerHTML = `<div class="cartao-erro">Could not load clients: ${escapeHtml(estado.erroClientes)}</div>`;
+      return;
+    }
 
     if(estado.clientes.length === 0){
       container.innerHTML = `
@@ -2892,6 +2973,440 @@
         const input = document.getElementById("input-nova-coluna");
         const nome = input.value.trim();
         if(nome) adicionarColuna(nome);
+      });
+    }
+  }
+
+  // ===================== TAB: CONTENT PLANNING (KANBAN) =====================
+  let colunaPlanejamentoComFormularioAberto = null;
+  let mostrandoFormNovaColunaPlanejamento = false;
+
+  async function carregarColunasPlanejamento(){
+    const { data, error } = await Auth.sb
+      .from("painel_planejamento_colunas")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+
+    if(data.length === 0){
+      const registros = NOMES_COLUNAS_PLANEJAMENTO_PADRAO.map((nome, indice) => ({
+        user_id: estado.usuarioId, nome, ordem: indice
+      }));
+      const { data: criadas, error: erroCriar } = await Auth.sb.from("painel_planejamento_colunas").insert(registros).select();
+      if(erroCriar) throw erroCriar;
+      estado.colunasPlanejamento = criadas.sort((a, b) => a.ordem - b.ordem);
+    } else {
+      estado.colunasPlanejamento = data;
+    }
+  }
+
+  async function carregarItensPlanejamento(){
+    const { data, error } = await Auth.sb
+      .from("painel_planejamento_itens")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+    estado.itensPlanejamento = data;
+  }
+
+  function configurarPlanejamento(){
+    document.getElementById("fechar-modal-planejamento").addEventListener("click", fecharModalPlanejamento);
+    document.getElementById("modal-planejamento").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-planejamento") fecharModalPlanejamento();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalPlanejamento();
+    });
+    document.getElementById("form-planejamento").addEventListener("submit", salvarItemPlanejamento);
+    document.getElementById("botao-excluir-planejamento").addEventListener("click", excluirItemPlanejamentoAtual);
+  }
+
+  function abrirModalPlanejamento(item){
+    document.getElementById("titulo-modal-planejamento").textContent = item.titulo;
+    document.getElementById("planejamento-id").value = item.id;
+    document.getElementById("planejamento-titulo").value = item.titulo;
+    document.getElementById("planejamento-notas").value = item.notas || "";
+
+    const select = document.getElementById("planejamento-coluna");
+    select.innerHTML = estado.colunasPlanejamento.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
+    select.value = item.coluna_id;
+
+    document.getElementById("modal-planejamento").hidden = false;
+  }
+
+  function fecharModalPlanejamento(){
+    document.getElementById("modal-planejamento").hidden = true;
+  }
+
+  async function salvarItemPlanejamento(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("planejamento-id").value;
+    const titulo = document.getElementById("planejamento-titulo").value.trim();
+    if(!titulo){
+      mostrarToast("Please enter a title.");
+      return;
+    }
+
+    const registro = {
+      titulo,
+      coluna_id: document.getElementById("planejamento-coluna").value,
+      notas: document.getElementById("planejamento-notas").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      const { data, error } = await Auth.sb.from("painel_planejamento_itens").update(registro).eq("id", id).select();
+      if(error) throw error;
+      const indice = estado.itensPlanejamento.findIndex(p => String(p.id) === String(id));
+      if(indice > -1) estado.itensPlanejamento[indice] = data[0];
+      fecharModalPlanejamento();
+      renderPlanejamento();
+      mostrarToast("Idea updated.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the Planning setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirItemPlanejamentoAtual(){
+    const id = document.getElementById("planejamento-id").value;
+    if(!id || !confirm("Delete this idea?")) return;
+    try {
+      const { error } = await Auth.sb.from("painel_planejamento_itens").delete().eq("id", id);
+      if(error) throw error;
+      estado.itensPlanejamento = estado.itensPlanejamento.filter(p => String(p.id) !== String(id));
+      fecharModalPlanejamento();
+      renderPlanejamento();
+      mostrarToast("Idea deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  async function adicionarItemPlanejamentoRapido(colunaId, titulo){
+    const registro = {
+      user_id: estado.usuarioId,
+      coluna_id: colunaId,
+      titulo,
+      ordem: proximaOrdem(estado.itensPlanejamento.filter(p => p.coluna_id === colunaId))
+    };
+    try {
+      const { data, error } = await Auth.sb.from("painel_planejamento_itens").insert(registro).select();
+      if(error) throw error;
+      estado.itensPlanejamento.push(data[0]);
+      colunaPlanejamentoComFormularioAberto = null;
+      renderPlanejamento();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the Planning setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function mudarCorItemPlanejamento(itemId, cor){
+    const item = estado.itensPlanejamento.find(p => String(p.id) === String(itemId));
+    if(!item) return;
+    const corAnterior = item.cor;
+    item.cor = cor;
+    renderPlanejamento();
+    try {
+      const { error } = await Auth.sb.from("painel_planejamento_itens").update({ cor }).eq("id", itemId);
+      if(error) throw error;
+    } catch (erro) {
+      console.error(erro);
+      item.cor = corAnterior;
+      renderPlanejamento();
+      mostrarToast("Could not save the color. Try again.");
+    }
+  }
+
+  async function moverItemPlanejamentoParaColuna(itemId, colunaId){
+    const item = estado.itensPlanejamento.find(p => String(p.id) === String(itemId));
+    if(!item || item.coluna_id === colunaId) return;
+
+    const novaOrdem = proximaOrdem(estado.itensPlanejamento.filter(p => p.coluna_id === colunaId));
+    try {
+      const { error } = await Auth.sb.from("painel_planejamento_itens")
+        .update({ coluna_id: colunaId, ordem: novaOrdem })
+        .eq("id", itemId);
+      if(error) throw error;
+      item.coluna_id = colunaId;
+      item.ordem = novaOrdem;
+      renderPlanejamento();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not move the idea. Try again.");
+    }
+  }
+
+  async function adicionarColunaPlanejamento(nome){
+    const registro = { user_id: estado.usuarioId, nome, ordem: proximaOrdem(estado.colunasPlanejamento) };
+    try {
+      const { data, error } = await Auth.sb.from("painel_planejamento_colunas").insert(registro).select();
+      if(error) throw error;
+      estado.colunasPlanejamento.push(data[0]);
+      mostrandoFormNovaColunaPlanejamento = false;
+      renderPlanejamento();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the Planning setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function renomearColunaPlanejamento(id, nome){
+    const coluna = estado.colunasPlanejamento.find(c => String(c.id) === String(id));
+    if(!coluna || !nome || coluna.nome === nome) return;
+    try {
+      const { error } = await Auth.sb.from("painel_planejamento_colunas").update({ nome }).eq("id", id);
+      if(error) throw error;
+      coluna.nome = nome;
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not rename the column. Try again.");
+      renderPlanejamento();
+    }
+  }
+
+  async function moverColunaPlanejamento(id, direcao){
+    const ordenadas = [...estado.colunasPlanejamento].sort((a, b) => a.ordem - b.ordem);
+    const indice = ordenadas.findIndex(c => String(c.id) === String(id));
+    const alvo = indice + direcao;
+    if(indice === -1 || alvo < 0 || alvo >= ordenadas.length) return;
+
+    const colunaA = ordenadas[indice];
+    const colunaB = ordenadas[alvo];
+    const ordemA = colunaA.ordem;
+    const ordemB = colunaB.ordem;
+
+    try {
+      const [{ error: erroA }, { error: erroB }] = await Promise.all([
+        Auth.sb.from("painel_planejamento_colunas").update({ ordem: ordemB }).eq("id", colunaA.id),
+        Auth.sb.from("painel_planejamento_colunas").update({ ordem: ordemA }).eq("id", colunaB.id)
+      ]);
+      if(erroA || erroB) throw erroA || erroB;
+      colunaA.ordem = ordemB;
+      colunaB.ordem = ordemA;
+      renderPlanejamento();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not reorder columns. Try again.");
+    }
+  }
+
+  async function excluirColunaPlanejamento(id){
+    const coluna = estado.colunasPlanejamento.find(c => String(c.id) === String(id));
+    if(!coluna) return;
+    const quantosCartoes = estado.itensPlanejamento.filter(p => p.coluna_id === id).length;
+    const aviso = quantosCartoes > 0
+      ? `Delete the column "${coluna.nome}"? Its ${quantosCartoes} idea${quantosCartoes > 1 ? "s" : ""} will be deleted too.`
+      : `Delete the column "${coluna.nome}"?`;
+    if(!confirm(aviso)) return;
+
+    try {
+      const { error } = await Auth.sb.from("painel_planejamento_colunas").delete().eq("id", id);
+      if(error) throw error;
+      estado.colunasPlanejamento = estado.colunasPlanejamento.filter(c => String(c.id) !== String(id));
+      estado.itensPlanejamento = estado.itensPlanejamento.filter(p => p.coluna_id !== id);
+      renderPlanejamento();
+      mostrarToast("Column deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function renderPlanejamento(){
+    const container = document.getElementById("planejamento-quadro");
+    const colunasOrdenadas = [...estado.colunasPlanejamento].sort((a, b) => a.ordem - b.ordem);
+
+    if(colunasOrdenadas.length === 0){
+      container.innerHTML = '<p class="texto-vazio">Could not load your board. Check that the Planning setup SQL has been run on Supabase.</p>';
+      return;
+    }
+
+    const htmlColunas = colunasOrdenadas.map((coluna, indice) => {
+      const cartoesColuna = estado.itensPlanejamento.filter(p => p.coluna_id === coluna.id).sort((a, b) => a.ordem - b.ordem);
+      const formularioAberto = colunaPlanejamentoComFormularioAberto === coluna.id;
+
+      return `
+        <div class="kanban-coluna">
+          <div class="kanban-coluna-cabecalho">
+            <input type="text" class="kanban-coluna-titulo" value="${escapeHtml(coluna.nome)}" data-renomear-coluna-planejamento="${coluna.id}" aria-label="Column name">
+            <span class="kanban-coluna-contagem">${cartoesColuna.length}</span>
+            <div class="kanban-coluna-acoes">
+              <button type="button" class="botao-icone" data-mover-coluna-planejamento="${coluna.id}:-1" aria-label="Move column left" ${indice === 0 ? "disabled" : ""}>◀</button>
+              <button type="button" class="botao-icone" data-mover-coluna-planejamento="${coluna.id}:1" aria-label="Move column right" ${indice === colunasOrdenadas.length - 1 ? "disabled" : ""}>▶</button>
+              <button type="button" class="botao-icone excluir" data-excluir-coluna-planejamento="${coluna.id}" aria-label="Delete column">✕</button>
+            </div>
+          </div>
+          <div class="kanban-coluna-corpo" data-coluna-corpo-planejamento="${coluna.id}">
+            ${cartoesColuna.map(p => `
+              <div class="kanban-cartao" draggable="true" data-item-planejamento="${p.id}" style="--cor-cartao:${p.cor || CORES_ROTACAO[0]}">
+                <p class="kanban-cartao-titulo">${escapeHtml(p.titulo)}</p>
+                <div class="kanban-cartao-rodape">
+                  <span></span>
+                  <div class="kanban-pontos-cor" data-pontos-item-planejamento="${p.id}">
+                    ${CORES_ROTACAO.map(cor => `<button type="button" class="kanban-ponto-cor${(p.cor || CORES_ROTACAO[0]) === cor ? " selecionado" : ""}" style="background:${cor}" data-cor-item-planejamento="${p.id}:${cor}" aria-label="Set card color"></button>`).join("")}
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="kanban-coluna-rodape">
+            ${formularioAberto ? `
+              <form class="kanban-form-cartao" data-form-item-planejamento="${coluna.id}">
+                <input type="text" placeholder="Idea title" data-input-item-planejamento="${coluna.id}" required autofocus>
+                <div class="kanban-form-cartao-acoes">
+                  <button type="submit" class="btn btn-primario btn-pequeno">Add</button>
+                  <button type="button" class="botao-cancelar" data-cancelar-item-planejamento="${coluna.id}">Cancel</button>
+                </div>
+              </form>
+            ` : `
+              <button type="button" class="kanban-add-cartao" data-abrir-form-item-planejamento="${coluna.id}">+ Add idea</button>
+            `}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const htmlNovaColuna = `
+      <div class="kanban-coluna-nova">
+        ${mostrandoFormNovaColunaPlanejamento ? `
+          <form class="form-nova-coluna" id="form-nova-coluna-planejamento">
+            <input type="text" id="input-nova-coluna-planejamento" placeholder="Column name" required autofocus>
+            <div class="form-nova-coluna-acoes">
+              <button type="submit" class="btn btn-primario btn-pequeno">Add column</button>
+              <button type="button" class="botao-cancelar" id="cancelar-nova-coluna-planejamento">Cancel</button>
+            </div>
+          </form>
+        ` : `
+          <button type="button" class="botao-nova-coluna" id="botao-nova-coluna-planejamento">+ New column</button>
+        `}
+      </div>
+    `;
+
+    container.innerHTML = htmlColunas + htmlNovaColuna;
+
+    if(colunaPlanejamentoComFormularioAberto){
+      const inputCartao = container.querySelector(`[data-input-item-planejamento="${colunaPlanejamentoComFormularioAberto}"]`);
+      if(inputCartao) inputCartao.focus();
+    }
+    if(mostrandoFormNovaColunaPlanejamento){
+      const inputColuna = document.getElementById("input-nova-coluna-planejamento");
+      if(inputColuna) inputColuna.focus();
+    }
+
+    // Rename column (on blur or Enter)
+    container.querySelectorAll("[data-renomear-coluna-planejamento]").forEach(input => {
+      input.addEventListener("blur", () => renomearColunaPlanejamento(input.dataset.renomearColunaPlanejamento, input.value.trim()));
+      input.addEventListener("keydown", (evento) => {
+        if(evento.key === "Enter"){ evento.preventDefault(); input.blur(); }
+      });
+    });
+
+    // Reorder / delete columns
+    container.querySelectorAll("[data-mover-coluna-planejamento]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const [id, direcao] = botao.dataset.moverColunaPlanejamento.split(":");
+        moverColunaPlanejamento(id, Number(direcao));
+      });
+    });
+    container.querySelectorAll("[data-excluir-coluna-planejamento]").forEach(botao => {
+      botao.addEventListener("click", () => excluirColunaPlanejamento(botao.dataset.excluirColunaPlanejamento));
+    });
+
+    // Quick-add card
+    container.querySelectorAll("[data-abrir-form-item-planejamento]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        colunaPlanejamentoComFormularioAberto = botao.dataset.abrirFormItemPlanejamento;
+        renderPlanejamento();
+      });
+    });
+    container.querySelectorAll("[data-cancelar-item-planejamento]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        colunaPlanejamentoComFormularioAberto = null;
+        renderPlanejamento();
+      });
+    });
+    container.querySelectorAll("[data-form-item-planejamento]").forEach(form => {
+      form.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        const colunaId = form.dataset.formItemPlanejamento;
+        const input = form.querySelector(`[data-input-item-planejamento="${colunaId}"]`);
+        const titulo = input.value.trim();
+        if(titulo) adicionarItemPlanejamentoRapido(colunaId, titulo);
+      });
+    });
+
+    // Card color dots
+    container.querySelectorAll("[data-cor-item-planejamento]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        const [id, cor] = botao.dataset.corItemPlanejamento.split(":");
+        mudarCorItemPlanejamento(id, cor);
+      });
+    });
+
+    // Open card modal
+    container.querySelectorAll("[data-item-planejamento]").forEach(cartaoEl => {
+      cartaoEl.addEventListener("click", () => {
+        if(estado.suprimirCliqueCartao) return;
+        const item = estado.itensPlanejamento.find(p => String(p.id) === cartaoEl.dataset.itemPlanejamento);
+        if(item) abrirModalPlanejamento(item);
+      });
+      cartaoEl.addEventListener("dragstart", (evento) => {
+        estado.itemPlanejamentoArrastado = cartaoEl.dataset.itemPlanejamento;
+        cartaoEl.classList.add("arrastando");
+        evento.dataTransfer.effectAllowed = "move";
+        evento.dataTransfer.setData("text/plain", cartaoEl.dataset.itemPlanejamento);
+      });
+      cartaoEl.addEventListener("dragend", () => {
+        cartaoEl.classList.remove("arrastando");
+        estado.suprimirCliqueCartao = true;
+        setTimeout(() => { estado.suprimirCliqueCartao = false; }, 150);
+      });
+    });
+
+    // Drop targets (column bodies)
+    container.querySelectorAll("[data-coluna-corpo-planejamento]").forEach(corpo => {
+      corpo.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        evento.dataTransfer.dropEffect = "move";
+        corpo.classList.add("sobre-arraste");
+      });
+      corpo.addEventListener("dragleave", () => corpo.classList.remove("sobre-arraste"));
+      corpo.addEventListener("drop", (evento) => {
+        evento.preventDefault();
+        corpo.classList.remove("sobre-arraste");
+        const itemId = evento.dataTransfer.getData("text/plain") || estado.itemPlanejamentoArrastado;
+        if(itemId) moverItemPlanejamentoParaColuna(itemId, corpo.dataset.colunaCorpoPlanejamento);
+        estado.itemPlanejamentoArrastado = null;
+      });
+    });
+
+    // New column
+    const botaoNovaColuna = document.getElementById("botao-nova-coluna-planejamento");
+    if(botaoNovaColuna){
+      botaoNovaColuna.addEventListener("click", () => {
+        mostrandoFormNovaColunaPlanejamento = true;
+        renderPlanejamento();
+      });
+    }
+    const cancelarNovaColuna = document.getElementById("cancelar-nova-coluna-planejamento");
+    if(cancelarNovaColuna){
+      cancelarNovaColuna.addEventListener("click", () => {
+        mostrandoFormNovaColunaPlanejamento = false;
+        renderPlanejamento();
+      });
+    }
+    const formNovaColuna = document.getElementById("form-nova-coluna-planejamento");
+    if(formNovaColuna){
+      formNovaColuna.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        const input = document.getElementById("input-nova-coluna-planejamento");
+        const nome = input.value.trim();
+        if(nome) adicionarColunaPlanejamento(nome);
       });
     }
   }
