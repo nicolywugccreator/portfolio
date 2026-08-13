@@ -395,9 +395,9 @@
   .kanban-barra{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem;}
   .kanban-quadro{display:flex;gap:1rem;align-items:flex-start;overflow-x:auto;padding-bottom:1rem;}
   .kanban-coluna{
-    flex:0 0 270px;width:270px;
+    flex:0 0 320px;width:320px;
     background:var(--branco);border:3px solid var(--preto);border-radius:14px;
-    box-shadow:var(--sombra-dura);display:flex;flex-direction:column;max-height:calc(100vh - 220px);
+    box-shadow:var(--sombra-dura);display:flex;flex-direction:column;max-height:calc(100vh - 200px);
   }
   .kanban-coluna-cabecalho{
     display:flex;align-items:center;gap:.4rem;padding:.9rem .9rem .6rem;border-bottom:2px solid var(--papel);
@@ -993,6 +993,7 @@
               <button type="button" class="aba-perfil-btn" data-aba-perfil="estagio">Stage</button>
               <button type="button" class="aba-perfil-btn" data-aba-perfil="entregas">Deliveries</button>
               <button type="button" class="aba-perfil-btn" data-aba-perfil="email">Email</button>
+              <button type="button" class="aba-perfil-btn" data-aba-perfil="documentos">Documents</button>
             </div>
 
             <div class="aba-perfil-conteudo ativa" data-conteudo-perfil="overview">
@@ -1018,6 +1019,11 @@
 
             <div class="aba-perfil-conteudo" data-conteudo-perfil="email">
               <div id="perfil-email-conteudo"></div>
+            </div>
+
+            <div class="aba-perfil-conteudo" data-conteudo-perfil="documentos">
+              <button type="button" class="botao-nova-transacao" id="botao-novo-documento" style="margin-bottom:1rem;">+ New document</button>
+              <div id="lista-documentos"></div>
             </div>
           </div>
         </div>
@@ -1138,9 +1144,48 @@
       <label for="roteiro-texto">Script / notes</label>
       <textarea id="roteiro-texto" rows="5" placeholder="hook, shots, call to action..."></textarea>
 
+      <label for="roteiro-arquivo">Attachment (optional, Word or PDF)</label>
+      <input type="file" id="roteiro-arquivo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      <p class="texto-vazio" id="roteiro-arquivo-atual" style="margin:.3rem 0 0;"></p>
+
       <div class="form-agenda-acoes">
         <button type="submit" class="btn btn-primario">Save</button>
         <button type="button" class="botao-cancelar" id="botao-excluir-roteiro">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: NEW/EDIT DOCUMENT ================= -->
+<div class="modal-overlay" id="modal-documento" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-documento">&times;</button>
+    <h3 id="titulo-modal-documento">New document</h3>
+
+    <form class="form-contato" id="form-documento" novalidate>
+      <input type="hidden" id="documento-id">
+
+      <label for="documento-titulo">Title</label>
+      <input type="text" id="documento-titulo" required placeholder="e.g. Signed contract - July campaign">
+
+      <label for="documento-tipo">Type</label>
+      <select id="documento-tipo">
+        <option value="Contract">Contract</option>
+        <option value="Briefing">Briefing</option>
+        <option value="Invoice">Invoice</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="documento-arquivo">File</label>
+      <input type="file" id="documento-arquivo" accept=".pdf,.doc,.docx,.xls,.xlsx,image/*">
+      <p class="texto-vazio" id="documento-arquivo-atual" style="margin:.3rem 0 0;"></p>
+
+      <label for="documento-notas">Notes (optional)</label>
+      <textarea id="documento-notas" rows="3"></textarea>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-documento">Delete</button>
       </div>
     </form>
   </div>
@@ -1226,6 +1271,7 @@
     colunasPlanejamento: [],
     itensPlanejamento: [],
     roteiros: [],
+    documentos: [],
     buscaClientes: "",
     erroClientes: null,
     clienteAbertoId: null,
@@ -1491,13 +1537,24 @@
 
     const formAgenda = document.getElementById("form-agenda");
 
-    document.getElementById("botao-adicionar-agenda").addEventListener("click", () => {
-      formAgenda.hidden = !formAgenda.hidden;
+    function popularSelectClienteAgenda(valorSelecionado){
       document.getElementById("agenda-cliente").innerHTML = '<option value="">No client</option>' +
         estado.clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("");
+      document.getElementById("agenda-cliente").value = valorSelecionado || "";
+    }
+
+    document.getElementById("botao-adicionar-agenda").addEventListener("click", () => {
+      const abrindo = formAgenda.hidden;
+      formAgenda.hidden = !formAgenda.hidden;
+      if(abrindo){
+        formAgenda.reset();
+        document.getElementById("agenda-id").value = "";
+        popularSelectClienteAgenda("");
+      }
     });
     document.getElementById("agenda-cancelar").addEventListener("click", () => {
       formAgenda.reset();
+      document.getElementById("agenda-id").value = "";
       formAgenda.hidden = true;
       document.getElementById("agenda-horario").hidden = true;
       document.getElementById("rotulo-agenda-horario").hidden = true;
@@ -1508,27 +1565,52 @@
       document.getElementById("rotulo-agenda-horario").hidden = !mostrarHorario;
     });
 
+    window.abrirFormAgendaParaEditar = function(item){
+      formAgenda.hidden = false;
+      document.getElementById("agenda-id").value = item.id;
+      document.getElementById("agenda-titulo").value = item.titulo;
+      document.getElementById("agenda-tipo").value = item.tipo;
+      popularSelectClienteAgenda(item.cliente_id || "");
+
+      const diaTodo = !!item.dia_todo;
+      document.getElementById("agenda-dia-todo").checked = diaTodo;
+      document.getElementById("agenda-horario").hidden = diaTodo;
+      document.getElementById("rotulo-agenda-horario").hidden = diaTodo;
+      document.getElementById("agenda-horario").value = item.horario || "";
+
+      formAgenda.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+
     formAgenda.addEventListener("submit", async (evento) => {
       evento.preventDefault();
       const titulo = document.getElementById("agenda-titulo").value.trim();
       if(!titulo) return;
 
+      const id = document.getElementById("agenda-id").value;
       const diaTodo = document.getElementById("agenda-dia-todo").checked;
-      const novoItem = {
+      const dadosItem = {
         titulo,
         tipo: document.getElementById("agenda-tipo").value,
         cliente_id: document.getElementById("agenda-cliente").value || null,
-        data: dataParaChave(estado.diaSelecionado),
         dia_todo: diaTodo,
-        horario: diaTodo ? null : (document.getElementById("agenda-horario").value || null),
-        concluido: false
+        horario: diaTodo ? null : (document.getElementById("agenda-horario").value || null)
       };
 
       try {
-        const { data, error } = await Auth.sb.from("painel_agenda").insert(novoItem).select();
-        if(error) throw error;
-        estado.agenda.push(data[0]);
+        if(id){
+          const { data, error } = await Auth.sb.from("painel_agenda").update(dadosItem).eq("id", id).select();
+          if(error) throw error;
+          const indice = estado.agenda.findIndex(i => String(i.id) === String(id));
+          if(indice > -1) estado.agenda[indice] = data[0];
+        } else {
+          dadosItem.data = dataParaChave(estado.diaSelecionado);
+          dadosItem.concluido = false;
+          const { data, error } = await Auth.sb.from("painel_agenda").insert(dadosItem).select();
+          if(error) throw error;
+          estado.agenda.push(data[0]);
+        }
         formAgenda.reset();
+        document.getElementById("agenda-id").value = "";
         formAgenda.hidden = true;
         document.getElementById("agenda-horario").hidden = true;
         document.getElementById("rotulo-agenda-horario").hidden = true;
@@ -2015,6 +2097,7 @@
     });
 
     configurarRoteiros();
+    configurarDocumentos();
   }
 
   function abrirModalCliente(item = null){
@@ -2219,6 +2302,9 @@
     await carregarRoteiros(item.id);
     renderRoteiros();
 
+    await carregarDocumentos(item.id);
+    renderDocumentos();
+
     document.querySelectorAll("[data-aba-perfil]").forEach(b => b.classList.toggle("ativa", b.dataset.abaPerfil === "overview"));
     document.querySelectorAll("[data-conteudo-perfil]").forEach(c => c.classList.toggle("ativa", c.dataset.conteudoPerfil === "overview"));
   }
@@ -2310,6 +2396,7 @@
   function abrirModalRoteiro(item = null){
     const form = document.getElementById("form-roteiro");
     form.reset();
+    const notaArquivo = document.getElementById("roteiro-arquivo-atual");
 
     if(item){
       document.getElementById("titulo-modal-roteiro").textContent = "Edit idea / script";
@@ -2317,9 +2404,11 @@
       document.getElementById("roteiro-titulo").value = item.titulo;
       document.getElementById("roteiro-tag").value = item.tag || "Idea";
       document.getElementById("roteiro-texto").value = item.texto || "";
+      notaArquivo.textContent = item.arquivo_nome ? `Current file: ${item.arquivo_nome} (choose a new one to replace it)` : "";
     } else {
       document.getElementById("titulo-modal-roteiro").textContent = "New idea / script";
       document.getElementById("roteiro-id").value = "";
+      notaArquivo.textContent = "";
     }
 
     document.getElementById("modal-roteiro").hidden = false;
@@ -2347,6 +2436,15 @@
     };
 
     try {
+      const arquivo = document.getElementById("roteiro-arquivo").files[0];
+      if(arquivo){
+        const caminho = `${estado.usuarioId}/${estado.clienteAbertoId}/${Date.now()}-${arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { error: erroUpload } = await Auth.sb.storage.from("roteiros-arquivos").upload(caminho, arquivo);
+        if(erroUpload) throw erroUpload;
+        registro.arquivo_caminho = caminho;
+        registro.arquivo_nome = arquivo.name;
+      }
+
       if(id){
         const { data, error } = await Auth.sb.from("painel_cliente_roteiros").update(registro).eq("id", id).select();
         if(error) throw error;
@@ -2400,6 +2498,7 @@
           <span class="card-item-tag">${escapeHtml(r.tag || "Idea")}</span>
         </div>
         ${r.texto ? `<p class="card-item-texto">${escapeHtml(r.texto)}</p>` : ""}
+        ${r.arquivo_caminho ? `<div class="card-item-acoes"><button type="button" class="botao-pequeno" data-baixar-roteiro="${escapeHtml(r.arquivo_caminho)}">📎 ${escapeHtml(r.arquivo_nome || "Open file")}</button></div>` : ""}
       </div>
     `).join("");
 
@@ -2409,6 +2508,193 @@
         if(item) abrirModalRoteiro(item);
       });
     });
+
+    container.querySelectorAll("[data-baixar-roteiro]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        abrirAnexoRoteiro(botao.dataset.baixarRoteiro);
+      });
+    });
+  }
+
+  async function abrirAnexoRoteiro(caminho){
+    try {
+      const { data, error } = await Auth.sb.storage.from("roteiros-arquivos").createSignedUrl(caminho, 3600);
+      if(error) throw error;
+      window.open(data.signedUrl, "_blank", "noopener");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not open the file. Try again.");
+    }
+  }
+
+  // ===================== TAB: CLIENTS — DOCUMENTS =====================
+  async function carregarDocumentos(clienteId){
+    try {
+      const { data, error } = await Auth.sb
+        .from("painel_cliente_documentos")
+        .select("*")
+        .eq("cliente_id", clienteId)
+        .order("created_at", { ascending: false });
+      if(error) throw error;
+      estado.documentos = data;
+    } catch (erro) {
+      console.warn("painel_cliente_documentos table not set up yet:", erro);
+      estado.documentos = [];
+    }
+  }
+
+  function configurarDocumentos(){
+    document.getElementById("botao-novo-documento").addEventListener("click", () => abrirModalDocumento());
+    document.getElementById("fechar-modal-documento").addEventListener("click", fecharModalDocumento);
+    document.getElementById("modal-documento").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-documento") fecharModalDocumento();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalDocumento();
+    });
+    document.getElementById("form-documento").addEventListener("submit", salvarDocumento);
+    document.getElementById("botao-excluir-documento").addEventListener("click", excluirDocumentoAtual);
+  }
+
+  function abrirModalDocumento(item = null){
+    const form = document.getElementById("form-documento");
+    form.reset();
+    const notaArquivo = document.getElementById("documento-arquivo-atual");
+
+    if(item){
+      document.getElementById("titulo-modal-documento").textContent = "Edit document";
+      document.getElementById("documento-id").value = item.id;
+      document.getElementById("documento-titulo").value = item.titulo;
+      document.getElementById("documento-tipo").value = item.tipo || "Contract";
+      document.getElementById("documento-notas").value = item.notas || "";
+      notaArquivo.textContent = item.arquivo_nome ? `Current file: ${item.arquivo_nome} (choose a new one to replace it)` : "";
+    } else {
+      document.getElementById("titulo-modal-documento").textContent = "New document";
+      document.getElementById("documento-id").value = "";
+      notaArquivo.textContent = "";
+    }
+
+    document.getElementById("modal-documento").hidden = false;
+  }
+
+  function fecharModalDocumento(){
+    document.getElementById("modal-documento").hidden = true;
+  }
+
+  async function salvarDocumento(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("documento-id").value;
+    const titulo = document.getElementById("documento-titulo").value.trim();
+    if(!titulo){
+      mostrarToast("Please enter a title.");
+      return;
+    }
+
+    const arquivo = document.getElementById("documento-arquivo").files[0];
+    if(!id && !arquivo){
+      mostrarToast("Please choose a file.");
+      return;
+    }
+
+    const registro = {
+      titulo,
+      tipo: document.getElementById("documento-tipo").value,
+      notas: document.getElementById("documento-notas").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      if(arquivo){
+        const caminho = `${estado.usuarioId}/${estado.clienteAbertoId}/${Date.now()}-${arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { error: erroUpload } = await Auth.sb.storage.from("documentos-clientes").upload(caminho, arquivo);
+        if(erroUpload) throw erroUpload;
+        registro.arquivo_caminho = caminho;
+        registro.arquivo_nome = arquivo.name;
+      }
+
+      if(id){
+        const { data, error } = await Auth.sb.from("painel_cliente_documentos").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const indice = estado.documentos.findIndex(d => String(d.id) === String(id));
+        if(indice > -1) estado.documentos[indice] = data[0];
+        mostrarToast("Saved.");
+      } else {
+        registro.user_id = estado.usuarioId;
+        registro.cliente_id = estado.clienteAbertoId;
+        const { data, error } = await Auth.sb.from("painel_cliente_documentos").insert(registro).select();
+        if(error) throw error;
+        estado.documentos.unshift(data[0]);
+        mostrarToast("Added.");
+      }
+      fecharModalDocumento();
+      renderDocumentos();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the documents setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirDocumentoAtual(){
+    const id = document.getElementById("documento-id").value;
+    if(!id || !confirm("Delete this document?")) return;
+    try {
+      const { error } = await Auth.sb.from("painel_cliente_documentos").delete().eq("id", id);
+      if(error) throw error;
+      estado.documentos = estado.documentos.filter(d => String(d.id) !== String(id));
+      fecharModalDocumento();
+      renderDocumentos();
+      mostrarToast("Deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function renderDocumentos(){
+    const container = document.getElementById("lista-documentos");
+
+    if(estado.documentos.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No documents yet.</p>';
+      return;
+    }
+
+    container.innerHTML = estado.documentos.map(d => `
+      <div class="card-item" data-abrir-documento="${d.id}" style="cursor:pointer;">
+        <div class="card-item-topo">
+          <span class="card-item-titulo">${escapeHtml(d.titulo)}</span>
+          <span class="card-item-tag">${escapeHtml(d.tipo || "Other")}</span>
+        </div>
+        ${d.notas ? `<p class="card-item-texto">${escapeHtml(d.notas)}</p>` : ""}
+        ${d.arquivo_caminho ? `<div class="card-item-acoes"><button type="button" class="botao-pequeno" data-baixar-documento="${escapeHtml(d.arquivo_caminho)}">📎 ${escapeHtml(d.arquivo_nome || "Open file")}</button></div>` : ""}
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-abrir-documento]").forEach(el => {
+      el.addEventListener("click", () => {
+        const item = estado.documentos.find(d => String(d.id) === el.dataset.abrirDocumento);
+        if(item) abrirModalDocumento(item);
+      });
+    });
+
+    container.querySelectorAll("[data-baixar-documento]").forEach(botao => {
+      botao.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        abrirAnexoDocumento(botao.dataset.baixarDocumento);
+      });
+    });
+  }
+
+  async function abrirAnexoDocumento(caminho){
+    try {
+      const { data, error } = await Auth.sb.storage.from("documentos-clientes").createSignedUrl(caminho, 3600);
+      if(error) throw error;
+      window.open(data.signedUrl, "_blank", "noopener");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not open the file. Try again.");
+    }
   }
 
   // ===================== TAB: CLIENTS — GMAIL =====================
