@@ -1165,9 +1165,6 @@
     <form class="form-contato" id="form-documento" novalidate>
       <input type="hidden" id="documento-id">
 
-      <label for="documento-titulo">Title</label>
-      <input type="text" id="documento-titulo" required placeholder="e.g. Signed contract - July campaign">
-
       <label for="documento-tipo">Type</label>
       <select id="documento-tipo">
         <option value="Contract">Contract</option>
@@ -2498,7 +2495,7 @@
           <span class="card-item-tag">${escapeHtml(r.tag || "Idea")}</span>
         </div>
         ${r.texto ? `<p class="card-item-texto">${escapeHtml(r.texto)}</p>` : ""}
-        ${r.arquivo_caminho ? `<div class="card-item-acoes"><button type="button" class="botao-pequeno" data-baixar-roteiro="${escapeHtml(r.arquivo_caminho)}">📎 ${escapeHtml(r.arquivo_nome || "Open file")}</button></div>` : ""}
+        ${r.arquivo_caminho ? `<div class="card-item-acoes"><button type="button" class="botao-pequeno" data-baixar-roteiro="${r.id}">📎 ${escapeHtml(r.arquivo_nome || "Open file")}</button></div>` : ""}
       </div>
     `).join("");
 
@@ -2512,16 +2509,29 @@
     container.querySelectorAll("[data-baixar-roteiro]").forEach(botao => {
       botao.addEventListener("click", (evento) => {
         evento.stopPropagation();
-        abrirAnexoRoteiro(botao.dataset.baixarRoteiro);
+        const item = estado.roteiros.find(r => String(r.id) === botao.dataset.baixarRoteiro);
+        if(item) abrirArquivoNoNavegador("roteiros-arquivos", item.arquivo_caminho, item.arquivo_nome);
       });
     });
   }
 
-  async function abrirAnexoRoteiro(caminho){
+  // Extensions the browser can't render natively (Word/Excel/PowerPoint) are opened
+  // through Google's document viewer instead, so they preview on the site instead
+  // of just downloading. PDFs and images open directly — browsers already preview those.
+  function extensaoArquivo(nome){
+    const partes = (nome || "").split(".");
+    return partes.length > 1 ? partes.pop().toLowerCase() : "";
+  }
+
+  async function abrirArquivoNoNavegador(bucket, caminho, nomeArquivo){
     try {
-      const { data, error } = await Auth.sb.storage.from("roteiros-arquivos").createSignedUrl(caminho, 3600);
+      const { data, error } = await Auth.sb.storage.from(bucket).createSignedUrl(caminho, 3600);
       if(error) throw error;
-      window.open(data.signedUrl, "_blank", "noopener");
+      const precisaVisualizador = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(extensaoArquivo(nomeArquivo));
+      const urlFinal = precisaVisualizador
+        ? `https://docs.google.com/viewer?url=${encodeURIComponent(data.signedUrl)}&embedded=true`
+        : data.signedUrl;
+      window.open(urlFinal, "_blank", "noopener");
     } catch (erro) {
       console.error(erro);
       mostrarToast("Could not open the file. Try again.");
@@ -2563,9 +2573,8 @@
     const notaArquivo = document.getElementById("documento-arquivo-atual");
 
     if(item){
-      document.getElementById("titulo-modal-documento").textContent = "Edit document";
+      document.getElementById("titulo-modal-documento").textContent = item.arquivo_nome || "Edit document";
       document.getElementById("documento-id").value = item.id;
-      document.getElementById("documento-titulo").value = item.titulo;
       document.getElementById("documento-tipo").value = item.tipo || "Contract";
       document.getElementById("documento-notas").value = item.notas || "";
       notaArquivo.textContent = item.arquivo_nome ? `Current file: ${item.arquivo_nome} (choose a new one to replace it)` : "";
@@ -2586,12 +2595,6 @@
     evento.preventDefault();
 
     const id = document.getElementById("documento-id").value;
-    const titulo = document.getElementById("documento-titulo").value.trim();
-    if(!titulo){
-      mostrarToast("Please enter a title.");
-      return;
-    }
-
     const arquivo = document.getElementById("documento-arquivo").files[0];
     if(!id && !arquivo){
       mostrarToast("Please choose a file.");
@@ -2599,7 +2602,6 @@
     }
 
     const registro = {
-      titulo,
       tipo: document.getElementById("documento-tipo").value,
       notas: document.getElementById("documento-notas").value.trim() || null,
       updated_at: new Date().toISOString()
@@ -2612,6 +2614,7 @@
         if(erroUpload) throw erroUpload;
         registro.arquivo_caminho = caminho;
         registro.arquivo_nome = arquivo.name;
+        registro.titulo = arquivo.name;
       }
 
       if(id){
@@ -2661,40 +2664,29 @@
     }
 
     container.innerHTML = estado.documentos.map(d => `
-      <div class="card-item" data-abrir-documento="${d.id}" style="cursor:pointer;">
+      <div class="card-item">
         <div class="card-item-topo">
-          <span class="card-item-titulo">${escapeHtml(d.titulo)}</span>
+          <button type="button" class="botao-pequeno" data-baixar-documento="${d.id}">📎 ${escapeHtml(d.arquivo_nome || "Open file")}</button>
           <span class="card-item-tag">${escapeHtml(d.tipo || "Other")}</span>
         </div>
         ${d.notas ? `<p class="card-item-texto">${escapeHtml(d.notas)}</p>` : ""}
-        ${d.arquivo_caminho ? `<div class="card-item-acoes"><button type="button" class="botao-pequeno" data-baixar-documento="${escapeHtml(d.arquivo_caminho)}">📎 ${escapeHtml(d.arquivo_nome || "Open file")}</button></div>` : ""}
+        <div class="card-item-acoes"><button type="button" class="link-editar-cliente" data-editar-documento="${d.id}" style="margin:0;">Edit</button></div>
       </div>
     `).join("");
 
-    container.querySelectorAll("[data-abrir-documento]").forEach(el => {
-      el.addEventListener("click", () => {
-        const item = estado.documentos.find(d => String(d.id) === el.dataset.abrirDocumento);
+    container.querySelectorAll("[data-editar-documento]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.documentos.find(d => String(d.id) === botao.dataset.editarDocumento);
         if(item) abrirModalDocumento(item);
       });
     });
 
     container.querySelectorAll("[data-baixar-documento]").forEach(botao => {
-      botao.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        abrirAnexoDocumento(botao.dataset.baixarDocumento);
+      botao.addEventListener("click", () => {
+        const item = estado.documentos.find(d => String(d.id) === botao.dataset.baixarDocumento);
+        if(item) abrirArquivoNoNavegador("documentos-clientes", item.arquivo_caminho, item.arquivo_nome);
       });
     });
-  }
-
-  async function abrirAnexoDocumento(caminho){
-    try {
-      const { data, error } = await Auth.sb.storage.from("documentos-clientes").createSignedUrl(caminho, 3600);
-      if(error) throw error;
-      window.open(data.signedUrl, "_blank", "noopener");
-    } catch (erro) {
-      console.error(erro);
-      mostrarToast("Could not open the file. Try again.");
-    }
   }
 
   // ===================== TAB: CLIENTS — GMAIL =====================
