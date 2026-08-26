@@ -1298,11 +1298,8 @@
       <label for="depoimento-texto">Quote</label>
       <textarea id="depoimento-texto" rows="4" required placeholder="What the client said..."></textarea>
 
-      <label for="depoimento-nome">Name</label>
-      <input type="text" id="depoimento-nome" required placeholder="e.g. Christopher Chapman">
-
-      <label for="depoimento-empresa">Company (optional)</label>
-      <input type="text" id="depoimento-empresa" placeholder="e.g. Raycon">
+      <label for="depoimento-empresa">Brand</label>
+      <input type="text" id="depoimento-empresa" required placeholder="e.g. Raycon">
 
       <div class="form-agenda-acoes">
         <button type="submit" class="btn btn-primario">Save</button>
@@ -4348,7 +4345,6 @@
       document.getElementById("titulo-modal-depoimento").textContent = "Edit feedback";
       document.getElementById("depoimento-id").value = item.id;
       document.getElementById("depoimento-texto").value = item.texto;
-      document.getElementById("depoimento-nome").value = item.nome;
       document.getElementById("depoimento-empresa").value = item.empresa || "";
     } else {
       document.getElementById("titulo-modal-depoimento").textContent = "Add feedback";
@@ -4366,16 +4362,15 @@
 
     const id = document.getElementById("depoimento-id").value;
     const texto = document.getElementById("depoimento-texto").value.trim();
-    const nome = document.getElementById("depoimento-nome").value.trim();
-    if(!texto || !nome){
-      mostrarToast("Please fill in the quote and the name.");
+    const empresa = document.getElementById("depoimento-empresa").value.trim();
+    if(!texto || !empresa){
+      mostrarToast("Please fill in the quote and the brand.");
       return;
     }
 
     const registro = {
       texto,
-      nome,
-      empresa: document.getElementById("depoimento-empresa").value.trim() || null,
+      empresa,
       updated_at: new Date().toISOString()
     };
 
@@ -4462,7 +4457,7 @@
       <div class="linha-portfolio-item" draggable="true" data-item-depoimento="${item.id}">
         <span class="linha-portfolio-arrasta" aria-hidden="true">⠿</span>
         <div class="linha-portfolio-info">
-          <p class="linha-portfolio-titulo">${escapeHtml(item.nome)}${item.empresa ? " · " + escapeHtml(item.empresa) : ""}</p>
+          <p class="linha-portfolio-titulo">${escapeHtml(item.empresa)}</p>
           <p class="card-item-texto" style="margin:0;">${escapeHtml(item.texto)}</p>
         </div>
         <div class="linha-portfolio-acoes">
@@ -4654,4 +4649,5 @@
 
 </body>
 </html>
+
 
