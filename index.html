@@ -334,6 +334,9 @@
   }
   .portfolio-midia img{
     position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;
+    /* Keeps custom cover photos and auto YouTube thumbnails looking like
+       one consistent set instead of a mismatched grid. */
+    filter:saturate(.92) contrast(1.05) sepia(.06);
   }
   .play-icon{
     position:absolute;top:50%;left:50%;transform:translate(-46%,-50%);
@@ -657,12 +660,17 @@
     <div class="galeria" id="galeria"></div>
   </section>
 
+  <section class="depoimentos" id="depoimentos" aria-label="Client feedback" hidden>
+    <h2 class="reveal" id="titulo-depoimentos">What brands say</h2>
+    <div class="grid-depoimentos" id="grid-depoimentos"></div>
+  </section>
+
   <section class="servicos" id="servicos" aria-label="Services offered">
     <h2 class="reveal" id="titulo-servicos">Services</h2>
     <div class="grid-servicos" id="grid-servicos"></div>
   </section>
 
-  <!-- Results and Testimonials sections removed for now. See TRADUCOES.en/pt.resultados and .depoimentos in the script to bring them back. -->
+  <!-- Results section removed for now. See TRADUCOES.en/pt.resultados in the script to bring it back. Testimonials are back above, sourced from Supabase. -->
 
   <section class="contato" id="contato" aria-label="Contact">
     <h2 class="reveal" id="titulo-contato">Let's work together?</h2>
@@ -741,15 +749,8 @@ const DADOS = {
   whatsappExibicao: "+353 83 308 6317",
   whatsappNumero: "353833086317", // digits only, used in the WhatsApp link
   instagramExibicao: "@nicoly.ugccreator",
-  instagramUsuario: "nicoly.ugccreator", // without the @, used in the Instagram link
-
-  // EDIT HERE: brands you have worked with (shown in the scrolling strip). Same in both languages.
-  marcas: [
-    "butternut box",
-    "Svibe",
-    "Raycon",
-    "Anavrin"
-  ]
+  instagramUsuario: "nicoly.ugccreator" // without the @, used in the Instagram link
+  // Brands shown in the scrolling strip are managed from my.panel now (table "portfolio_marcas").
 };
 
 /* =====================================================================
@@ -807,13 +808,7 @@ const TRADUCOES = {
     ],
 
     tituloDepoimentos: "What brands say",
-    // EDIT HERE: client testimonials
-    depoimentos: [
-      { fala: "Nicoly delivered an authentic video that exceeded our expectations. Product sales increased in the very first week of the campaign.", nome: "Fernanda Souza", empresa: "Bella Cosméticos" },
-      { fala: "Professional from start to finish. She met the deadline, understood the brief and delivered content that really speaks to our audience.", nome: "Rafael Lima", empresa: "Studio Fit Pro" },
-      { fala: "We hired Nicoly for an unboxing video and the result was so good we already signed a monthly contract with her.", nome: "Camila Torres", empresa: "Essência Natural" },
-      { fala: "Quality content, fast communication and a strategic eye for what actually converts. I recommend her to any brand.", nome: "Bruno Alves", empresa: "Viaje Fácil" }
-    ],
+    // Testimonials are managed from my.panel now (table "portfolio_depoimentos").
 
     tituloContato: "Let's work together?",
     labelNome: "Name",
@@ -945,12 +940,7 @@ const TRADUCOES = {
     ],
 
     tituloDepoimentos: "O que as marcas dizem",
-    depoimentos: [
-      { fala: "A Nicoly entregou um vídeo autêntico que superou nossas expectativas. As vendas do produto aumentaram logo na primeira semana de campanha.", nome: "Fernanda Souza", empresa: "Bella Cosméticos" },
-      { fala: "Profissionalismo do início ao fim. Cumpriu prazo, entendeu o briefing e entregou um conteúdo que realmente conversa com o nosso público.", nome: "Rafael Lima", empresa: "Studio Fit Pro" },
-      { fala: "Contratamos a Nicoly para um unboxing e o resultado foi tão bom que já fechamos um contrato mensal com ela.", nome: "Camila Torres", empresa: "Essência Natural" },
-      { fala: "Conteúdo de qualidade, comunicação rápida e um olhar estratégico para o que realmente converte. Recomendo para qualquer marca.", nome: "Bruno Alves", empresa: "Viaje Fácil" }
-    ],
+    // Depoimentos são gerenciados pelo my.panel agora (tabela "portfolio_depoimentos").
 
     tituloContato: "Vamos trabalhar juntas?",
     labelNome: "Nome",
@@ -1055,10 +1045,76 @@ function renderizarHero(t){
   document.querySelector("#hero-foto img").alt = t.ariaLabels.heroFoto;
 }
 
+// Brand names are managed from my.panel now (table "portfolio_marcas"),
+// not hardcoded in DADOS.marcas anymore.
+let marcasCache = [];
+
+async function carregarMarcas(){
+  if(!clienteAnalytics) return [];
+  const { data, error } = await clienteAnalytics
+    .from("portfolio_marcas")
+    .select("*")
+    .order("ordem", { ascending: true });
+  if(error){
+    console.warn("Falha ao carregar marcas:", error.message);
+    return [];
+  }
+  return data;
+}
+
 function renderizarMarcas(){
   const track = document.getElementById("marcas-track");
-  const listaDupla = [...DADOS.marcas, ...DADOS.marcas];
-  track.innerHTML = listaDupla.map(m => `<span>${m}</span>`).join("");
+  if(marcasCache.length === 0){
+    track.innerHTML = "";
+    return;
+  }
+  const nomes = marcasCache.map(m => m.nome);
+  const listaDupla = [...nomes, ...nomes];
+  track.innerHTML = listaDupla.map(nome => `<span>${nome}</span>`).join("");
+}
+
+// Testimonials, same pattern: managed from my.panel (table "portfolio_depoimentos"),
+// fetched once and cached; the section hides itself entirely while empty.
+let depoimentosCache = [];
+
+async function carregarDepoimentos(){
+  if(!clienteAnalytics) return [];
+  const { data, error } = await clienteAnalytics
+    .from("portfolio_depoimentos")
+    .select("*")
+    .order("ordem", { ascending: true });
+  if(error){
+    console.warn("Falha ao carregar depoimentos:", error.message);
+    return [];
+  }
+  return data;
+}
+
+function renderizarDepoimentos(t){
+  const secao = document.getElementById("depoimentos");
+  if(depoimentosCache.length === 0){
+    secao.hidden = true;
+    return;
+  }
+  secao.hidden = false;
+  document.getElementById("titulo-depoimentos").textContent = t.tituloDepoimentos;
+  secao.setAttribute("aria-label", t.ariaLabels.depoimentos);
+
+  document.getElementById("grid-depoimentos").innerHTML = depoimentosCache.map(d => `
+    <div class="card-depoimento reveal">
+      <p class="fala">&ldquo;${escapeHtmlPublico(d.texto)}&rdquo;</p>
+      <p class="autor">${escapeHtmlPublico(d.nome)}</p>
+      ${d.empresa ? `<p class="empresa">${escapeHtmlPublico(d.empresa)}</p>` : ""}
+    </div>
+  `).join("");
+
+  configurarRevelacao();
+}
+
+function escapeHtmlPublico(texto){
+  const div = document.createElement("div");
+  div.textContent = String(texto);
+  return div.innerHTML;
 }
 
 function renderizarSobre(t){
@@ -1177,6 +1233,7 @@ function renderizarTudo(idioma){
   renderizarMarcas();
   renderizarSobre(t);
   renderizarPortfolio(t);
+  renderizarDepoimentos(t);
   renderizarServicos(t);
   renderizarContato(t);
   renderizarRodape(t);
@@ -1597,6 +1654,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   itensPortfolioCache = await carregarItensPortfolio();
   renderizarPortfolio(TRADUCOES[idiomaAtual]);
+
+  marcasCache = await carregarMarcas();
+  renderizarMarcas();
+
+  depoimentosCache = await carregarDepoimentos();
+  renderizarDepoimentos(TRADUCOES[idiomaAtual]);
 });
 </script>
 
