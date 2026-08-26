@@ -344,6 +344,16 @@
     color:var(--branco);font-size:1rem;z-index:2;
   }
 
+  .portfolio-tag{
+    position:absolute;top:.6rem;left:.6rem;z-index:2;
+    font-family:'Poppins', sans-serif;
+    font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
+    background:var(--limao);color:var(--preto);
+    border:2px solid var(--preto);border-radius:999px;
+    padding:.25rem .65rem;
+    box-shadow:2px 2px 0 var(--preto);
+  }
+
   .portfolio-info{padding:.9rem 1rem 1.1rem;}
   .portfolio-titulo{
     display:block;
@@ -774,22 +784,22 @@ const TRADUCOES = {
     sobre: "I'm Nicoly, a Brazilian creator living in Dublin, and I've always been the type to notice the small things: the way light hits a room, the detail that makes a moment feel real instead of staged. That curiosity is at the heart of everything I create. I make content, for products and for services, that feels light, honest, and human. Not a script performed, but a moment shared. And because I create fluently in both Portuguese and English, I help brands build that same genuine connection with audiences on either side of the language.",
 
     tituloPortfolio: "Portfolio",
-    categorias: { todos: "All", beleza: "Beauty & Skincare", pet: "Pet", bebida: "Food and Beverage", tech: "Tech", lifestyle: "Lifestyle & Wellness" },
+    categorias: { todos: "All", beleza: "Beauty & Skincare", pet: "Pet", bebida: "Food and Beverage", tech: "Tech", lifestyle: "Lifestyle & Wellness", diy: "DIY" },
     // EDIT HERE: portfolio work. "categoria" must stay one of the keys above (beleza, pet, bebida, tech, lifestyle)
     // Each card links out to the real YouTube Short. "videoId" is the part of the URL after /shorts/ (before any ?)
     // COVER IMAGE: by default the card shows the automatic YouTube thumbnail. To use your own cover photo instead,
     // add a file (e.g. capa-etude.jpg) next to this HTML file and set "capa: 'capa-etude.jpg'" on that item.
     portfolio: [
+      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
       { titulo: "ETUDE - Soon Jung 2x Barrier Intensive Cream", categoria: "beleza", videoId: "H14BJgQmNO0", url: "https://youtube.com/shorts/H14BJgQmNO0?feature=share", capa: "capa-etude.jpg" },
       { titulo: "Peripera - Ink The Velvet", categoria: "beleza", videoId: "dfTINKqTjzs", url: "https://youtube.com/shorts/dfTINKqTjzs?feature=share", capa: "capa-peripera.jpg" },
       { titulo: "L'Oreal Paris - Telescopic Mascara", categoria: "beleza", videoId: "MuwpFpaKqTs", url: "https://youtube.com/shorts/MuwpFpaKqTs?feature=share", capa: "capa-loreal.jpg" },
-      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
-      { titulo: "SVibe - Snail Curve", categoria: "lifestyle", videoId: "HbXCH_8PfUU", url: "https://youtube.com/shorts/HbXCH_8PfUU?feature=share", capa: null },
-      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "LHRu6c0oXUE", url: "https://youtube.com/shorts/LHRu6c0oXUE?feature=share", capa: "capa-snail-gizi-1.jpg" },
-      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "xtDeodjhyc4", url: "https://youtube.com/shorts/xtDeodjhyc4?feature=share", capa: "capa-snail-gizi-2.jpg" },
       { titulo: "Audio-Technica - Lifestyle", categoria: "lifestyle", videoId: "b9QIpbp_aNE", url: "https://youtube.com/shorts/b9QIpbp_aNE?feature=share", capa: "capa-audio-technica.jpg" },
       { titulo: "Sony - ZV-E10 II", categoria: "tech", videoId: "1Z3MBP3tatc", url: "https://youtube.com/shorts/1Z3MBP3tatc?feature=share", capa: "capa-sony.jpg" },
-      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" }
+      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" },
+      { titulo: "Anavrin - Kowloon Walled City 2049", categoria: "diy", videoId: "h8eXfZ5M4Ac", url: "https://youtu.be/h8eXfZ5M4Ac", capa: null },
+      { titulo: "Svibe - Twinn", categoria: "lifestyle", videoId: "CD_Cvjy8A9I", url: "https://youtu.be/CD_Cvjy8A9I", capa: null, tag: "Talking Head" },
+      { titulo: "SVibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "kgHrAnc6kOI", url: "https://youtu.be/kgHrAnc6kOI", capa: null, tag: "Talking Head" }
     ],
 
     tituloServicos: "Services",
@@ -918,18 +928,18 @@ const TRADUCOES = {
     sobre: "Eu sou a Nicoly, uma criadora brasileira morando em Dublin, e sempre fui do tipo que repara nos pequenos detalhes: o jeito que a luz bate em um ambiente, o detalhe que faz um momento parecer real, e não encenado. Essa curiosidade está no centro de tudo o que eu crio. Eu produzo conteúdo, para produtos e para serviços, que parece leve, honesto e humano. Não é um roteiro performado, é um momento compartilhado. E como eu crio fluentemente em português e em inglês, ajudo marcas a construírem essa mesma conexão genuína com públicos dos dois lados do idioma.",
 
     tituloPortfolio: "Portfólio",
-    categorias: { todos: "Todos", beleza: "Beleza e Skincare", pet: "Pet", bebida: "Comida e Bebida", tech: "Tech", lifestyle: "Estilo de Vida e Bem-estar" },
+    categorias: { todos: "Todos", beleza: "Beleza e Skincare", pet: "Pet", bebida: "Comida e Bebida", tech: "Tech", lifestyle: "Estilo de Vida e Bem-estar", diy: "DIY" },
     portfolio: [
+      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
       { titulo: "ETUDE - Soon Jung 2x Barrier Intensive Cream", categoria: "beleza", videoId: "H14BJgQmNO0", url: "https://youtube.com/shorts/H14BJgQmNO0?feature=share", capa: "capa-etude.jpg" },
       { titulo: "Peripera - Ink The Velvet", categoria: "beleza", videoId: "dfTINKqTjzs", url: "https://youtube.com/shorts/dfTINKqTjzs?feature=share", capa: "capa-peripera.jpg" },
       { titulo: "L'Oreal Paris - Telescopic Mascara", categoria: "beleza", videoId: "MuwpFpaKqTs", url: "https://youtube.com/shorts/MuwpFpaKqTs?feature=share", capa: "capa-loreal.jpg" },
-      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
-      { titulo: "SVibe - Snail Curve", categoria: "lifestyle", videoId: "HbXCH_8PfUU", url: "https://youtube.com/shorts/HbXCH_8PfUU?feature=share", capa: null },
-      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "LHRu6c0oXUE", url: "https://youtube.com/shorts/LHRu6c0oXUE?feature=share", capa: "capa-snail-gizi-1.jpg" },
-      { titulo: "Svibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "xtDeodjhyc4", url: "https://youtube.com/shorts/xtDeodjhyc4?feature=share", capa: "capa-snail-gizi-2.jpg" },
       { titulo: "Audio-Technica - Lifestyle", categoria: "lifestyle", videoId: "b9QIpbp_aNE", url: "https://youtube.com/shorts/b9QIpbp_aNE?feature=share", capa: "capa-audio-technica.jpg" },
       { titulo: "Sony - ZV-E10 II", categoria: "tech", videoId: "1Z3MBP3tatc", url: "https://youtube.com/shorts/1Z3MBP3tatc?feature=share", capa: "capa-sony.jpg" },
-      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" }
+      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" },
+      { titulo: "Anavrin - Kowloon Walled City 2049", categoria: "diy", videoId: "h8eXfZ5M4Ac", url: "https://youtu.be/h8eXfZ5M4Ac", capa: null },
+      { titulo: "Svibe - Twinn", categoria: "lifestyle", videoId: "CD_Cvjy8A9I", url: "https://youtu.be/CD_Cvjy8A9I", capa: null, tag: "Talking Head" },
+      { titulo: "SVibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "kgHrAnc6kOI", url: "https://youtu.be/kgHrAnc6kOI", capa: null, tag: "Talking Head" }
     ],
 
     tituloServicos: "Serviços",
@@ -1089,6 +1099,7 @@ function renderizarPortfolio(t){
   galeriaEl.innerHTML = t.portfolio.map((item) => `
     <button type="button" class="item-portfolio" data-categoria="${item.categoria}" data-video-id="${item.videoId}" data-titulo="${item.titulo}" aria-label="${t.ariaLabels.assistirVideo}: ${item.titulo}">
       <span class="portfolio-midia">
+        ${item.tag ? `<span class="portfolio-tag">${item.tag}</span>` : ""}
         <img src="${item.capa || ('https://img.youtube.com/vi/' + item.videoId + '/hqdefault.jpg')}" alt="" loading="lazy">
         <span class="play-icon" aria-hidden="true">▶</span>
       </span>
@@ -1586,4 +1597,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
