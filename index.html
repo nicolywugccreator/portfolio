@@ -517,14 +517,41 @@
   .card-depoimento{
     background:var(--branco);
     border:3px solid var(--preto);
-    border-radius:12px;
-    padding:1.8rem;
-    box-shadow:var(--sombra-dura);
+    border-radius:6px;
+    padding:1.9rem 1.6rem 1.5rem;
+    box-shadow:6px 6px 0 var(--preto);
     position:relative;
   }
-  .card-depoimento p.fala{font-family:'Caveat', cursive;font-size:1.4rem;color:var(--preto);}
-  .card-depoimento .autor{font-weight:700;font-size:.95rem;}
-  .card-depoimento .empresa{font-size:.85rem;color:var(--azul);font-weight:600;}
+  .card-depoimento:nth-child(4n+1){transform:rotate(-2.5deg);}
+  .card-depoimento:nth-child(4n+2){transform:rotate(2deg);}
+  .card-depoimento:nth-child(4n+3){transform:rotate(-1.5deg);}
+  .card-depoimento:nth-child(4n+4){transform:rotate(2.5deg);}
+
+  .card-depoimento .fita{
+    position:absolute;top:-15px;left:50%;
+    width:78px;height:28px;
+    opacity:.9;
+    background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.4) 0 6px, transparent 6px 13px);
+    box-shadow:0 2px 3px rgba(0,0,0,.18);
+    clip-path:polygon(2% 20%, 7% 0%, 93% 0%, 98% 20%, 100% 80%, 93% 100%, 7% 100%, 0% 80%);
+  }
+  .card-depoimento:nth-child(4n+1) .fita{background:var(--limao);transform:translateX(-50%) rotate(-5deg);}
+  .card-depoimento:nth-child(4n+2) .fita{background:var(--laranja);transform:translateX(-50%) rotate(4deg);}
+  .card-depoimento:nth-child(4n+3) .fita{background:var(--azul);transform:translateX(-50%) rotate(-3deg);}
+  .card-depoimento:nth-child(4n+4) .fita{background:var(--magenta);transform:translateX(-50%) rotate(5deg);}
+
+  .card-depoimento p.fala{font-size:.98rem;font-weight:600;line-height:1.55;color:var(--preto);margin:.4rem 0 1.1rem;}
+  .card-depoimento p.fala::before{content:"\201C";}
+  .card-depoimento p.fala::after{content:"\201D";}
+  .card-depoimento .empresa{
+    font-family:'Archivo Black', sans-serif;
+    font-size:.8rem;text-transform:uppercase;letter-spacing:.4px;
+    display:inline-block;border:2px solid var(--preto);border-radius:999px;padding:.3rem .8rem;
+  }
+  .card-depoimento:nth-child(4n+1) .empresa{background:var(--limao);color:var(--preto);}
+  .card-depoimento:nth-child(4n+2) .empresa{background:var(--laranja);color:var(--preto);}
+  .card-depoimento:nth-child(4n+3) .empresa{background:var(--azul);color:var(--branco);}
+  .card-depoimento:nth-child(4n+4) .empresa{background:var(--magenta);color:var(--branco);}
 
   /* ===================== CONTACT ===================== */
   .contato-grid{
@@ -1102,9 +1129,9 @@ function renderizarDepoimentos(t){
 
   document.getElementById("grid-depoimentos").innerHTML = depoimentosCache.map(d => `
     <div class="card-depoimento reveal">
-      <p class="fala">&ldquo;${escapeHtmlPublico(d.texto)}&rdquo;</p>
-      <p class="autor">${escapeHtmlPublico(d.nome)}</p>
-      ${d.empresa ? `<p class="empresa">${escapeHtmlPublico(d.empresa)}</p>` : ""}
+      <span class="fita" aria-hidden="true"></span>
+      <p class="fala">${escapeHtmlPublico(d.texto)}</p>
+      ${d.empresa ? `<span class="empresa">${escapeHtmlPublico(d.empresa)}</span>` : ""}
     </div>
   `).join("");
 
@@ -1665,6 +1692,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 </body>
 </html>
+
 
 
 
