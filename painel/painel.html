@@ -185,6 +185,25 @@
   .pilha-blocos{display:flex;flex-direction:column;gap:1.2rem;}
   .bloco-cartao h3{font-size:1.05rem;margin-bottom:1rem;}
 
+  .linha-portfolio-item{
+    display:flex;align-items:center;gap:.8rem;
+    border:2px solid var(--preto);border-radius:12px;padding:.6rem .8rem;margin-bottom:.6rem;
+    background:var(--branco);cursor:grab;
+  }
+  .linha-portfolio-item.arrastando{opacity:.35;}
+  .linha-portfolio-item:last-child{margin-bottom:0;}
+  .linha-portfolio-arrasta{color:var(--texto-suave);font-size:1rem;flex-shrink:0;}
+  .linha-portfolio-item img{width:52px;height:70px;object-fit:cover;border-radius:6px;border:2px solid var(--preto);flex-shrink:0;background:var(--papel);}
+  .linha-portfolio-info{flex:1;min-width:0;}
+  .linha-portfolio-titulo{font-size:.88rem;font-weight:700;margin:0 0 .3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .linha-portfolio-etiquetas{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .linha-portfolio-badge{
+    font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+    background:var(--papel);border:1.5px solid rgba(17,17,17,.15);border-radius:999px;padding:.15rem .55rem;
+  }
+  .linha-portfolio-badge.destaque{background:var(--limao);border-color:var(--preto);}
+  .linha-portfolio-acoes{display:flex;gap:.3rem;flex-shrink:0;}
+
   .item-video{
     display:flex;align-items:center;gap:.9rem;
     padding:.6rem 0;border-bottom:2px solid var(--papel);
@@ -845,6 +864,17 @@
 
       <!-- ================= TAB: PORTFOLIO ================= -->
       <section id="aba-portfolio" class="painel-aba" hidden>
+        <div class="cartao bloco-cartao" style="margin-bottom:1.2rem;">
+          <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+            <div>
+              <h3 style="margin-bottom:.2rem;">Manage your videos</h3>
+              <p class="grafico-subtitulo" style="margin:0;">Drag the ⠿ handle to reorder. This is what shows on your public site.</p>
+            </div>
+            <button type="button" class="botao-nova-transacao laranja" id="botao-novo-item-portfolio">+ Add video</button>
+          </div>
+          <div id="lista-gerenciar-portfolio"></div>
+        </div>
+
         <div class="pilha-blocos">
           <div class="cartao bloco-cartao">
             <h3>Most watched videos</h3>
@@ -1171,6 +1201,46 @@
   </div>
 </div>
 
+<!-- ================= MODAL: NEW/EDIT PORTFOLIO VIDEO ================= -->
+<div class="modal-overlay" id="modal-portfolio-item" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-portfolio-item">&times;</button>
+    <h3 id="titulo-modal-portfolio-item">Add video</h3>
+
+    <form class="form-contato" id="form-portfolio-item" novalidate>
+      <input type="hidden" id="portfolio-item-id">
+
+      <label for="portfolio-item-titulo">Title</label>
+      <input type="text" id="portfolio-item-titulo" required placeholder="e.g. Brand Name - Product">
+
+      <label for="portfolio-item-url">YouTube link</label>
+      <input type="text" id="portfolio-item-url" required placeholder="https://youtube.com/shorts/... or youtu.be/...">
+
+      <label for="portfolio-item-categoria">Category</label>
+      <select id="portfolio-item-categoria">
+        <option value="beleza">Beauty & Skincare</option>
+        <option value="pet">Pet</option>
+        <option value="bebida">Food and Beverage</option>
+        <option value="tech">Tech</option>
+        <option value="lifestyle">Lifestyle & Wellness</option>
+        <option value="diy">DIY</option>
+      </select>
+
+      <label for="portfolio-item-tag">Tag (optional)</label>
+      <input type="text" id="portfolio-item-tag" placeholder="e.g. Talking Head">
+
+      <label for="portfolio-item-capa">Cover image (optional)</label>
+      <input type="file" id="portfolio-item-capa" accept="image/*">
+      <p class="texto-vazio" id="portfolio-item-capa-atual" style="margin:.3rem 0 0;">Leave empty to use the automatic YouTube thumbnail.</p>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-portfolio-item">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ================= MODAL: NEW/EDIT DOCUMENT ================= -->
 <div class="modal-overlay" id="modal-documento" role="dialog" aria-modal="true" hidden>
   <div class="modal-caixa">
@@ -1289,6 +1359,8 @@
     clienteAbertoId: null,
     googleAccessToken: null,
     eventosZeradosEm: null,
+    portfolioItens: [],
+    portfolioItemArrastado: null,
     cartaoArrastado: null,
     itemPlanejamentoArrastado: null,
     suprimirCliqueCartao: false
@@ -1439,6 +1511,13 @@
       estado.itensPlanejamento = [];
     }
 
+    try {
+      await carregarPortfolioItens();
+    } catch (erro) {
+      console.warn("portfolio_itens table not set up yet:", erro);
+      estado.portfolioItens = [];
+    }
+
     configurarAbas();
     configurarFiltroPeriodo();
     configurarSidebarMobile();
@@ -1447,6 +1526,7 @@
     configurarClientes();
     configurarProjetos();
     configurarPlanejamento();
+    configurarPortfolioItens();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -1457,6 +1537,7 @@
     renderClientes();
     renderProjetos();
     renderPlanejamento();
+    renderGerenciarPortfolio();
 
     const parametroCliente = new URLSearchParams(location.search).get("cliente");
     if(parametroCliente){
@@ -3848,7 +3929,234 @@
     }).join("");
   }
 
-  // ===================== TAB: PORTFOLIO =====================
+  // ===================== TAB: PORTFOLIO — MANAGE VIDEOS =====================
+  const ROTULOS_CATEGORIA_PORTFOLIO = {
+    beleza: "Beauty & Skincare", pet: "Pet", bebida: "Food and Beverage",
+    tech: "Tech", lifestyle: "Lifestyle & Wellness", diy: "DIY"
+  };
+
+  async function carregarPortfolioItens(){
+    const { data, error } = await Auth.sb
+      .from("portfolio_itens")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+    estado.portfolioItens = data;
+  }
+
+  function configurarPortfolioItens(){
+    document.getElementById("botao-novo-item-portfolio").addEventListener("click", () => abrirModalPortfolioItem());
+    document.getElementById("fechar-modal-portfolio-item").addEventListener("click", fecharModalPortfolioItem);
+    document.getElementById("modal-portfolio-item").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-portfolio-item") fecharModalPortfolioItem();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalPortfolioItem();
+    });
+    document.getElementById("form-portfolio-item").addEventListener("submit", salvarPortfolioItem);
+    document.getElementById("botao-excluir-portfolio-item").addEventListener("click", excluirPortfolioItemAtual);
+  }
+
+  function abrirModalPortfolioItem(item = null){
+    const form = document.getElementById("form-portfolio-item");
+    form.reset();
+    const notaCapa = document.getElementById("portfolio-item-capa-atual");
+
+    if(item){
+      document.getElementById("titulo-modal-portfolio-item").textContent = "Edit video";
+      document.getElementById("portfolio-item-id").value = item.id;
+      document.getElementById("portfolio-item-titulo").value = item.titulo;
+      document.getElementById("portfolio-item-url").value = item.url || `https://youtu.be/${item.video_id}`;
+      document.getElementById("portfolio-item-categoria").value = item.categoria || "lifestyle";
+      document.getElementById("portfolio-item-tag").value = item.tag || "";
+      notaCapa.textContent = item.capa_url ? "Has a custom cover — choose a new image to replace it." : "Using the automatic YouTube thumbnail — choose an image to override it.";
+    } else {
+      document.getElementById("titulo-modal-portfolio-item").textContent = "Add video";
+      document.getElementById("portfolio-item-id").value = "";
+      notaCapa.textContent = "Leave empty to use the automatic YouTube thumbnail.";
+    }
+
+    document.getElementById("modal-portfolio-item").hidden = false;
+  }
+
+  function fecharModalPortfolioItem(){
+    document.getElementById("modal-portfolio-item").hidden = true;
+  }
+
+  // Pulls the YouTube video id out of a shorts/watch/youtu.be link, however she pastes it.
+  function extrairVideoIdYoutube(url){
+    const padroes = [
+      /shorts\/([a-zA-Z0-9_-]{6,})/,
+      /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
+      /[?&]v=([a-zA-Z0-9_-]{6,})/
+    ];
+    for(const padrao of padroes){
+      const encontrado = url.match(padrao);
+      if(encontrado) return encontrado[1];
+    }
+    return null;
+  }
+
+  async function salvarPortfolioItem(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("portfolio-item-id").value;
+    const titulo = document.getElementById("portfolio-item-titulo").value.trim();
+    const url = document.getElementById("portfolio-item-url").value.trim();
+    const videoId = extrairVideoIdYoutube(url);
+
+    if(!titulo || !url){
+      mostrarToast("Please fill in the title and the YouTube link.");
+      return;
+    }
+    if(!videoId){
+      mostrarToast("Could not find a video ID in that link. Paste the full YouTube shorts/watch/youtu.be URL.");
+      return;
+    }
+
+    const registro = {
+      titulo,
+      url,
+      video_id: videoId,
+      categoria: document.getElementById("portfolio-item-categoria").value,
+      tag: document.getElementById("portfolio-item-tag").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      const arquivoCapa = document.getElementById("portfolio-item-capa").files[0];
+      if(arquivoCapa){
+        const caminho = `${estado.usuarioId}/${Date.now()}-${arquivoCapa.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { error: erroUpload } = await Auth.sb.storage.from("portfolio-capas").upload(caminho, arquivoCapa);
+        if(erroUpload) throw erroUpload;
+        registro.capa_url = Auth.sb.storage.from("portfolio-capas").getPublicUrl(caminho).data.publicUrl;
+      }
+
+      if(id){
+        const { data, error } = await Auth.sb.from("portfolio_itens").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const indice = estado.portfolioItens.findIndex(p => String(p.id) === String(id));
+        if(indice > -1) estado.portfolioItens[indice] = data[0];
+        mostrarToast("Video updated.");
+      } else {
+        registro.user_id = estado.usuarioId;
+        registro.ordem = proximaOrdem(estado.portfolioItens);
+        const { data, error } = await Auth.sb.from("portfolio_itens").insert(registro).select();
+        if(error) throw error;
+        estado.portfolioItens.push(data[0]);
+        mostrarToast("Video added.");
+      }
+      fecharModalPortfolioItem();
+      renderGerenciarPortfolio();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the portfolio setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirPortfolioItemAtual(){
+    const id = document.getElementById("portfolio-item-id").value;
+    if(!id || !confirm("Delete this video? It disappears from your public portfolio too.")) return;
+    try {
+      const { error } = await Auth.sb.from("portfolio_itens").delete().eq("id", id);
+      if(error) throw error;
+      estado.portfolioItens = estado.portfolioItens.filter(p => String(p.id) !== String(id));
+      fecharModalPortfolioItem();
+      renderGerenciarPortfolio();
+      mostrarToast("Video deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  async function moverPortfolioItemParaPosicao(idArrastado, idAlvo){
+    const ordenados = [...estado.portfolioItens].sort((a, b) => a.ordem - b.ordem);
+    const indiceOrigem = ordenados.findIndex(p => String(p.id) === String(idArrastado));
+    const indiceDestino = ordenados.findIndex(p => String(p.id) === String(idAlvo));
+    if(indiceOrigem === -1 || indiceDestino === -1 || indiceOrigem === indiceDestino) return;
+
+    const [movido] = ordenados.splice(indiceOrigem, 1);
+    ordenados.splice(indiceDestino, 0, movido);
+
+    // Renumber everyone — simplest way to keep "ordem" consistent after a drag.
+    const atualizacoes = ordenados.map((item, indice) => ({ ...item, ordem: indice }));
+    estado.portfolioItens = atualizacoes;
+    renderGerenciarPortfolio();
+
+    try {
+      await Promise.all(atualizacoes.map(item =>
+        Auth.sb.from("portfolio_itens").update({ ordem: item.ordem }).eq("id", item.id)
+      ));
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save the new order. Reloading may show the old one.");
+    }
+  }
+
+  function renderGerenciarPortfolio(){
+    const container = document.getElementById("lista-gerenciar-portfolio");
+
+    if(estado.portfolioItens.length === 0){
+      container.innerHTML = `
+        <div class="estado-vazio">
+          <div class="estado-vazio-icone">🎬</div>
+          <p>No videos yet.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-portfolio-item">Add video</button>
+        </div>
+      `;
+      document.getElementById("botao-vazio-portfolio-item").addEventListener("click", () => abrirModalPortfolioItem());
+      return;
+    }
+
+    const ordenados = [...estado.portfolioItens].sort((a, b) => a.ordem - b.ordem);
+
+    container.innerHTML = ordenados.map(item => `
+      <div class="linha-portfolio-item" draggable="true" data-item-portfolio="${item.id}">
+        <span class="linha-portfolio-arrasta" aria-hidden="true">⠿</span>
+        <img src="${item.capa_url || ('https://img.youtube.com/vi/' + item.video_id + '/hqdefault.jpg')}" alt="" loading="lazy">
+        <div class="linha-portfolio-info">
+          <p class="linha-portfolio-titulo">${escapeHtml(item.titulo)}</p>
+          <div class="linha-portfolio-etiquetas">
+            <span class="linha-portfolio-badge">${escapeHtml(ROTULOS_CATEGORIA_PORTFOLIO[item.categoria] || item.categoria)}</span>
+            ${item.tag ? `<span class="linha-portfolio-badge destaque">${escapeHtml(item.tag)}</span>` : ""}
+          </div>
+        </div>
+        <div class="linha-portfolio-acoes">
+          <button type="button" class="botao-icone" data-editar-portfolio-item="${item.id}" aria-label="Edit">✎</button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-editar-portfolio-item]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.portfolioItens.find(p => String(p.id) === botao.dataset.editarPortfolioItem);
+        if(item) abrirModalPortfolioItem(item);
+      });
+    });
+
+    container.querySelectorAll("[data-item-portfolio]").forEach(linha => {
+      linha.addEventListener("dragstart", (evento) => {
+        estado.portfolioItemArrastado = linha.dataset.itemPortfolio;
+        linha.classList.add("arrastando");
+        evento.dataTransfer.effectAllowed = "move";
+        evento.dataTransfer.setData("text/plain", linha.dataset.itemPortfolio);
+      });
+      linha.addEventListener("dragend", () => linha.classList.remove("arrastando"));
+      linha.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        evento.dataTransfer.dropEffect = "move";
+      });
+      linha.addEventListener("drop", (evento) => {
+        evento.preventDefault();
+        const idArrastado = evento.dataTransfer.getData("text/plain") || estado.portfolioItemArrastado;
+        if(idArrastado) moverPortfolioItemParaPosicao(idArrastado, linha.dataset.itemPortfolio);
+        estado.portfolioItemArrastado = null;
+      });
+    });
+  }
+
+  // ===================== TAB: PORTFOLIO (ANALYTICS) =====================
   function renderPortfolio(eventos, leads){
     renderVideosMaisVistos(eventos);
     renderBotoesMaisClicados(eventos);
@@ -4003,3 +4311,4 @@
 
 </body>
 </html>
+
