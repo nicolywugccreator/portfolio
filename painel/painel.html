@@ -796,6 +796,12 @@
           Planning
         </button>
       </li>
+      <li>
+        <button type="button" class="nav-item" data-tab="links">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07l-1.06 1.06"/><path d="M14 11a5 5 0 0 0-7.07 0l-1.41 1.41a5 5 0 0 0 7.07 7.07l1.06-1.06"/></svg>
+          Links
+        </button>
+      </li>
     </ul>
     <div class="sidebar-rodape">
       <p class="sidebar-email" id="rodape-email">loading...</p>
@@ -1135,6 +1141,46 @@
         </div>
         <div class="kanban-quadro" id="planejamento-quadro"></div>
       </section>
+
+      <!-- ================= TAB: LINKS ================= -->
+      <section id="aba-links" class="painel-aba" hidden>
+        <div class="pilha-blocos" style="max-width:760px;">
+
+          <div class="cartao bloco-cartao">
+            <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+              <div>
+                <h3 style="margin-bottom:.2rem;">Your links page</h3>
+                <p class="grafico-subtitulo" style="margin:0;">This is nicolyugccreator.com/links &mdash; the link for your bio.</p>
+              </div>
+              <a class="botao-nova-transacao laranja" href="/links/" target="_blank" rel="noopener" style="text-decoration:none;">Open page &#8599;</a>
+            </div>
+            <div id="links-perfil"></div>
+          </div>
+
+          <div class="cartao bloco-cartao">
+            <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+              <div>
+                <h3 style="margin-bottom:.2rem;">Buttons</h3>
+                <p class="grafico-subtitulo" style="margin:0;">Drag the &#10303; handle to reorder. This is what shows on your links page.</p>
+              </div>
+              <button type="button" class="botao-nova-transacao laranja" id="botao-novo-link-botao">+ Add button</button>
+            </div>
+            <div id="lista-links-botoes"></div>
+          </div>
+
+          <div class="cartao bloco-cartao">
+            <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+              <div>
+                <h3 style="margin-bottom:.2rem;">Social icons</h3>
+                <p class="grafico-subtitulo" style="margin:0;">Drag the &#10303; handle to reorder.</p>
+              </div>
+              <button type="button" class="botao-nova-transacao laranja" id="botao-novo-link-social">+ Add social</button>
+            </div>
+            <div id="lista-links-sociais"></div>
+          </div>
+
+        </div>
+      </section>
     </div>
   </main>
 </div>
@@ -1396,6 +1442,96 @@
   </div>
 </div>
 
+<!-- ================= MODAL: NEW/EDIT LINK BUTTON ================= -->
+<div class="modal-overlay" id="modal-link-botao" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-link-botao">&times;</button>
+    <h3 id="titulo-modal-link-botao">Add button</h3>
+    <form class="form-contato" id="form-link-botao" novalidate>
+      <input type="hidden" id="link-botao-id">
+
+      <label for="link-botao-rotulo">Button text</label>
+      <input type="text" id="link-botao-rotulo" required placeholder="e.g. Portfolio">
+
+      <label for="link-botao-url">Link</label>
+      <input type="text" id="link-botao-url" required placeholder="https://...">
+
+      <label for="link-botao-subtitulo">Small text under it (optional)</label>
+      <input type="text" id="link-botao-subtitulo" placeholder="e.g. Get 50% off your first order">
+
+      <label for="link-botao-cor">Colour</label>
+      <select id="link-botao-cor">
+        <option value="laranja">Orange</option>
+        <option value="limao">Lime</option>
+        <option value="azul">Blue</option>
+        <option value="magenta">Magenta</option>
+        <option value="branco">White</option>
+      </select>
+
+      <label class="checkbox-linha" style="margin-top:1rem;"><input type="checkbox" id="link-botao-ativo" checked> Show on the page</label>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-link-botao">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: NEW/EDIT SOCIAL ICON ================= -->
+<div class="modal-overlay" id="modal-link-social" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-link-social">&times;</button>
+    <h3 id="titulo-modal-link-social">Add social</h3>
+    <form class="form-contato" id="form-link-social" novalidate>
+      <input type="hidden" id="link-social-id">
+
+      <label for="link-social-icone">Type</label>
+      <select id="link-social-icone">
+        <option value="email">E-mail</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="tiktok">TikTok</option>
+        <option value="instagram">Instagram</option>
+        <option value="site">Website</option>
+      </select>
+
+      <label for="link-social-url">Link or address</label>
+      <input type="text" id="link-social-url" required placeholder="https://instagram.com/... or your@email.com or 353...">
+      <p class="texto-vazio" style="margin:.3rem 0 0;">E-mail: just the address. WhatsApp: number with country code, digits only.</p>
+
+      <label class="checkbox-linha" style="margin-top:1rem;"><input type="checkbox" id="link-social-ativo" checked> Show on the page</label>
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-link-social">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: EDIT LINKS PROFILE ================= -->
+<div class="modal-overlay" id="modal-links-perfil" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-links-perfil">&times;</button>
+    <h3>Edit page profile</h3>
+    <form class="form-contato" id="form-links-perfil" novalidate>
+      <label for="links-perfil-nome">Name</label>
+      <input type="text" id="links-perfil-nome" required placeholder="Nicoly W. | UGC Creator">
+
+      <label for="links-perfil-frase">Phrase</label>
+      <input type="text" id="links-perfil-frase" placeholder="Let's create together">
+
+      <label for="links-perfil-foto">Photo URL (optional)</label>
+      <input type="text" id="links-perfil-foto" placeholder="Leave empty to use your site photo">
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="fechar-modal-links-perfil-2">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ================= TOAST ================= -->
 <div class="toast" id="toast">
   <span id="toast-mensagem"></span>
@@ -1432,6 +1568,9 @@
     marcasPortfolio: [],
     depoimentos: [],
     depoimentoArrastado: null,
+    linksPerfil: null,
+    links: [],
+    linkArrastado: null,
     cartaoArrastado: null,
     itemPlanejamentoArrastado: null,
     suprimirCliqueCartao: false
@@ -1590,6 +1729,14 @@
     }
 
     try {
+      await carregarLinks();
+    } catch (erro) {
+      console.warn("portfolio_links tables not set up yet:", erro);
+      estado.links = [];
+      estado.linksPerfil = null;
+    }
+
+    try {
       await carregarMarcasPortfolio();
     } catch (erro) {
       console.warn("portfolio_marcas table not set up yet:", erro);
@@ -1615,6 +1762,7 @@
     configurarPortfolioSub();
     configurarMarcasPortfolio();
     configurarDepoimentos();
+    configurarLinks();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -1628,6 +1776,8 @@
     renderGerenciarPortfolio();
     renderMarcasPortfolio();
     renderGerenciarDepoimentos();
+    renderLinksPerfil();
+    renderLinksListas();
 
     const parametroCliente = new URLSearchParams(location.search).get("cliente");
     if(parametroCliente){
@@ -1638,7 +1788,7 @@
 
   // ===================== TABS =====================
   function ativarAba(aba){
-    const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos", "planejamento"];
+    const abasComOcultacao = ["rotina", "financeiro", "clientes", "projetos", "planejamento", "links"];
     document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("ativo", b.dataset.tab === aba));
     document.getElementById("aba-principal").hidden = aba !== "principal";
     document.getElementById("aba-portfolio").hidden = aba !== "portfolio";
@@ -1647,10 +1797,12 @@
     document.getElementById("aba-clientes").hidden = aba !== "clientes";
     document.getElementById("aba-projetos").hidden = aba !== "projetos";
     document.getElementById("aba-planejamento").hidden = aba !== "planejamento";
+    document.getElementById("aba-links").hidden = aba !== "links";
     document.getElementById("filtro-periodo").hidden = abasComOcultacao.includes(aba);
     const titulos = {
       principal: "Home", portfolio: "Portfolio", rotina: "My Routine",
-      financeiro: "Finance", clientes: "Clients", projetos: "Projects", planejamento: "Planning"
+      financeiro: "Finance", clientes: "Clients", projetos: "Projects", planejamento: "Planning",
+      links: "Links"
     };
     document.getElementById("titulo-pagina").textContent = titulos[aba];
     fecharSidebarMobile();
@@ -4642,6 +4794,343 @@
         </details>
       `;
     }).join("");
+  }
+
+  // ===================== TAB: LINKS (nicolyugccreator.com/links) =====================
+  const ROTULOS_SOCIAL_LINKS = {
+    email: "E-mail", whatsapp: "WhatsApp", tiktok: "TikTok", instagram: "Instagram", site: "Website"
+  };
+  const CORES_LINKS = {
+    laranja: "var(--laranja)", limao: "var(--limao)", azul: "var(--azul)",
+    magenta: "var(--magenta)", branco: "var(--branco)"
+  };
+
+  async function carregarLinks(){
+    const resPerfil = await Auth.sb.from("portfolio_links_perfil").select("*").eq("id", 1).maybeSingle();
+    if(resPerfil.error) throw resPerfil.error;
+    estado.linksPerfil = resPerfil.data || { nome: "Nicoly W. | UGC Creator", frase: "Let's create together", foto_url: null };
+
+    const resLinks = await Auth.sb.from("portfolio_links").select("*").order("ordem", { ascending: true });
+    if(resLinks.error) throw resLinks.error;
+    estado.links = resLinks.data;
+  }
+
+  function configurarLinks(){
+    document.getElementById("botao-novo-link-botao").addEventListener("click", () => abrirModalLinkBotao());
+    document.getElementById("botao-novo-link-social").addEventListener("click", () => abrirModalLinkSocial());
+
+    document.getElementById("fechar-modal-link-botao").addEventListener("click", fecharModalLinkBotao);
+    document.getElementById("fechar-modal-link-social").addEventListener("click", fecharModalLinkSocial);
+    document.getElementById("fechar-modal-links-perfil").addEventListener("click", fecharModalLinksPerfil);
+    document.getElementById("fechar-modal-links-perfil-2").addEventListener("click", fecharModalLinksPerfil);
+
+    ["modal-link-botao", "modal-link-social", "modal-links-perfil"].forEach(id => {
+      document.getElementById(id).addEventListener("click", (evento) => {
+        if(evento.target.id === id){
+          if(id === "modal-link-botao") fecharModalLinkBotao();
+          else if(id === "modal-link-social") fecharModalLinkSocial();
+          else fecharModalLinksPerfil();
+        }
+      });
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape"){
+        fecharModalLinkBotao(); fecharModalLinkSocial(); fecharModalLinksPerfil();
+      }
+    });
+
+    document.getElementById("form-link-botao").addEventListener("submit", salvarLinkBotao);
+    document.getElementById("botao-excluir-link-botao").addEventListener("click", excluirLinkBotaoAtual);
+    document.getElementById("form-link-social").addEventListener("submit", salvarLinkSocial);
+    document.getElementById("botao-excluir-link-social").addEventListener("click", excluirLinkSocialAtual);
+    document.getElementById("form-links-perfil").addEventListener("submit", salvarLinksPerfil);
+  }
+
+  // ---------- profile ----------
+  function renderLinksPerfil(){
+    const container = document.getElementById("links-perfil");
+    const p = estado.linksPerfil || {};
+    const foto = p.foto_url || "/foto-sobre.jpg";
+    container.innerHTML = `
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <img src="${escapeHtml(foto)}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--preto);flex-shrink:0;background:var(--papel);">
+        <div style="flex:1;min-width:180px;">
+          <p style="font-weight:700;margin:0;">${escapeHtml(p.nome || "")}</p>
+          <p style="color:var(--texto-suave);font-size:.88rem;margin:.2rem 0 0;">${escapeHtml(p.frase || "")}</p>
+        </div>
+        <button type="button" class="botao-icone" id="botao-editar-links-perfil" style="width:auto;padding:.5rem .9rem;font-weight:700;font-size:.8rem;">Edit</button>
+      </div>
+    `;
+    document.getElementById("botao-editar-links-perfil").addEventListener("click", abrirModalLinksPerfil);
+  }
+
+  function abrirModalLinksPerfil(){
+    const p = estado.linksPerfil || {};
+    document.getElementById("links-perfil-nome").value = p.nome || "";
+    document.getElementById("links-perfil-frase").value = p.frase || "";
+    document.getElementById("links-perfil-foto").value = p.foto_url || "";
+    document.getElementById("modal-links-perfil").hidden = false;
+  }
+  function fecharModalLinksPerfil(){ document.getElementById("modal-links-perfil").hidden = true; }
+
+  async function salvarLinksPerfil(evento){
+    evento.preventDefault();
+    const registro = {
+      id: 1,
+      nome: document.getElementById("links-perfil-nome").value.trim() || "Nicoly W. | UGC Creator",
+      frase: document.getElementById("links-perfil-frase").value.trim() || null,
+      foto_url: document.getElementById("links-perfil-foto").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+    try {
+      const { data, error } = await Auth.sb.from("portfolio_links_perfil").upsert(registro).select();
+      if(error) throw error;
+      estado.linksPerfil = data[0];
+      fecharModalLinksPerfil();
+      renderLinksPerfil();
+      mostrarToast("Profile saved.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the links setup SQL has been run on Supabase.");
+    }
+  }
+
+  // ---------- lists ----------
+  function renderLinksListas(){
+    renderUmaListaLinks("botao", document.getElementById("lista-links-botoes"));
+    renderUmaListaLinks("social", document.getElementById("lista-links-sociais"));
+  }
+
+  function renderUmaListaLinks(tipo, container){
+    const itens = estado.links.filter(l => l.tipo === tipo).sort((a, b) => a.ordem - b.ordem);
+    if(itens.length === 0){
+      container.innerHTML = '<p class="texto-vazio">Nothing here yet.</p>';
+      return;
+    }
+    container.innerHTML = itens.map(item => {
+      const titulo = tipo === "social"
+        ? escapeHtml(ROTULOS_SOCIAL_LINKS[item.icone] || item.rotulo || item.icone || "")
+        : escapeHtml(item.rotulo || "");
+      const marca = tipo === "botao"
+        ? `<span style="width:14px;height:14px;border-radius:50%;border:2px solid var(--preto);background:${CORES_LINKS[item.cor] || "var(--branco)"};flex-shrink:0;"></span>`
+        : "";
+      const sub = tipo === "botao" && item.subtitulo ? ` &middot; ${escapeHtml(item.subtitulo)}` : "";
+      const oculto = item.ativo === false ? ' <span class="linha-portfolio-badge">Hidden</span>' : "";
+      return `
+        <div class="linha-portfolio-item" draggable="true" data-link-linha="${item.id}">
+          <span class="linha-portfolio-arrasta" aria-hidden="true">&#10303;</span>
+          ${marca}
+          <div class="linha-portfolio-info">
+            <p class="linha-portfolio-titulo">${titulo}${oculto}</p>
+            <div class="linha-portfolio-etiquetas"><span class="linha-portfolio-badge">${escapeHtml(item.url || "")}${sub}</span></div>
+          </div>
+          <div class="linha-portfolio-acoes">
+            <button type="button" class="botao-icone" data-editar-link="${item.id}" aria-label="Edit">&#9998;</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    container.querySelectorAll("[data-editar-link]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.links.find(l => String(l.id) === botao.dataset.editarLink);
+        if(!item) return;
+        if(item.tipo === "social") abrirModalLinkSocial(item);
+        else abrirModalLinkBotao(item);
+      });
+    });
+
+    container.querySelectorAll("[data-link-linha]").forEach(linha => {
+      linha.addEventListener("dragstart", (evento) => {
+        estado.linkArrastado = linha.dataset.linkLinha;
+        linha.classList.add("arrastando");
+        evento.dataTransfer.effectAllowed = "move";
+        evento.dataTransfer.setData("text/plain", linha.dataset.linkLinha);
+      });
+      linha.addEventListener("dragend", () => linha.classList.remove("arrastando"));
+      linha.addEventListener("dragover", (evento) => { evento.preventDefault(); evento.dataTransfer.dropEffect = "move"; });
+      linha.addEventListener("drop", (evento) => {
+        evento.preventDefault();
+        const idArrastado = evento.dataTransfer.getData("text/plain") || estado.linkArrastado;
+        if(idArrastado) moverLinkParaPosicao(idArrastado, linha.dataset.linkLinha);
+        estado.linkArrastado = null;
+      });
+    });
+  }
+
+  async function moverLinkParaPosicao(idArrastado, idAlvo){
+    const arrastado = estado.links.find(l => String(l.id) === String(idArrastado));
+    const alvo = estado.links.find(l => String(l.id) === String(idAlvo));
+    if(!arrastado || !alvo || arrastado.tipo !== alvo.tipo || String(idArrastado) === String(idAlvo)) return;
+
+    const tipo = arrastado.tipo;
+    const ordenados = estado.links.filter(l => l.tipo === tipo).sort((a, b) => a.ordem - b.ordem);
+    const de = ordenados.findIndex(l => String(l.id) === String(idArrastado));
+    const para = ordenados.findIndex(l => String(l.id) === String(idAlvo));
+    const [movido] = ordenados.splice(de, 1);
+    ordenados.splice(para, 0, movido);
+
+    ordenados.forEach((item, indice) => {
+      const alvoEstado = estado.links.find(l => String(l.id) === String(item.id));
+      if(alvoEstado) alvoEstado.ordem = indice;
+    });
+    renderLinksListas();
+
+    try {
+      await Promise.all(ordenados.map((item, indice) =>
+        Auth.sb.from("portfolio_links").update({ ordem: indice }).eq("id", item.id)
+      ));
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save the new order. Reloading may show the old one.");
+    }
+  }
+
+  // ---------- button modal ----------
+  function abrirModalLinkBotao(item = null){
+    document.getElementById("form-link-botao").reset();
+    if(item){
+      document.getElementById("titulo-modal-link-botao").textContent = "Edit button";
+      document.getElementById("link-botao-id").value = item.id;
+      document.getElementById("link-botao-rotulo").value = item.rotulo || "";
+      document.getElementById("link-botao-url").value = item.url || "";
+      document.getElementById("link-botao-subtitulo").value = item.subtitulo || "";
+      document.getElementById("link-botao-cor").value = item.cor || "branco";
+      document.getElementById("link-botao-ativo").checked = item.ativo !== false;
+    } else {
+      document.getElementById("titulo-modal-link-botao").textContent = "Add button";
+      document.getElementById("link-botao-id").value = "";
+      document.getElementById("link-botao-cor").value = "laranja";
+      document.getElementById("link-botao-ativo").checked = true;
+    }
+    document.getElementById("modal-link-botao").hidden = false;
+  }
+  function fecharModalLinkBotao(){ document.getElementById("modal-link-botao").hidden = true; }
+
+  async function salvarLinkBotao(evento){
+    evento.preventDefault();
+    const id = document.getElementById("link-botao-id").value;
+    const rotulo = document.getElementById("link-botao-rotulo").value.trim();
+    const url = document.getElementById("link-botao-url").value.trim();
+    if(!rotulo || !url){ mostrarToast("Please fill in the button text and the link."); return; }
+
+    const registro = {
+      tipo: "botao",
+      rotulo,
+      url,
+      subtitulo: document.getElementById("link-botao-subtitulo").value.trim() || null,
+      cor: document.getElementById("link-botao-cor").value,
+      ativo: document.getElementById("link-botao-ativo").checked,
+      updated_at: new Date().toISOString()
+    };
+    try {
+      if(id){
+        const { data, error } = await Auth.sb.from("portfolio_links").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const i = estado.links.findIndex(l => String(l.id) === String(id));
+        if(i > -1) estado.links[i] = data[0];
+        mostrarToast("Button updated.");
+      } else {
+        registro.ordem = proximaOrdem(estado.links.filter(l => l.tipo === "botao"));
+        const { data, error } = await Auth.sb.from("portfolio_links").insert(registro).select();
+        if(error) throw error;
+        estado.links.push(data[0]);
+        mostrarToast("Button added.");
+      }
+      fecharModalLinkBotao();
+      renderLinksListas();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the links setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirLinkBotaoAtual(){
+    const id = document.getElementById("link-botao-id").value;
+    if(!id || !confirm("Delete this button? It disappears from your links page too.")) return;
+    try {
+      const { error } = await Auth.sb.from("portfolio_links").delete().eq("id", id);
+      if(error) throw error;
+      estado.links = estado.links.filter(l => String(l.id) !== String(id));
+      fecharModalLinkBotao();
+      renderLinksListas();
+      mostrarToast("Button deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  // ---------- social modal ----------
+  function abrirModalLinkSocial(item = null){
+    document.getElementById("form-link-social").reset();
+    if(item){
+      document.getElementById("titulo-modal-link-social").textContent = "Edit social";
+      document.getElementById("link-social-id").value = item.id;
+      document.getElementById("link-social-icone").value = item.icone || "instagram";
+      document.getElementById("link-social-url").value = item.url || "";
+      document.getElementById("link-social-ativo").checked = item.ativo !== false;
+    } else {
+      document.getElementById("titulo-modal-link-social").textContent = "Add social";
+      document.getElementById("link-social-id").value = "";
+      document.getElementById("link-social-icone").value = "instagram";
+      document.getElementById("link-social-ativo").checked = true;
+    }
+    document.getElementById("modal-link-social").hidden = false;
+  }
+  function fecharModalLinkSocial(){ document.getElementById("modal-link-social").hidden = true; }
+
+  async function salvarLinkSocial(evento){
+    evento.preventDefault();
+    const id = document.getElementById("link-social-id").value;
+    const icone = document.getElementById("link-social-icone").value;
+    const url = document.getElementById("link-social-url").value.trim();
+    if(!url){ mostrarToast("Please fill in the link or address."); return; }
+
+    const registro = {
+      tipo: "social",
+      icone,
+      rotulo: ROTULOS_SOCIAL_LINKS[icone] || icone,
+      url,
+      ativo: document.getElementById("link-social-ativo").checked,
+      updated_at: new Date().toISOString()
+    };
+    try {
+      if(id){
+        const { data, error } = await Auth.sb.from("portfolio_links").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const i = estado.links.findIndex(l => String(l.id) === String(id));
+        if(i > -1) estado.links[i] = data[0];
+        mostrarToast("Social updated.");
+      } else {
+        registro.ordem = proximaOrdem(estado.links.filter(l => l.tipo === "social"));
+        const { data, error } = await Auth.sb.from("portfolio_links").insert(registro).select();
+        if(error) throw error;
+        estado.links.push(data[0]);
+        mostrarToast("Social added.");
+      }
+      fecharModalLinkSocial();
+      renderLinksListas();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the links setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirLinkSocialAtual(){
+    const id = document.getElementById("link-social-id").value;
+    if(!id || !confirm("Delete this social icon? It disappears from your links page too.")) return;
+    try {
+      const { error } = await Auth.sb.from("portfolio_links").delete().eq("id", id);
+      if(error) throw error;
+      estado.links = estado.links.filter(l => String(l.id) !== String(id));
+      fecharModalLinkSocial();
+      renderLinksListas();
+      mostrarToast("Social deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
   }
 
   document.addEventListener("DOMContentLoaded", iniciar);
