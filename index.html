@@ -785,22 +785,6 @@ const TRADUCOES = {
 
     tituloPortfolio: "Portfolio",
     categorias: { todos: "All", beleza: "Beauty & Skincare", pet: "Pet", bebida: "Food and Beverage", tech: "Tech", lifestyle: "Lifestyle & Wellness", diy: "DIY" },
-    // EDIT HERE: portfolio work. "categoria" must stay one of the keys above (beleza, pet, bebida, tech, lifestyle)
-    // Each card links out to the real YouTube Short. "videoId" is the part of the URL after /shorts/ (before any ?)
-    // COVER IMAGE: by default the card shows the automatic YouTube thumbnail. To use your own cover photo instead,
-    // add a file (e.g. capa-etude.jpg) next to this HTML file and set "capa: 'capa-etude.jpg'" on that item.
-    portfolio: [
-      { titulo: "Butternut Box - Fresh Food", categoria: "pet", videoId: "7eftRd4ll5o", url: "https://youtube.com/shorts/7eftRd4ll5o?feature=share", capa: "capa-butternut.jpg" },
-      { titulo: "ETUDE - Soon Jung 2x Barrier Intensive Cream", categoria: "beleza", videoId: "H14BJgQmNO0", url: "https://youtube.com/shorts/H14BJgQmNO0?feature=share", capa: "capa-etude.jpg" },
-      { titulo: "Peripera - Ink The Velvet", categoria: "beleza", videoId: "dfTINKqTjzs", url: "https://youtube.com/shorts/dfTINKqTjzs?feature=share", capa: "capa-peripera.jpg" },
-      { titulo: "L'Oreal Paris - Telescopic Mascara", categoria: "beleza", videoId: "MuwpFpaKqTs", url: "https://youtube.com/shorts/MuwpFpaKqTs?feature=share", capa: "capa-loreal.jpg" },
-      { titulo: "Audio-Technica - Lifestyle", categoria: "lifestyle", videoId: "b9QIpbp_aNE", url: "https://youtube.com/shorts/b9QIpbp_aNE?feature=share", capa: "capa-audio-technica.jpg" },
-      { titulo: "Sony - ZV-E10 II", categoria: "tech", videoId: "1Z3MBP3tatc", url: "https://youtube.com/shorts/1Z3MBP3tatc?feature=share", capa: "capa-sony.jpg" },
-      { titulo: "Dash - Sparkling Water", categoria: "bebida", videoId: "28BJvW5YCRM", url: "https://youtube.com/shorts/28BJvW5YCRM?feature=share", capa: "capa-dash.jpg" },
-      { titulo: "Anavrin - Kowloon Walled City 2049", categoria: "diy", videoId: "h8eXfZ5M4Ac", url: "https://youtu.be/h8eXfZ5M4Ac", capa: null },
-      { titulo: "Svibe - Twinn", categoria: "lifestyle", videoId: "CD_Cvjy8A9I", url: "https://youtu.be/CD_Cvjy8A9I", capa: null, tag: "Talking Head" },
-      { titulo: "SVibe - Snail Gizi Lite", categoria: "lifestyle", videoId: "kgHrAnc6kOI", url: "https://youtu.be/kgHrAnc6kOI", capa: null, tag: "Talking Head" }
-    ],
 
     tituloServicos: "Services",
     // EDIT HERE: services offered
@@ -1084,23 +1068,41 @@ function renderizarSobre(t){
   document.querySelector("#sobre-foto img").alt = t.ariaLabels.sobreFoto;
 }
 
+// The list of videos itself now lives in Supabase (table "portfolio_itens"),
+// managed from the my.panel "Portfolio" tab — not hardcoded here anymore.
+// Only the category *labels* per language stay in TRADUCOES.categorias below.
+let itensPortfolioCache = [];
+
+async function carregarItensPortfolio(){
+  if(!clienteAnalytics) return [];
+  const { data, error } = await clienteAnalytics
+    .from("portfolio_itens")
+    .select("*")
+    .order("ordem", { ascending: true });
+  if(error){
+    console.warn("Falha ao carregar itens do portfolio:", error.message);
+    return [];
+  }
+  return data;
+}
+
 function renderizarPortfolio(t){
   document.getElementById("titulo-portfolio").textContent = t.tituloPortfolio;
   document.getElementById("portfolio").setAttribute("aria-label", t.ariaLabels.portfolio);
   document.getElementById("portfolio-modal-fechar").setAttribute("aria-label", t.ariaLabels.fecharVideo);
 
-  const chavesCategoria = ["todos", ...new Set(t.portfolio.map(i => i.categoria))];
+  const chavesCategoria = ["todos", ...new Set(itensPortfolioCache.map(i => i.categoria))];
   const filtrosEl = document.getElementById("filtros");
   filtrosEl.innerHTML = chavesCategoria.map((chave, i) =>
-    `<button class="filtro-btn${i === 0 ? " ativo" : ""}" data-categoria="${chave}">${t.categorias[chave]}</button>`
+    `<button class="filtro-btn${i === 0 ? " ativo" : ""}" data-categoria="${chave}">${t.categorias[chave] || chave}</button>`
   ).join("");
 
   const galeriaEl = document.getElementById("galeria");
-  galeriaEl.innerHTML = t.portfolio.map((item) => `
-    <button type="button" class="item-portfolio" data-categoria="${item.categoria}" data-video-id="${item.videoId}" data-titulo="${item.titulo}" aria-label="${t.ariaLabels.assistirVideo}: ${item.titulo}">
+  galeriaEl.innerHTML = itensPortfolioCache.map((item) => `
+    <button type="button" class="item-portfolio" data-categoria="${item.categoria}" data-video-id="${item.video_id}" data-titulo="${item.titulo}" aria-label="${t.ariaLabels.assistirVideo}: ${item.titulo}">
       <span class="portfolio-midia">
         ${item.tag ? `<span class="portfolio-tag">${item.tag}</span>` : ""}
-        <img src="${item.capa || ('https://img.youtube.com/vi/' + item.videoId + '/hqdefault.jpg')}" alt="" loading="lazy">
+        <img src="${item.capa_url || ('https://img.youtube.com/vi/' + item.video_id + '/hqdefault.jpg')}" alt="" loading="lazy">
         <span class="play-icon" aria-hidden="true">▶</span>
       </span>
       <span class="portfolio-info">
@@ -1108,7 +1110,7 @@ function renderizarPortfolio(t){
       </span>
     </button>
   `).join("");
-  // EDIT HERE: add new work by adding an item to the "portfolio" array above (both en and pt)
+  // EDIT HERE: portfolio videos are managed from my.panel now — see the "Portfolio" tab there.
 
   galeriaEl.querySelectorAll(".item-portfolio").forEach(botao => {
     botao.addEventListener("click", () => {
@@ -1583,7 +1585,7 @@ async function configurarAnalytics(){
 }
 
 // ===================== INITIALIZATION =====================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   renderizarTudo(idiomaAtual);
   configurarMenu();
   configurarIdioma();
@@ -1592,10 +1594,14 @@ document.addEventListener("DOMContentLoaded", () => {
   configurarModalProposta();
   configurarFormularioProposta();
   configurarAnalytics();
+
+  itensPortfolioCache = await carregarItensPortfolio();
+  renderizarPortfolio(TRADUCOES[idiomaAtual]);
 });
 </script>
 
 </body>
 </html>
+
 
 
