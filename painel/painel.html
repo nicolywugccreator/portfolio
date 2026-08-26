@@ -204,6 +204,18 @@
   .linha-portfolio-badge.destaque{background:var(--limao);border-color:var(--preto);}
   .linha-portfolio-acoes{display:flex;gap:.3rem;flex-shrink:0;}
 
+  .marca-editavel{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.8rem;font-weight:600;
+    background:var(--papel);border:1.5px solid rgba(17,17,17,.15);border-radius:999px;
+    padding:.3rem .5rem .3rem .8rem;
+  }
+  .marca-editavel button{
+    width:16px;height:16px;border-radius:50%;border:none;background:none;color:var(--texto-suave);
+    cursor:pointer;font-size:.8rem;line-height:1;display:flex;align-items:center;justify-content:center;
+  }
+  .marca-editavel button:hover{color:var(--erro);}
+
   .item-video{
     display:flex;align-items:center;gap:.9rem;
     padding:.6rem 0;border-bottom:2px solid var(--papel);
@@ -864,36 +876,69 @@
 
       <!-- ================= TAB: PORTFOLIO ================= -->
       <section id="aba-portfolio" class="painel-aba" hidden>
-        <div class="cartao bloco-cartao" style="margin-bottom:1.2rem;">
-          <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
-            <div>
-              <h3 style="margin-bottom:.2rem;">Manage your videos</h3>
-              <p class="grafico-subtitulo" style="margin:0;">Drag the ⠿ handle to reorder. This is what shows on your public site.</p>
-            </div>
-            <button type="button" class="botao-nova-transacao laranja" id="botao-novo-item-portfolio">+ Add video</button>
-          </div>
-          <div id="lista-gerenciar-portfolio"></div>
+        <div class="abas-perfil-cliente" id="abas-portfolio-sub" style="padding-left:0;margin-bottom:1.2rem;">
+          <button type="button" class="aba-perfil-btn ativa" data-aba-portfolio-sub="main">Main</button>
+          <button type="button" class="aba-perfil-btn" data-aba-portfolio-sub="videos">Videos</button>
+          <button type="button" class="aba-perfil-btn" data-aba-portfolio-sub="feedback">Feedback</button>
         </div>
 
-        <div class="pilha-blocos">
-          <div class="cartao bloco-cartao">
-            <h3>Most watched videos</h3>
-            <div id="lista-videos"></div>
+        <div class="aba-perfil-conteudo ativa" data-conteudo-portfolio-sub="main">
+          <div class="cartao bloco-cartao" style="margin-bottom:1.2rem;">
+            <h3>Brands you've worked with</h3>
+            <p class="grafico-subtitulo">Shown in the scrolling strip near the top of your site.</p>
+            <div class="linha-portfolio-etiquetas" id="lista-marcas-portfolio" style="margin:.8rem 0;"></div>
+            <form id="form-nova-marca-portfolio" style="display:flex;gap:.5rem;">
+              <input type="text" id="input-nova-marca-portfolio" placeholder="Brand name" style="flex:1;font-family:'Poppins', sans-serif;padding:.6rem .8rem;border:1.5px solid rgba(17,17,17,.15);border-radius:8px;background:var(--papel);color:var(--preto);">
+              <button type="submit" class="btn btn-primario btn-pequeno">Add</button>
+            </form>
           </div>
 
-          <div class="cartao bloco-cartao">
-            <h3>Most clicked buttons</h3>
-            <div id="lista-botoes"></div>
-          </div>
+          <div class="pilha-blocos">
+            <div class="cartao bloco-cartao">
+              <h3>Most watched videos</h3>
+              <div id="lista-videos"></div>
+            </div>
 
-          <div class="cartao bloco-cartao">
-            <h3>Contact clicks</h3>
-            <div id="lista-contato"></div>
-          </div>
+            <div class="cartao bloco-cartao">
+              <h3>Most clicked buttons</h3>
+              <div id="lista-botoes"></div>
+            </div>
 
+            <div class="cartao bloco-cartao">
+              <h3>Contact clicks</h3>
+              <div id="lista-contato"></div>
+            </div>
+
+            <div class="cartao bloco-cartao">
+              <h3>Messages received</h3>
+              <div id="lista-mensagens"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aba-perfil-conteudo" data-conteudo-portfolio-sub="videos">
           <div class="cartao bloco-cartao">
-            <h3>Messages received</h3>
-            <div id="lista-mensagens"></div>
+            <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+              <div>
+                <h3 style="margin-bottom:.2rem;">Manage your videos</h3>
+                <p class="grafico-subtitulo" style="margin:0;">Drag the ⠿ handle to reorder. This is what shows on your public site.</p>
+              </div>
+              <button type="button" class="botao-nova-transacao laranja" id="botao-novo-item-portfolio">+ Add video</button>
+            </div>
+            <div id="lista-gerenciar-portfolio"></div>
+          </div>
+        </div>
+
+        <div class="aba-perfil-conteudo" data-conteudo-portfolio-sub="feedback">
+          <div class="cartao bloco-cartao">
+            <div class="financeiro-filtros-e-acao" style="margin-bottom:1rem;">
+              <div>
+                <h3 style="margin-bottom:.2rem;">Manage feedback</h3>
+                <p class="grafico-subtitulo" style="margin:0;">Drag the ⠿ handle to reorder. Shown below your portfolio videos on the public site — hidden entirely while empty.</p>
+              </div>
+              <button type="button" class="botao-nova-transacao laranja" id="botao-novo-depoimento">+ Add feedback</button>
+            </div>
+            <div id="lista-gerenciar-depoimentos"></div>
           </div>
         </div>
       </section>
@@ -1241,6 +1286,32 @@
   </div>
 </div>
 
+<!-- ================= MODAL: NEW/EDIT FEEDBACK ================= -->
+<div class="modal-overlay" id="modal-depoimento" role="dialog" aria-modal="true" hidden>
+  <div class="modal-caixa">
+    <button type="button" class="modal-fechar" id="fechar-modal-depoimento">&times;</button>
+    <h3 id="titulo-modal-depoimento">Add feedback</h3>
+
+    <form class="form-contato" id="form-depoimento" novalidate>
+      <input type="hidden" id="depoimento-id">
+
+      <label for="depoimento-texto">Quote</label>
+      <textarea id="depoimento-texto" rows="4" required placeholder="What the client said..."></textarea>
+
+      <label for="depoimento-nome">Name</label>
+      <input type="text" id="depoimento-nome" required placeholder="e.g. Christopher Chapman">
+
+      <label for="depoimento-empresa">Company (optional)</label>
+      <input type="text" id="depoimento-empresa" placeholder="e.g. Raycon">
+
+      <div class="form-agenda-acoes">
+        <button type="submit" class="btn btn-primario">Save</button>
+        <button type="button" class="botao-cancelar" id="botao-excluir-depoimento">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ================= MODAL: NEW/EDIT DOCUMENT ================= -->
 <div class="modal-overlay" id="modal-documento" role="dialog" aria-modal="true" hidden>
   <div class="modal-caixa">
@@ -1361,6 +1432,9 @@
     eventosZeradosEm: null,
     portfolioItens: [],
     portfolioItemArrastado: null,
+    marcasPortfolio: [],
+    depoimentos: [],
+    depoimentoArrastado: null,
     cartaoArrastado: null,
     itemPlanejamentoArrastado: null,
     suprimirCliqueCartao: false
@@ -1518,6 +1592,20 @@
       estado.portfolioItens = [];
     }
 
+    try {
+      await carregarMarcasPortfolio();
+    } catch (erro) {
+      console.warn("portfolio_marcas table not set up yet:", erro);
+      estado.marcasPortfolio = [];
+    }
+
+    try {
+      await carregarDepoimentos();
+    } catch (erro) {
+      console.warn("portfolio_depoimentos table not set up yet:", erro);
+      estado.depoimentos = [];
+    }
+
     configurarAbas();
     configurarFiltroPeriodo();
     configurarSidebarMobile();
@@ -1527,6 +1615,9 @@
     configurarProjetos();
     configurarPlanejamento();
     configurarPortfolioItens();
+    configurarPortfolioSub();
+    configurarMarcasPortfolio();
+    configurarDepoimentos();
 
     document.body.classList.add("autenticado");
     redesenharTudo();
@@ -1538,6 +1629,8 @@
     renderProjetos();
     renderPlanejamento();
     renderGerenciarPortfolio();
+    renderMarcasPortfolio();
+    renderGerenciarDepoimentos();
 
     const parametroCliente = new URLSearchParams(location.search).get("cliente");
     if(parametroCliente){
@@ -4152,6 +4245,256 @@
         const idArrastado = evento.dataTransfer.getData("text/plain") || estado.portfolioItemArrastado;
         if(idArrastado) moverPortfolioItemParaPosicao(idArrastado, linha.dataset.itemPortfolio);
         estado.portfolioItemArrastado = null;
+      });
+    });
+  }
+
+  // ===================== TAB: PORTFOLIO — SUB-TABS =====================
+  function configurarPortfolioSub(){
+    document.querySelectorAll("[data-aba-portfolio-sub]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        document.querySelectorAll("[data-aba-portfolio-sub]").forEach(b => b.classList.remove("ativa"));
+        botao.classList.add("ativa");
+        document.querySelectorAll("[data-conteudo-portfolio-sub]").forEach(c => c.classList.remove("ativa"));
+        document.querySelector(`[data-conteudo-portfolio-sub="${botao.dataset.abaPortfolioSub}"]`).classList.add("ativa");
+      });
+    });
+  }
+
+  // ===================== TAB: PORTFOLIO — BRANDS =====================
+  async function carregarMarcasPortfolio(){
+    const { data, error } = await Auth.sb
+      .from("portfolio_marcas")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+    estado.marcasPortfolio = data;
+  }
+
+  function configurarMarcasPortfolio(){
+    document.getElementById("form-nova-marca-portfolio").addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      const input = document.getElementById("input-nova-marca-portfolio");
+      const nome = input.value.trim();
+      if(!nome) return;
+
+      const registro = { user_id: estado.usuarioId, nome, ordem: proximaOrdem(estado.marcasPortfolio) };
+      try {
+        const { data, error } = await Auth.sb.from("portfolio_marcas").insert(registro).select();
+        if(error) throw error;
+        estado.marcasPortfolio.push(data[0]);
+        input.value = "";
+        renderMarcasPortfolio();
+      } catch (erro) {
+        console.error(erro);
+        mostrarToast("Could not save. Check that the portfolio setup SQL has been run on Supabase.");
+      }
+    });
+  }
+
+  async function excluirMarcaPortfolio(id){
+    try {
+      const { error } = await Auth.sb.from("portfolio_marcas").delete().eq("id", id);
+      if(error) throw error;
+      estado.marcasPortfolio = estado.marcasPortfolio.filter(m => String(m.id) !== String(id));
+      renderMarcasPortfolio();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  function renderMarcasPortfolio(){
+    const container = document.getElementById("lista-marcas-portfolio");
+    if(estado.marcasPortfolio.length === 0){
+      container.innerHTML = '<p class="texto-vazio">No brands added yet.</p>';
+      return;
+    }
+    container.innerHTML = estado.marcasPortfolio.map(m => `
+      <span class="marca-editavel">${escapeHtml(m.nome)} <button type="button" data-excluir-marca="${m.id}" aria-label="Remove">✕</button></span>
+    `).join("");
+    container.querySelectorAll("[data-excluir-marca]").forEach(botao => {
+      botao.addEventListener("click", () => excluirMarcaPortfolio(botao.dataset.excluirMarca));
+    });
+  }
+
+  // ===================== TAB: PORTFOLIO — FEEDBACK =====================
+  async function carregarDepoimentos(){
+    const { data, error } = await Auth.sb
+      .from("portfolio_depoimentos")
+      .select("*")
+      .order("ordem", { ascending: true });
+    if(error) throw error;
+    estado.depoimentos = data;
+  }
+
+  function configurarDepoimentos(){
+    document.getElementById("botao-novo-depoimento").addEventListener("click", () => abrirModalDepoimento());
+    document.getElementById("fechar-modal-depoimento").addEventListener("click", fecharModalDepoimento);
+    document.getElementById("modal-depoimento").addEventListener("click", (evento) => {
+      if(evento.target.id === "modal-depoimento") fecharModalDepoimento();
+    });
+    document.addEventListener("keydown", (evento) => {
+      if(evento.key === "Escape") fecharModalDepoimento();
+    });
+    document.getElementById("form-depoimento").addEventListener("submit", salvarDepoimento);
+    document.getElementById("botao-excluir-depoimento").addEventListener("click", excluirDepoimentoAtual);
+  }
+
+  function abrirModalDepoimento(item = null){
+    const form = document.getElementById("form-depoimento");
+    form.reset();
+    if(item){
+      document.getElementById("titulo-modal-depoimento").textContent = "Edit feedback";
+      document.getElementById("depoimento-id").value = item.id;
+      document.getElementById("depoimento-texto").value = item.texto;
+      document.getElementById("depoimento-nome").value = item.nome;
+      document.getElementById("depoimento-empresa").value = item.empresa || "";
+    } else {
+      document.getElementById("titulo-modal-depoimento").textContent = "Add feedback";
+      document.getElementById("depoimento-id").value = "";
+    }
+    document.getElementById("modal-depoimento").hidden = false;
+  }
+
+  function fecharModalDepoimento(){
+    document.getElementById("modal-depoimento").hidden = true;
+  }
+
+  async function salvarDepoimento(evento){
+    evento.preventDefault();
+
+    const id = document.getElementById("depoimento-id").value;
+    const texto = document.getElementById("depoimento-texto").value.trim();
+    const nome = document.getElementById("depoimento-nome").value.trim();
+    if(!texto || !nome){
+      mostrarToast("Please fill in the quote and the name.");
+      return;
+    }
+
+    const registro = {
+      texto,
+      nome,
+      empresa: document.getElementById("depoimento-empresa").value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      if(id){
+        const { data, error } = await Auth.sb.from("portfolio_depoimentos").update(registro).eq("id", id).select();
+        if(error) throw error;
+        const indice = estado.depoimentos.findIndex(d => String(d.id) === String(id));
+        if(indice > -1) estado.depoimentos[indice] = data[0];
+        mostrarToast("Feedback updated.");
+      } else {
+        registro.user_id = estado.usuarioId;
+        registro.ordem = proximaOrdem(estado.depoimentos);
+        const { data, error } = await Auth.sb.from("portfolio_depoimentos").insert(registro).select();
+        if(error) throw error;
+        estado.depoimentos.push(data[0]);
+        mostrarToast("Feedback added.");
+      }
+      fecharModalDepoimento();
+      renderGerenciarDepoimentos();
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save. Check that the portfolio setup SQL has been run on Supabase.");
+    }
+  }
+
+  async function excluirDepoimentoAtual(){
+    const id = document.getElementById("depoimento-id").value;
+    if(!id || !confirm("Delete this feedback?")) return;
+    try {
+      const { error } = await Auth.sb.from("portfolio_depoimentos").delete().eq("id", id);
+      if(error) throw error;
+      estado.depoimentos = estado.depoimentos.filter(d => String(d.id) !== String(id));
+      fecharModalDepoimento();
+      renderGerenciarDepoimentos();
+      mostrarToast("Feedback deleted.");
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not delete. Try again.");
+    }
+  }
+
+  async function moverDepoimentoParaPosicao(idArrastado, idAlvo){
+    const ordenados = [...estado.depoimentos].sort((a, b) => a.ordem - b.ordem);
+    const indiceOrigem = ordenados.findIndex(d => String(d.id) === String(idArrastado));
+    const indiceDestino = ordenados.findIndex(d => String(d.id) === String(idAlvo));
+    if(indiceOrigem === -1 || indiceDestino === -1 || indiceOrigem === indiceDestino) return;
+
+    const [movido] = ordenados.splice(indiceOrigem, 1);
+    ordenados.splice(indiceDestino, 0, movido);
+
+    const atualizacoes = ordenados.map((item, indice) => ({ ...item, ordem: indice }));
+    estado.depoimentos = atualizacoes;
+    renderGerenciarDepoimentos();
+
+    try {
+      await Promise.all(atualizacoes.map(item =>
+        Auth.sb.from("portfolio_depoimentos").update({ ordem: item.ordem }).eq("id", item.id)
+      ));
+    } catch (erro) {
+      console.error(erro);
+      mostrarToast("Could not save the new order. Reloading may show the old one.");
+    }
+  }
+
+  function renderGerenciarDepoimentos(){
+    const container = document.getElementById("lista-gerenciar-depoimentos");
+
+    if(estado.depoimentos.length === 0){
+      container.innerHTML = `
+        <div class="estado-vazio">
+          <div class="estado-vazio-icone">💬</div>
+          <p>No feedback yet — the section stays hidden on your site until you add one.</p>
+          <button type="button" class="btn btn-primario" id="botao-vazio-depoimento">Add feedback</button>
+        </div>
+      `;
+      document.getElementById("botao-vazio-depoimento").addEventListener("click", () => abrirModalDepoimento());
+      return;
+    }
+
+    const ordenados = [...estado.depoimentos].sort((a, b) => a.ordem - b.ordem);
+
+    container.innerHTML = ordenados.map(item => `
+      <div class="linha-portfolio-item" draggable="true" data-item-depoimento="${item.id}">
+        <span class="linha-portfolio-arrasta" aria-hidden="true">⠿</span>
+        <div class="linha-portfolio-info">
+          <p class="linha-portfolio-titulo">${escapeHtml(item.nome)}${item.empresa ? " · " + escapeHtml(item.empresa) : ""}</p>
+          <p class="card-item-texto" style="margin:0;">${escapeHtml(item.texto)}</p>
+        </div>
+        <div class="linha-portfolio-acoes">
+          <button type="button" class="botao-icone" data-editar-depoimento="${item.id}" aria-label="Edit">✎</button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll("[data-editar-depoimento]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const item = estado.depoimentos.find(d => String(d.id) === botao.dataset.editarDepoimento);
+        if(item) abrirModalDepoimento(item);
+      });
+    });
+
+    container.querySelectorAll("[data-item-depoimento]").forEach(linha => {
+      linha.addEventListener("dragstart", (evento) => {
+        estado.depoimentoArrastado = linha.dataset.itemDepoimento;
+        linha.classList.add("arrastando");
+        evento.dataTransfer.effectAllowed = "move";
+        evento.dataTransfer.setData("text/plain", linha.dataset.itemDepoimento);
+      });
+      linha.addEventListener("dragend", () => linha.classList.remove("arrastando"));
+      linha.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        evento.dataTransfer.dropEffect = "move";
+      });
+      linha.addEventListener("drop", (evento) => {
+        evento.preventDefault();
+        const idArrastado = evento.dataTransfer.getData("text/plain") || estado.depoimentoArrastado;
+        if(idArrastado) moverDepoimentoParaPosicao(idArrastado, linha.dataset.itemDepoimento);
+        estado.depoimentoArrastado = null;
       });
     });
   }
