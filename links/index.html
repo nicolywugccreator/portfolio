@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicoly W. | UGC Creator</title>
+<meta name="description" content="Nicoly Wapenik — UGC Creator. Links, portfolio and partner offers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#111111;
+    --azul:#2b6fff;
+    --laranja:#ff6a2b;
+    --limao:#c3f53a;
+    --magenta:#ff3da6;
+    --papel:#f7f2e6;
+    --branco:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background-color:var(--papel);
+    background-image:
+      linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size:38px 38px;
+    color:var(--preto);
+    font-family:'Poppins',system-ui,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+    padding:24px 18px 48px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{width:100%;max-width:540px}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+  .chip{
+    width:46px;height:46px;display:grid;place-items:center;
+    background:var(--branco);border:2px solid var(--preto);border-radius:12px;
+    box-shadow:3px 3px 0 var(--preto);
+    font-family:'Archivo Black',sans-serif;font-size:22px;line-height:1;
+    color:var(--preto);text-decoration:none;
+  }
+  .chip.marca{background:var(--limao)}
+  .chip svg{width:20px;height:20px}
+
+  .avatar{
+    width:150px;height:150px;border-radius:50%;object-fit:cover;
+    border:2px solid var(--preto);box-shadow:4px 4px 0 var(--preto);
+    display:block;margin:6px auto 18px;background:var(--branco);
+  }
+
+  h1{
+    font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase;
+    text-align:center;
+    text-wrap:balance;
+    color:var(--preto);
+    font-size:clamp(1.45rem,6vw,1.9rem);
+    line-height:1.14;
+    text-shadow:3px 3px 0 var(--magenta);
+    letter-spacing:.3px;
+  }
+  .tagline{
+    text-align:center;
+    font-family:'Poppins',system-ui,sans-serif;
+    font-weight:500;
+    color:var(--preto);
+    font-size:1.05rem;
+    margin:14px 0 24px;
+  }
+
+  .socials{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:30px}
+  .social{
+    width:50px;height:50px;display:grid;place-items:center;
+    background:var(--branco);border:2px solid var(--preto);border-radius:50%;
+    box-shadow:2px 2px 0 var(--preto);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .social:hover,.social:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--preto);outline:none}
+  .social svg{width:22px;height:22px;stroke:var(--preto);fill:none;stroke-width:2}
+  .social.solid svg{fill:var(--preto);stroke:none}
+
+  .links{display:flex;flex-direction:column;gap:16px}
+  .link{
+    display:block;text-decoration:none;color:var(--preto);
+    background:var(--branco);
+    border:2px solid var(--preto);
+    border-radius:8px;
+    box-shadow:4px 4px 0 var(--preto);
+    padding:1rem 1.2rem;
+    text-align:center;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .link:hover,.link:focus-visible{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--preto);outline:none}
+  .link:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--preto)}
+  .link.laranja{background:var(--laranja)}
+  .link.limao{background:var(--limao)}
+  .link.magenta{background:var(--magenta);color:var(--branco)}
+  .link.azul{background:var(--azul);color:var(--branco)}
+  .link .titulo{font-weight:700;font-size:1.02rem;display:block}
+  .link .sub{display:block;font-size:.85rem;font-weight:500;color:#5b5b5b;margin-top:3px}
+  .link.laranja .sub{color:#3d1e0c}
+  .link.limao .sub{color:#3a4a12}
+  .link.azul .sub,.link.magenta .sub{color:rgba(255,255,255,.85)}
+
+  footer{text-align:center;margin-top:34px;font-size:.8rem;font-weight:600;color:#8a8377;letter-spacing:.5px}
+  footer a{color:inherit;text-decoration:none}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="chip marca" aria-hidden="true">&#10033;</span>
+    <a class="chip" href="https://nicolyugccreator.com" aria-label="Website">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    </a>
+  </div>
+
+  <img class="avatar" id="avatar" src="/foto-sobre.jpg" alt="Nicoly Wapenik" width="150" height="150">
+
+  <h1 id="nome">Nicoly W. | UGC Creator</h1>
+  <p class="tagline" id="tagline">Let&rsquo;s create together</p>
+
+  <div class="socials" id="socials">
+    <a class="social" href="mailto:nicolyw.ugccreator@gmail.com" aria-label="E-mail">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+    </a>
+    <a class="social" href="https://wa.me/353833086317" aria-label="WhatsApp">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+    </a>
+    <a class="social solid" href="https://www.tiktok.com/@nicoly.ugccreator" aria-label="TikTok">
+      <svg viewBox="0 0 24 24"><path d="M16 3c.3 2.3 1.7 4.2 4 4.6v3.1c-1.5.1-2.9-.3-4-1v6.7A6.4 6.4 0 1 1 9.6 10v3.2a3.2 3.2 0 1 0 3.2 3.2V3H16Z"/></svg>
+    </a>
+    <a class="social solid" href="https://www.instagram.com/nicoly.ugccreator" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 3.1A6.7 6.7 0 1 0 18.7 12 6.7 6.7 0 0 0 12 5.3Zm0 11A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3Zm6.9-11.5a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/></svg>
+    </a>
+  </div>
+
+  <div class="links" id="links">
+    <a class="link laranja" href="https://nicolyugccreator.com"><span class="titulo">Portfolio</span></a>
+    <a class="link limao" href="https://butternutbox.com/PHOEBEAPPROVED50?share_source=copylink">
+      <span class="titulo">Butternut Box | Your Gift from Phoebe</span>
+      <span class="sub">Get 50% off your first 2 boxes</span>
+    </a>
+    <a class="link azul" href="https://byanavrin.com/en-ie">
+      <span class="titulo">ANAVRIN&reg; | DIY Book Nooks</span>
+      <span class="sub">Get $10 off your next purchase</span>
+    </a>
+  </div>
+
+  <footer><a href="https://nicolyugccreator.com">nicolyugccreator.com</a></footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  // Same public project as the panel (js/auth.js). The anon key is read-only here:
+  // the row-level security policies let anyone SELECT the links, nobody else write.
+  const SB_URL = "https://ozzzhazgslrnuuzxwwez.supabase.co";
+  const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96enpoYXpnc2xybnV1enh3d2V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4OTc5NzksImV4cCI6MjEwMDQ3Mzk3OX0.rtGSesuIMZmcDNYFqorUjxiiKZwtgpGP5Zeis8Q3TGI";
+
+  const ICONES = {
+    email: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5Z"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24"><path d="M16 3c.3 2.3 1.7 4.2 4 4.6v3.1c-1.5.1-2.9-.3-4-1v6.7A6.4 6.4 0 1 1 9.6 10v3.2a3.2 3.2 0 1 0 3.2 3.2V3H16Z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 3.1A6.7 6.7 0 1 0 18.7 12 6.7 6.7 0 0 0 12 5.3Zm0 11A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3Zm6.9-11.5a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/></svg>',
+    site: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9Z"/></svg>'
+  };
+  const SOLIDOS = { tiktok: true, instagram: true };
+  const CORES_BOTAO = { laranja: "laranja", limao: "limao", azul: "azul", magenta: "magenta", branco: "" };
+
+  function escaparHtml(t){
+    return String(t == null ? "" : t).replace(/[&<>"']/g, c => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+  }
+
+  function hrefSocial(icone, valor){
+    const v = String(valor || "").trim();
+    if(!v) return "#";
+    if(/^https?:\/\//i.test(v) || v.startsWith("mailto:") || v.startsWith("tel:")) return v;
+    if(icone === "email" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "mailto:" + v;
+    if(icone === "whatsapp") return "https://wa.me/" + v.replace(/[^0-9]/g, "");
+    return "https://" + v;
+  }
+
+  async function carregarLinks(){
+    if(!window.supabase) return;
+    const sb = window.supabase.createClient(SB_URL, SB_ANON);
+
+    const [perfilRes, linksRes] = await Promise.all([
+      sb.from("portfolio_links_perfil").select("*").eq("id", 1).maybeSingle(),
+      sb.from("portfolio_links").select("*").eq("ativo", true).order("ordem", { ascending: true })
+    ]);
+    if(linksRes.error) throw linksRes.error;
+
+    const perfil = perfilRes.data;
+    if(perfil){
+      if(perfil.nome) document.getElementById("nome").textContent = perfil.nome;
+      if(perfil.frase != null){
+        document.getElementById("tagline").textContent = perfil.frase;
+        document.getElementById("tagline").hidden = !perfil.frase;
+      }
+      if(perfil.foto_url) document.getElementById("avatar").src = perfil.foto_url;
+    }
+
+    const linhas = linksRes.data || [];
+    const sociais = linhas.filter(l => l.tipo === "social");
+    const botoes = linhas.filter(l => l.tipo === "botao");
+
+    if(sociais.length){
+      document.getElementById("socials").innerHTML = sociais.map(s => {
+        const cls = "social" + (SOLIDOS[s.icone] ? " solid" : "");
+        return `<a class="${cls}" href="${escaparHtml(hrefSocial(s.icone, s.url))}" aria-label="${escaparHtml(s.rotulo || s.icone || "")}">${ICONES[s.icone] || ICONES.site}</a>`;
+      }).join("");
+    }
+
+    if(botoes.length){
+      document.getElementById("links").innerHTML = botoes.map(b => {
+        const cor = CORES_BOTAO[b.cor] != null ? CORES_BOTAO[b.cor] : "laranja";
+        const cls = "link" + (cor ? " " + cor : "");
+        const sub = b.subtitulo ? `<span class="sub">${escaparHtml(b.subtitulo)}</span>` : "";
+        return `<a class="${cls}" href="${escaparHtml(b.url || "#")}"><span class="titulo">${escaparHtml(b.rotulo || "")}</span>${sub}</a>`;
+      }).join("");
+    }
+  }
+
+  carregarLinks().catch(err => {
+    // On any failure the static content above stays on screen — the page never looks broken.
+    console.warn("Using fallback links:", err);
+  });
+</script>
+</body>
+</html>
