@@ -1516,7 +1516,7 @@
     <h3>Edit page profile</h3>
     <form class="form-contato" id="form-links-perfil" novalidate>
       <label for="links-perfil-nome">Name</label>
-      <input type="text" id="links-perfil-nome" required placeholder="Nicoly W. | UGC Creator">
+      <input type="text" id="links-perfil-nome" required placeholder="Nicoly W.| UGC Creator">
 
       <label for="links-perfil-frase">Phrase</label>
       <input type="text" id="links-perfil-frase" placeholder="Let's create together">
@@ -4808,7 +4808,7 @@
   async function carregarLinks(){
     const resPerfil = await Auth.sb.from("portfolio_links_perfil").select("*").eq("id", 1).maybeSingle();
     if(resPerfil.error) throw resPerfil.error;
-    estado.linksPerfil = resPerfil.data || { nome: "Nicoly W. | UGC Creator", frase: "Let's create together", foto_url: null };
+    estado.linksPerfil = resPerfil.data || { nome: "Nicoly W.| UGC Creator", frase: "Let's create together", foto_url: null };
 
     const resLinks = await Auth.sb.from("portfolio_links").select("*").order("ordem", { ascending: true });
     if(resLinks.error) throw resLinks.error;
@@ -4877,7 +4877,7 @@
     evento.preventDefault();
     const registro = {
       id: 1,
-      nome: document.getElementById("links-perfil-nome").value.trim() || "Nicoly W. | UGC Creator",
+      nome: document.getElementById("links-perfil-nome").value.trim() || "Nicoly W.| UGC Creator",
       frase: document.getElementById("links-perfil-frase").value.trim() || null,
       foto_url: document.getElementById("links-perfil-foto").value.trim() || null,
       updated_at: new Date().toISOString()
